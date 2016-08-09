@@ -59,7 +59,7 @@ class Keuangan_akun extends CI_Controller {
 	}
 
 	function api_data(){
-		$this->authentication->verify('mst','edit');		
+		$this->authentication->verify('mst','show');		
 		
 		$data['ambildata'] = $this->keuakun_model->get_data_akun();
 		foreach($data['ambildata'] as $d){
@@ -68,6 +68,24 @@ class Keuangan_akun extends CI_Controller {
 		}
 	}
 
+	function api_data_target($pilih='target'){
+		$this->authentication->verify('mst','show');		
+		
+		$data['ambildata'] = $this->keuakun_model->get_data_akun_target($pilih);
+		foreach($data['ambildata'] as $d){
+			$txt = $d["id_mst_akun_target"]." \t ".$d["id_mst_akun_parent_target"]."\t".$d["kode_target"]." \t ".$d["uraian_target"]." \t ".ucwords($d["saldo_normal_target"])." \t ".$d["saldo_awal_target"]." \t ".$d["id_akun_anggaran_target"]." \t ".$d["jumlah_target"]." \t ".$d["tipe_target"]." \t ".$d["periode_target"]." \t ".$d["code_cl_phc_target"]." \t ".$d["statusdata"]." \n";				
+			echo $txt;
+		}
+	}
+	function api_data_anggaran($pilih='anggaran'){
+		$this->authentication->verify('mst','show');		
+		
+		$data['ambildata'] = $this->keuakun_model->get_data_akun_anggaran($pilih);
+		foreach($data['ambildata'] as $d){
+			$txt = $d["id_mst_akun"]." \t ".$d["id_mst_akun_parent"]."\t".$d["kode"]." \t ".$d["uraian"]." \t ".ucwords($d["saldo_normal"])." \t ".$d["saldo_awal"]." \t ".$d["id_akun_anggaran"]." \t ".$d["jumlah"]." \t ".$d["tipe"]." \t ".$d["periode"]." \t ".$d["code_cl_phc"]." \n";				
+			echo $txt;
+		}
+	}
 	function have_parent($id){
 		$this->db->where("id_mst_akun",$id);		
 		$dt=$this->db->get("mst_keu_akun")->row();		
@@ -255,7 +273,20 @@ class Keuangan_akun extends CI_Controller {
 			echo str_replace("<p>", "", str_replace("</p>", "\n", $err));
 		}	
 	}
+	function akun_anggraan_update(){
+		$this->authentication->verify('mst','add');
+		$this->form_validation->set_rules('id_mst_akun','ID mst Akun','trim|required');
+		$this->form_validation->set_rules('periode','Periode','trim|required');
+		$this->form_validation->set_rules('jumlah','Jumlah','trim|required');
 
+		if($this->form_validation->run()== TRUE){
+			$this->keuakun_model->akun_anggran_add();	
+			echo "0";
+		}else{			
+			$err = validation_errors();
+			echo str_replace("<p>", "", str_replace("</p>", "\n", $err));
+		}	
+	}
 	function akun_update(){
 		$this->authentication->verify('mst','edit');
 		$this->form_validation->set_rules('id_mst_akun_parent','ID Akun Parent','trim|required');

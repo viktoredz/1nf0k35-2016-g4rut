@@ -20,7 +20,7 @@
               <div class="row">
                 <div class="col-md-4" style="padding-top:5px;"><label> Periode </label> </div>
                   <div class="col-md-8">
-                    <select name="tahun" id="tahun" class="form-control">
+                    <select name="tahunanggaran" id="tahunanggaran" class="form-control">
                       <?php for ($i=date("Y");$i>=date("Y")-10;$i--) { ;?>
                       <?php $select = $i == date("Y") ? 'selected=selected' : '' ?>
                      <option value="<?php echo $i; ?>" <?php echo $select ?>><?php echo $i; ?></option>
@@ -45,36 +45,28 @@
 <script type="text/javascript">
   $(document).ready(function () {
 
-    $("select[name='tahun']").change(function(){
-      $.post("<?php echo base_url().'mst/keuangan_akun/filter_tahun' ?>", 'tahun='+$(this).val(),  function(){
+    $("select[name='tahunanggaran']").change(function(){
+      $.post("<?php echo base_url().'mst/keuangan_akun/filter_tahunanggaran' ?>", 'tahunanggaran='+$(this).val(),  function(){
         $("#treeGrid_anggaran_akun").jqxTreeGrid('updateBoundData','filter');
         });
     });
       
       var newRowID = null;
 
-      var source =
-      {
-          datatype: "json",
-          datafields: [
-              { name: 'id_mst_akun' },
-              { name: 'saldo_normal' }
-          ],
-          url: '<?php echo base_url()?>mst/keuangan_sts/json_kode_rekening',
-          async: true
-      };
-      var saldo_norma_source = new $.jqx.dataAdapter(source);
-
-           var source = {
+           var sourceanggran = {
             dataType: "tab",
             dataFields: [
                 { name: "id_mst_akun", type: "number" },
                 { name: "id_mst_anggaran_parent", type: "number" },
                 { name: "kode", type: "number" },
                 { name: "uraian", type: "string" },
-                { name: "saldo_normal", type: "string" },
-                { name: "saldo_awal", type: "number" },
-                { name: "mendukung_transaksi", type: "number"}
+                { name: "saldso_normal", type: "string" },
+                { name: "saldso_awal", type: "string" },
+                { name: "id_akun_anggaran", type: "string" },
+                { name: "jumlah", type: "string" },
+                { name: "tipe", type: "string" },
+                { name: "periode", type: "date" },
+                { name: "code_cl_phc", type: "string" }
             ],
                 hierarchy:
                 {
@@ -83,47 +75,33 @@
                 },
                 id: 'id_mst_akun',
 
-                url: '<?php echo base_url()?>mst/keuangan_akun/api_data',
+                url: '<?php echo base_url()?>mst/keuangan_akun/api_data_anggaran',
 
                  addRow: function (rowID, rowData, position, parentID, commit) {        
                     commit(true);
                     newRowID = rowID;
                  },
                  updateRow: function (rowID, rowData, commit) {
-                    commit(true);
-                    var arr = $.map(rowData, function(el) { return el });         
-                    if(typeof(arr[1]) === 'object'){
-                      var arr2 = $.map(arr[1], function(el) { return el });
-                      if(arr[4] + '' + arr[5] + '' + arr[6] + '' + arr[7]+ '' + arr[8]!='') {
-                        $.post( '<?php echo base_url()?>mst/keuangan_akun/akun_add', {id_mst_akun:arr[2],id_mst_akun_parent:arr2[0], uraian:arr[4], kode:arr[5], saldo_normal:arr[6], saldo_awal : arr[7], mendukung_anggaran : arr[8]}, function( data ) {
-                            if(data != 0){
-                              alert(data);                  
-                            }else{
-                              alert("Data "+arr[4]+" berhasil disimpan");                  
-                            }
-                        });
+                  commit(true);
+                  // alert(rowData.uraian+' '+rowData.kode+' '+rowData.jumlah+' '+rowData.id_akun_anggaran);
+                       
+                  $.post( '<?php echo base_url()?>mst/keuangan_akun/akun_anggraan_update', 
+                    {
+                      id_akun_anggaran:rowData.id_akun_anggaran,
+                      jumlah:rowData.jumlah,
+                      tipe:'anggaran', 
+                      periode:$("#tahunanggaran").val(), 
+                      id_mst_akun : rowData.id_mst_akun, 
+                      code_cl_phc : "<?php echo $this->session->userdata('puskesmas');?>"
+                    },
+                    function( data ) {
+                      if(data != 0){
+                        alert(data);
                       }
-                    }else{      
-                      $.post( '<?php echo base_url()?>mst/keuangan_akun/akun_update', 
-                        {
-                          row:rowID,
-                          id_mst_akun:arr[0] ,
-                          id_mst_akun_parent:arr[1], 
-                          kode:arr[2], 
-                          uraian : arr[3], 
-                          saldo_normal : arr[4], 
-                          saldo_awal:arr[5], 
-                          mendukung_anggaran : arr[6]
-                        },
-                        function( data ) {
-                          if(data != 0){
-                            alert(data);
-                          }
-                      });
-                    }
+                  });
                  }
              };
-            var dataAdapter = new $.jqx.dataAdapter(source, {
+            var dataAdapter = new $.jqx.dataAdapter(sourceanggran, {
                 loadComplete: function () {
                     // data is loaded.
                 }
@@ -148,61 +126,24 @@
                         return className + " " + className + "-" + theme;
                     }
 
-
-                    var updateButtons = function (action) {
-                        switch (action) {
-                            case "Select":
-                                addButton.jqxButton({ disabled: false });
-                                deleteButton.jqxButton({ disabled: false });
-                                editButton.jqxButton({ disabled: false });
-                                cancelButton.jqxButton({ disabled: true });
-                                updateButton.jqxButton({ disabled: true });
-                                break;
-                            case "Unselect":
-                                addButton.jqxButton({ disabled: true });
-                                deleteButton.jqxButton({ disabled: true });
-                                editButton.jqxButton({ disabled: true });
-                                cancelButton.jqxButton({ disabled: true });
-                                updateButton.jqxButton({ disabled: true });
-                                break;
-                            case "Edit":
-                                addButton.jqxButton({ disabled: true });
-                                deleteButton.jqxButton({ disabled: true });
-                                editButton.jqxButton({ disabled: true });
-                                cancelButton.jqxButton({ disabled: false });
-                                updateButton.jqxButton({ disabled: false });
-                                break;
-                            case "End Edit":
-                                addButton.jqxButton({ disabled: false });
-                                deleteButton.jqxButton({ disabled: false });
-                                editButton.jqxButton({ disabled: false });
-                                cancelButton.jqxButton({ disabled: true });
-                                updateButton.jqxButton({ disabled: true });
-                                break;
-                        }
-                    }
                     var rowKey = null;
                     $("#treeGrid_anggaran_akun").on('rowSelect', function (event) {
                         var args = event.args;
                         rowKey = args.key;
-                        updateButtons('Select');
                     });
                     $("#treeGrid_anggaran_akun").on('rowUnselect', function (event) {
-                        updateButtons('Unselect');
                     });
                     $("#treeGrid_anggaran_akun").on('rowEndEdit', function (event) {
-                        updateButtons('End Edit');
                     });
                     $("#treeGrid_anggaran_akun").on('rowBeginEdit', function (event) {
-                        updateButtons('Edit');
                     });
 
                 },
                
               columns: [                             
-                { text: 'Uraian ', datafield: 'uraian', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '37%' },
-                { text: 'Kode Akun', datafield: 'kode', columntype: 'textbox', filtertype: 'textbox',align: 'center', cellsalign:'center', width: '10%'},
-                { text: 'Anggaran', datafield: 'saldo_normal', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '53%', cellsalign: 'center' }
+                { text: 'Uraian ',editable:false, datafield: 'uraian', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '37%' },
+                { text: 'Kode Akun', editable:false,datafield: 'kode', columntype: 'textbox', filtertype: 'textbox',align: 'center', cellsalign:'center', width: '10%'},
+                { text: 'Anggaran', datafield: 'jumlah', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '53%', cellsalign: 'center' }
               ]
             });
         });

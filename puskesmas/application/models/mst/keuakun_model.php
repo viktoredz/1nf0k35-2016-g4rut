@@ -118,7 +118,65 @@ class Keuakun_model extends CI_Model {
         }
 
     }
+    function akun_anggran_add(){
 
+        $data = array(
+           'jumlah'                 => $this->input->post('jumlah'),
+           'tipe'                   => $this->input->post('tipe') ,
+           'periode'                => $this->input->post('periode'),
+           'id_mst_akun'            => $this->input->post('id_mst_akun'),
+           'code_cl_phc'            => $this->input->post('code_cl_phc'),
+        );
+        $datawhere = array(
+            'id_akun_anggaran'      => str_replace(" ", '', $this->input->post('id_akun_anggaran')),
+            );
+        $query = $this->db->get_where('keu_akun_anggaran',$datawhere);
+        if ($query->num_rows>0) {
+            if ($this->db->update('keu_akun_anggaran',$data,$datawhere)) {
+                return 1;
+            }else{
+                return mysql_error();
+            }
+        }else{
+            $dataid = array(
+            'id_akun_anggaran'      => $this->kodeAnggran($this->input->post('id_akun_anggaran')),
+            );
+            $datainsert = array_merge($dataid,$data);
+            if ($this->db->insert('keu_akun_anggaran',$datainsert)) {
+                return 1;
+            }else{
+                return mysql_error();
+            }
+        }
+    }
+    public function kodeAnggran(){
+        $this->db->where('code',"P".$this->session->userdata('puskesmas'));
+        $query = $this->db->get('cl_phc')->result();
+        foreach ($query as $q) {
+            $data = $q->cd_kompemilikbarang.$q->cd_propinsi.$q->cd_kabkota.$q->cd_bidang.$q->cd_unitbidang.date('y').$q->cd_satuankerja;
+        }
+        $nourut =$data.$this->idanggaran($data);
+        return $nourut;
+    }
+    function idanggaran($kode='')
+    {
+       $jmldata = strlen($kode);
+        $q = $this->db->query("select MAX(RIGHT(id_akun_anggaran,6)) as kd_max from keu_akun_anggaran where (LEFT(id_akun_anggaran,$jmldata))=$kode");
+        $nourut="";
+        if($q->num_rows()>0)
+        {
+            foreach($q->result() as $k)
+            {
+                $tmp = ((int)$k->kd_max)+1;
+                $nourut = sprintf("%06s", $tmp);
+            }
+        }
+        else
+        {
+            $nourut = "000001";
+        }
+        return $nourut;
+    }
     function akun_add(){
         $data = array(
            'id_mst_akun_parent'     => $this->input->post('id_mst_akun_parent'),
@@ -163,6 +221,24 @@ class Keuakun_model extends CI_Model {
     function get_data_akun(){     
         $this->db->where('aktif',1);
         $this->db->order_by('urutan','asc');
+        $query = $this->db->get('mst_keu_akun');     
+        return $query->result_array();  
+    }
+
+    function get_data_akun_anggaran($pilih){     
+        $this->db->where('aktif',1);
+        $this->db->order_by('urutan','asc');
+        $this->db->select('mst_keu_akun.*,keu_akun_anggaran.id_akun_anggaran,keu_akun_anggaran.jumlah,keu_akun_anggaran.tipe,keu_akun_anggaran.periode,keu_akun_anggaran.code_cl_phc');
+        $this->db->join('keu_akun_anggaran',"keu_akun_anggaran.id_mst_akun = mst_keu_akun.id_mst_akun and keu_akun_anggaran.tipe="."'".$pilih."'"."",'left');
+        $query = $this->db->get('mst_keu_akun');     
+        return $query->result_array();  
+    }
+    
+    function get_data_akun_target($pilih){     
+        $this->db->where('aktif',1);
+        $this->db->order_by('urutan','asc');
+        $this->db->select("mst_keu_akun.id_mst_akun as id_mst_akun_target,mst_keu_akun.id_mst_akun_parent as id_mst_akun_parent_target,mst_keu_akun.kode as kode_target,mst_keu_akun.uraian as uraian_target,mst_keu_akun.saldo_normal as saldo_normal_target,mst_keu_akun.saldo_awal as saldo_awal_target,keu_akun_anggaran.id_akun_anggaran as id_akun_anggaran_target,keu_akun_anggaran.jumlah as jumlah_target,keu_akun_anggaran.tipe as tipe_target,keu_akun_anggaran.periode as periode_target,keu_akun_anggaran.code_cl_phc as code_cl_phc_target,ifnull((SELECT max(a.id_mst_akun_parent) FROM mst_keu_akun a where a.id_mst_akun_parent=mst_keu_akun.id_mst_akun),'bapak') as statusdata",false);
+        $this->db->join('keu_akun_anggaran',"keu_akun_anggaran.id_mst_akun = mst_keu_akun.id_mst_akun and keu_akun_anggaran.tipe="."'".$pilih."'"."",'left');
         $query = $this->db->get('mst_keu_akun');     
         return $query->result_array();  
     }

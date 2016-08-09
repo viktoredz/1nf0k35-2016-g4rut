@@ -57,7 +57,7 @@
     });
       
       var newRowID = null;
-      var source = {
+      var sourcenon = {
         dataType: "tab",
         dataFields: [
             { name: "id_mst_akun", type: "number" },
@@ -82,36 +82,6 @@
              },
              updateRow: function (rowID, rowData, commit) {
                 commit(true);
-                var arr = $.map(rowData, function(el) { return el });         
-                if(typeof(arr[1]) === 'object'){
-                  var arr2 = $.map(arr[1], function(el) { return el });
-                  if(arr[4] + '' + arr[5] + '' + arr[6] + '' + arr[7]+ '' + arr[8]!='') {
-                    $.post( '<?php echo base_url()?>mst/keuangan_akun/akun_add', {id_mst_akun:arr[2],id_mst_akun_parent:arr2[0], uraian:arr[4], kode:arr[5], saldo_normal:arr[6], saldo_awal : arr[7], mendukung_anggaran : arr[8]}, function( data ) {
-                        if(data != 0){
-                          alert(data);                  
-                        }else{
-                          alert("Data "+arr[4]+" berhasil disimpan");                  
-                        }
-                    });
-                  }
-                }else{      
-                  $.post( '<?php echo base_url()?>mst/keuangan_akun/akun_update', 
-                    {
-                      row:rowID,
-                      id_mst_akun:arr[0] ,
-                      id_mst_akun_parent:arr[1], 
-                      kode:arr[2], 
-                      uraian : arr[3], 
-                      saldo_normal : arr[4], 
-                      saldo_awal:arr[5], 
-                      mendukung_anggaran : arr[6]
-                    },
-                    function( data ) {
-                      if(data != 0){
-                        alert(data);
-                      }
-                  });
-                }
              },
              deleteRow: function (rowID, commit) {
                 if( Object.prototype.toString.call( rowID ) === '[object Array]' ) {
@@ -128,7 +98,7 @@
                 commit(true);
              }
          };
-        var dataAdapter = new $.jqx.dataAdapter(source, {
+        var dataAdapterNon = new $.jqx.dataAdapter(sourcenon, {
             loadComplete: function () {
                 // data is loaded.
             }
@@ -136,9 +106,9 @@
 
         $("#treeGrid_akun_non_aktif").jqxTreeGrid({
             width: '100%',
-            source: dataAdapter, 
+            source: dataAdapterNon, 
             pageable: false,
-            editable: true,
+            editable: false,
             showToolbar: true,
             altRows: true,
             ready: function(){
@@ -238,6 +208,11 @@
           });
           $("#popup_keuangan_akun_non_aktif_detail").jqxWindow('open');
       }
+      
+  
+  function close_popup_nonak(){
+    $("#popup_keuangan_akun_non_aktif_detail").jqxWindow('close');
+  }
 
 </script>
 

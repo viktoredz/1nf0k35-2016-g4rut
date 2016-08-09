@@ -150,6 +150,7 @@
 
       $("#doRefresh").click(function(){
           $("#treeGrid").jqxTreeGrid('updateBoundData');
+          $("#treeGrid").jqxTreeGrid('expandAll'); 
       });
 
         var source = [
@@ -190,9 +191,13 @@
                       if(arr[4] + '' + arr[5] + '' + arr[6] + '' + arr[7]+ '' + arr[8]!='') {
                         $.post( '<?php echo base_url()?>mst/keuangan_akun/akun_add', {id_mst_akun:arr[2],id_mst_akun_parent:arr2[0], uraian:arr[4], kode:arr[5], saldo_normal:arr[6], saldo_awal : arr[7], mendukung_transaksi : arr[8]}, function( data ) {
                             if(data != 0){
-                              alert(data);                  
+                              alert(data);        
+                              $("#treeGrid").jqxTreeGrid('updateBoundData');   
+                              $("#treeGrid").jqxTreeGrid('expandAll');        
                             }else{
-                              alert("Data "+arr[4]+" berhasil disimpan");                  
+                              alert("Data "+arr[4]+" berhasil disimpan");  
+                              $("#treeGrid").jqxTreeGrid('updateBoundData');   
+                              $("#treeGrid").jqxTreeGrid('expandAll');              
                             }
                         });
                       }
@@ -211,6 +216,7 @@
                         function( data ) {
                           if(data != 0){
                             alert(data);
+                            $("#treeGrid").jqxTreeGrid('updateBoundData');
                           }
                       });
                     }

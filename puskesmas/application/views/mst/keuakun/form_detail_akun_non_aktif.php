@@ -153,6 +153,15 @@
         });
         return false;
     });
-
+    $("[name='btn_akun_non_aktif_close']").click(function(){
+        close_popup_nonak();
+    });
+    $("[name='btn_akun_non_aktif_delete']").click(function(){
+      var iddata = "<?php echo $id;?>";
+      $.post( '<?php echo base_url()?>mst/keuangan_akun/akun_delete', {id_mst_akun:iddata},function( data ) {
+        $("#treeGrid_akun_non_aktif").jqxTreeGrid('updateBoundData');
+      });
+        close_popup_nonak();
+    });
   });
-</script>
+ </script>

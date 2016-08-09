@@ -20,7 +20,7 @@
               <div class="row">
                 <div class="col-md-4" style="padding-top:5px;"><label> Periode </label> </div>
                   <div class="col-md-8">
-                    <select name="tahun" id="tahun" class="form-control">
+                    <select name="tahuntarget" id="tahuntarget" class="form-control">
                       <?php for ($i=date("Y");$i>=date("Y")-10;$i--) { ;?>
                       <?php $select = $i == date("Y") ? 'selected=selected' : '' ?>
                      <option value="<?php echo $i; ?>" <?php echo $select ?>><?php echo $i; ?></option>
@@ -45,85 +45,63 @@
 <script type="text/javascript">
   $(document).ready(function () {
 
-    $("select[name='tahun']").change(function(){
-      $.post("<?php echo base_url().'mst/keuangan_akun/filter_tahun' ?>", 'tahun='+$(this).val(),  function(){
+    $("select[name='tahuntarget']").change(function(){
+      $.post("<?php echo base_url().'mst/keuangan_akun/filter_tahuntarget' ?>", 'tahuntarget='+$(this).val(),  function(){
         $("#treeGrid_target_penerimaan").jqxTreeGrid('updateBoundData','filter');
         });
     });
       
       var newRowID = null;
 
-      var source =
-      {
-          datatype: "json",
-          datafields: [
-              { name: 'id_mst_akun' },
-              { name: 'saldo_normal' }
-          ],
-          url: '<?php echo base_url()?>mst/keuangan_sts/json_kode_rekening',
-          async: true
-      };
-      var saldo_norma_source = new $.jqx.dataAdapter(source);
-
-           var source = {
+            var sourcetarget = {
             dataType: "tab",
             dataFields: [
-                { name: "id_mst_akun", type: "number" },
-                { name: "id_mst_anggaran_parent", type: "number" },
-                { name: "kode", type: "number" },
-                { name: "uraian", type: "string" },
-                { name: "saldo_normal", type: "string" },
-                { name: "saldo_awal", type: "number" },
-                { name: "mendukung_transaksi", type: "number"}
+                { name: "id_mst_akun_target", type: "number" },
+                { name: "id_mst_anggaran_parent_target", type: "number" },
+                { name: "kode_target", type: "number" },
+                { name: "uraian_target", type: "string" },
+                { name: "saldso_normal_target", type: "string" },
+                { name: "saldso_awal_target", type: "string" },
+                { name: "id_akun_anggaran_target", type: "string" },
+                { name: "jumlah_target", type: "string" },
+                { name: "tipe_target", type: "string" },
+                { name: "periode_target", type: "date" },
+                { name: "code_cl_phc_target", type: "string" },
+                { name: "statusdata", type: "string" }
             ],
                 hierarchy:
                 {
-                     keyDataField: { name: 'id_mst_akun' },
-                     parentDataField: { name: 'id_mst_anggaran_parent' }
+                     keyDataField: { name: 'id_mst_akun_target' },
+                     parentDataField: { name: 'id_mst_anggaran_parent_target' }
                 },
-                id: 'id_mst_akun',
+                id: 'id_mst_akun_target',
 
-                url: '<?php echo base_url()?>mst/keuangan_akun/api_data',
+                url: '<?php echo base_url()?>mst/keuangan_akun/api_data_target',
 
                  addRow: function (rowID, rowData, position, parentID, commit) {        
                     commit(true);
                     newRowID = rowID;
                  },
                  updateRow: function (rowID, rowData, commit) {
-                    commit(true);
-                    var arr = $.map(rowData, function(el) { return el });         
-                    if(typeof(arr[1]) === 'object'){
-                      var arr2 = $.map(arr[1], function(el) { return el });
-                      if(arr[4] + '' + arr[5] + '' + arr[6] + '' + arr[7]+ '' + arr[8]!='') {
-                        $.post( '<?php echo base_url()?>mst/keuangan_akun/akun_add', {id_mst_akun:arr[2],id_mst_akun_parent:arr2[0], uraian:arr[4], kode:arr[5], saldo_normal:arr[6], saldo_awal : arr[7], mendukung_anggaran : arr[8]}, function( data ) {
-                            if(data != 0){
-                              alert(data);                  
-                            }else{
-                              alert("Data "+arr[4]+" berhasil disimpan");                  
-                            }
-                        });
-                      }
-                    }else{      
-                      $.post( '<?php echo base_url()?>mst/keuangan_akun/akun_update', 
-                        {
-                          row:rowID,
-                          id_mst_akun:arr[0] ,
-                          id_mst_akun_parent:arr[1], 
-                          kode:arr[2], 
-                          uraian : arr[3], 
-                          saldo_normal : arr[4], 
-                          saldo_awal:arr[5], 
-                          mendukung_anggaran : arr[6]
-                        },
-                        function( data ) {
-                          if(data != 0){
-                            alert(data);
-                          }
-                      });
-                    }
+                  commit(true);
+                  if (true) {}
+                    $.post( '<?php echo base_url()?>mst/keuangan_akun/akun_anggraan_update', 
+                      {
+                        id_akun_anggaran:rowData.id_akun_anggaran_target,
+                        jumlah:rowData.jumlah_target,
+                        tipe:'target', 
+                        periode:$("#tahuntarget").val(), 
+                        id_mst_akun : rowData.id_mst_akun_target, 
+                        code_cl_phc : "<?php echo $this->session->userdata('puskesmas');?>"
+                      },
+                      function( data ) {
+                        if(data != 0){
+                          alert(data);
+                        }
+                    });
                  }
              };
-            var dataAdapter = new $.jqx.dataAdapter(source, {
+            var dataAdaptertarget = new $.jqx.dataAdapter(sourcetarget, {
                 loadComplete: function () {
                     // data is loaded.
                 }
@@ -131,22 +109,26 @@
 
             $("#treeGrid_target_penerimaan").jqxTreeGrid({
                 width: '100%',
-                source: dataAdapter, 
+                source: dataAdaptertarget, 
                 pageable: false,
                 editable: true,
                 showToolbar: true,
                 altRows: true,
                 ready: function(){
-                   $("#treeGrid_target_penerimaan").jqxTreeGrid('expandAll');            
+                   $("#treeGrid_target_penerimaan").jqxTreeGrid('expandAll');       
+                   $("#treeGrid_target_penerimaan").jqxTreeGrid('lockRow', 2);
+                    $("#treeGrid_target_penerimaan").jqxTreeGrid('lockRow', 17);
+                    $("#treeGrid_target_penerimaan").jqxTreeGrid('lockRow', 8);
+     
                 },
                 pagerButtonsCount: 8,
                 toolbarHeight: 40,
 
                
               columns: [                             
-                { text: 'Uraian ', datafield: 'uraian', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '37%' },
-                { text: 'Kode Akun', datafield: 'kode', columntype: 'textbox', filtertype: 'textbox',align: 'center', cellsalign:'center', width: '10%'},
-                { text: 'Target Penerimaan', datafield: 'saldo_normal', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '53%', cellsalign: 'center' }
+                { text: 'Uraian',editable:false, datafield: 'uraian_target', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '37%' },
+                { text: 'Kode Akun', editable:false,datafield: 'kode_target', columntype: 'textbox', filtertype: 'textbox',align: 'center', cellsalign:'center', width: '10%'},
+                { text: 'Target Penerimaan', datafield: 'jumlah_target', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '53%', cellsalign: 'center' }
               ]
             });
         });
