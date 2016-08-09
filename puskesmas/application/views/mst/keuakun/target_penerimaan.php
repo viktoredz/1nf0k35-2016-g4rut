@@ -16,6 +16,11 @@
     <div class="box-body">
       <div class="row">
         <div class="col-md-12 pull-left">
+            <div class="col-md-9 pull-left">
+              <button id="doExpand_target" class="btn btn-warning " ><i class="icon fa fa-plus-square-o"></i> &nbsp;Expand</button>  
+              <button id="doCollapse_target" class="btn btn-warning " ><i class="icon fa fa-minus-square-o"></i> &nbsp;Collapse</button> 
+              <button id="doRefresh_target" class="btn btn-primary" ><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
+            </div>
             <div class="col-md-3 pull-right">
               <div class="row">
                 <div class="col-md-4" style="padding-top:5px;"><label> Periode </label> </div>
@@ -44,6 +49,17 @@
 
 <script type="text/javascript">
   $(document).ready(function () {
+      $("#doExpand_target").click(function(){
+          $("#treeGrid_target_penerimaan").jqxTreeGrid('expandAll');                    
+      });
+      
+      $("#doCollapse_target").click(function(){
+          $("#treeGrid_target_penerimaan").jqxTreeGrid('collapseAll');                    
+      });
+
+      $("#doRefresh_target").click(function(){
+          $("#treeGrid_target_penerimaan").jqxTreeGrid('updateBoundData');
+      });
 
     $("select[name='tahuntarget']").change(function(){
       $.post("<?php echo base_url().'mst/keuangan_akun/filter_tahuntarget' ?>", 'tahuntarget='+$(this).val(),  function(){
@@ -84,7 +100,9 @@
                  },
                  updateRow: function (rowID, rowData, commit) {
                   commit(true);
-                  if (true) {}
+                  if (rowData.statusdata=='anak') {
+                    alert('Tidak Bisa');
+                  }else{
                     $.post( '<?php echo base_url()?>mst/keuangan_akun/akun_anggraan_update', 
                       {
                         id_akun_anggaran:rowData.id_akun_anggaran_target,
@@ -98,7 +116,10 @@
                         if(data != 0){
                           alert(data);
                         }
+                        $("#treeGrid_target_penerimaan").jqxTreeGrid('updateBoundData');
+                        $("#treeGrid_target_penerimaan").jqxTreeGrid('expandAll'); 
                     });
+                  }
                  }
              };
             var dataAdaptertarget = new $.jqx.dataAdapter(sourcetarget, {
@@ -115,11 +136,7 @@
                 showToolbar: true,
                 altRows: true,
                 ready: function(){
-                   $("#treeGrid_target_penerimaan").jqxTreeGrid('expandAll');       
-                   $("#treeGrid_target_penerimaan").jqxTreeGrid('lockRow', 2);
-                    $("#treeGrid_target_penerimaan").jqxTreeGrid('lockRow', 17);
-                    $("#treeGrid_target_penerimaan").jqxTreeGrid('lockRow', 8);
-     
+                   $("#treeGrid_target_penerimaan").jqxTreeGrid('expandAll'); 
                 },
                 pagerButtonsCount: 8,
                 toolbarHeight: 40,
