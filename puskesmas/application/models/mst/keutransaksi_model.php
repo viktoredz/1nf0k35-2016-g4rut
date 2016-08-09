@@ -207,24 +207,35 @@ class Keutransaksi_model extends CI_Model {
         $query = $this->db->get('mst_keu_transaksi_item',$limit);
         return $query->result();
     }
-
+    function get_group($id_mst_transaksi='')
+    {
+        $data = array('id_mst_transaksi' => $id_mst_transaksi);
+        $this->db->select("max(`group`)+1 as groupmax");
+        $query = $this->db->get_where('mst_keu_transaksi_item',$data);
+        if ($query->num_rows() > 0) {
+            $data = $query->row_array();
+        }else{
+            $data=1;
+        }
+        return $data;
+    }
     function jurnal_transaksi_pasangan_add($id_mst_transaksi=0){
-
+        $group = $this->get_group($id_mst_transaksi);
         $data = array(
            array(
-              '`group`'          => $this->input->post('group'),
               'id_mst_transaksi' => $id_mst_transaksi,
               'urutan'           => '1',
               'id_mst_akun'      => '1',
               'value'            => '0',
+              '`group`'            => $group['groupmax'],
               'type'             => 'debit'
            ),
            array(
-              '`group`'          => $this->input->post('group'),
               'id_mst_transaksi' => $id_mst_transaksi,
               'urutan'           => '1',
               'id_mst_akun'      => '1',
               'value'            => '100',
+              '`group`'            => $group['groupmax'],
               'type'             => 'kredit'
            )
         );  
@@ -233,9 +244,9 @@ class Keutransaksi_model extends CI_Model {
              $first_id = $this->db->insert_id();
              $count = count($data);
              $last_id = $first_id + ($count-1);
-             $group = $this->input->post('group');
+             $groupdat = $group['groupmax'];
              $value_k = 100;
-            return $first_id."|".$last_id."|".$group."|".$value_k;
+            return $first_id."|".$last_id."|".$groupdat."|".$value_k."|".$group['groupmax'];
         }else{
             return mysql_error();
         }

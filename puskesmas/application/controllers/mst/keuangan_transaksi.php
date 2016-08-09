@@ -512,9 +512,9 @@ class Keuangan_transaksi extends CI_Controller {
 	function jurnal_transaksi_pasangan_add($id=0){
 		$this->authentication->verify('mst','add');
     	
-    	$this->form_validation->set_rules('value','Value','trim');
-    	$this->form_validation->set_rules('type','Tipe','trim');
-    	$this->form_validation->set_rules('group','Group','trim');
+    	// $this->form_validation->set_rules('value','Value','trim');
+    	// $this->form_validation->set_rules('type','Tipe','trim');
+    	// $this->form_validation->set_rules('group','Group','trim');
 
 		$data['id_mst_kategori_transaksi']	= "";
 		$data['id']							= $id;
@@ -524,9 +524,10 @@ class Keuangan_transaksi extends CI_Controller {
 		$data['kategori']					= $this->keutransaksi_model->get_data_kategori_transaksi();
 		$data['alert_form']		    		= '';
 
-		if($this->form_validation->run()== FALSE){
-			die($this->parser->parse("mst/keutransaksi/form_transaksi_edit",$data));
-		}elseif($id=$this->keutransaksi_model->jurnal_transaksi_pasangan_add($id)){
+		// if($this->form_validation->run()== FALSE){
+		// 	die($this->parser->parse("mst/keutransaksi/form_transaksi_edit",$data));
+		// }else
+		if($id=$this->keutransaksi_model->jurnal_transaksi_pasangan_add($id)){
 			die("OK|$id");
 		}else{
 			$data['alert_form'] = 'Save data failed...';
