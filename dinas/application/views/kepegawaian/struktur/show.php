@@ -17,7 +17,6 @@
             <div class="col-xs-4" style="padding-top:5px;"><label> Puskesmas </label> </div>
             <div class="col-xs-8">
               <select name="code_cl_phc" id="code_cl_phc" class="form-control">
-                <option value="all">All</option>
               <?php foreach ($datapuskesmas as $row ) { ;?>
                 <option value="<?php echo $row->code; ?>" onchange="" ><?php echo $row->value; ?></option>
               <?php } ;?>
@@ -265,10 +264,10 @@
             });
         });
     $("#code_cl_phc").change(function(){
-    $.post("<?php echo base_url().'kepegawaian/struktur/filter_cl_phc' ?>", 'code_cl_phc='+$(this).val(),  function(){
-      $("#treeGrid").jqxTreeGrid('updateBoundData');
-    });
-    });
+      $.post("<?php echo base_url().'kepegawaian/struktur/filter_cl_phc' ?>", 'code_cl_phc='+$(this).val(),  function(){
+        $("#treeGrid").jqxTreeGrid('updateBoundData');
+      });
+    }).change();
     function detail(id){
         $("#popup_pegawai_data_detail #popup_pegawai_data_detail_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
           $.get("<?php echo base_url().'kepegawaian/struktur/induk_detail' ?>/"+ id, function(data) {
