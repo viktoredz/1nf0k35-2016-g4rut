@@ -27,7 +27,27 @@ class Keutransaksi_model extends CI_Model {
         $query->free_result();
         return $data;
     }
-
+    function getjmlchild($id_mst_transaksi_item='')
+    {
+        $this->db->where('id_mst_transaksi_item',$id_mst_transaksi_item);
+        $queryget = $this->db->get('mst_keu_transaksi_item');
+        $get = $queryget->row_array();
+        if ($queryget->num_rows() > 0) {
+            $this->db->where('id_mst_transaksi',$get['id_mst_transaksi']);
+            $this->db->where('`group`',$get['group']);
+            $this->db->where('type',$get['type']);
+            $this->db->select("COUNT(*) as jml");
+            $query = $this->db->get('mst_keu_transaksi_item');
+            $data ='';
+            if ($query->num_rows() > 0) {
+                $datas = $query->row_array();
+                $data = $datas['jml'];
+            }
+        }else{
+            $data ='tidakada';
+        }
+        return $data;
+    }
     function get_data_kategori_transaksi_template($id){
 
         $this->db->select('id_mst_setting_transaksi, nilai');
@@ -110,8 +130,9 @@ class Keutransaksi_model extends CI_Model {
 
         if($this->db->insert('mst_keu_transaksi_item', $data)){
            $lastInsertedID = $this->db->insert_id();
+           $getjml = $this->getjmlchild($lastInsertedID);
            $group = $this->input->post('group');
-            return $lastInsertedID."|".$group;
+            return $lastInsertedID."|".$group.'|'.$getjml;
         }else{
             return mysql_error();
         }
@@ -130,7 +151,8 @@ class Keutransaksi_model extends CI_Model {
         if($this->db->insert('mst_keu_transaksi_item', $data)){
            $lastInsertedID = $this->db->insert_id();
            $group = $this->input->post('group');
-            return $lastInsertedID."|".$group;
+           $jml = $this->getjmlchild($lastInsertedID);
+            return $lastInsertedID."|".$group.'|'.$jml;
         }else{
             return mysql_error();
         }
@@ -273,6 +295,7 @@ class Keutransaksi_model extends CI_Model {
     }
 
     function jurnal_transaksi_delete_debit(){
+
         $this->db->where('id_mst_transaksi_item',$this->input->post('id_mst_transaksi_item'));
 
         return $this->db->delete('mst_keu_transaksi_item');

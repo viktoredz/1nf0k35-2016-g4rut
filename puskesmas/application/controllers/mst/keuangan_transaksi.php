@@ -577,9 +577,10 @@ class Keuangan_transaksi extends CI_Controller {
 		$this->authentication->verify('mst','del');
 
     	$this->form_validation->set_rules('id_mst_transaksi_item','ID','trim');
-
+    	$getjml = $this->keutransaksi_model->getjmlchild($this->input->post('id_mst_transaksi_item'))-1;
 		if($this->keutransaksi_model->jurnal_transaksi_delete_debit()){
-			die("OK");
+
+			die("OK|$getjml");
 		}else{
 			alert("Delete data error");
 		}
@@ -589,9 +590,9 @@ class Keuangan_transaksi extends CI_Controller {
 		$this->authentication->verify('mst','del');
 
     	$this->form_validation->set_rules('id_mst_transaksi_item','ID','trim');
-
+    	$jml = $this->keutransaksi_model->getjmlchild($this->input->post('id_mst_transaksi_item'))-1;
 		if($this->keutransaksi_model->jurnal_transaksi_delete_kredit()){
-			die("OK");
+			die("OK|$jml");
 		}else{
 			alert("Delete data error");
 		}
