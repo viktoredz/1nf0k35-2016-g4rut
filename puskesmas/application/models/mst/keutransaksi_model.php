@@ -86,11 +86,24 @@ class Keutransaksi_model extends CI_Model {
         $query->free_result();
         return $data;
     }
-
+    function ururtandata($group='',$debit='')
+    {
+        $this->db->where('`group`',$group);
+        $this->db->where('type',$debit);
+        $this->db->select('max(urutan)+1 as maxurut');
+        $query = $this->db->get('mst_keu_transaksi_item');
+        if ($query->num_rows > 0) {
+            $datas = $query->row_array();
+            $data = $datas['maxurut'];
+        }else{
+            $data=1;
+        }
+        return $data;
+    }
     function jurnal_transaksi_add_debit($id_mst_transaksi=0){
 
         $data['type']                    = "debit";
-        $data['urutan']                  = $this->input->post('urutan');
+        $data['urutan']                  = $this->ururtandata($this->input->post('group'),'debit');//$this->input->post('urutan');
         $data['group']                   = $this->input->post('group');
         $data['id_mst_transaksi']        = $id_mst_transaksi;
         $data['id_mst_akun']             = '1';
@@ -107,7 +120,7 @@ class Keutransaksi_model extends CI_Model {
     function jurnal_transaksi_add_kredit($id_mst_transaksi=0){
 
         $data['type']                       = "kredit";
-        $data['urutan']                     = $this->input->post('urutan');
+        $data['urutan']                     = $this->ururtandata($this->input->post('group'),'kredit');//$this->input->post('urutan');
         $data['group']                      = $this->input->post('group');
         $data['id_mst_transaksi']           = $id_mst_transaksi;
         $data['id_mst_akun']                = '1';
