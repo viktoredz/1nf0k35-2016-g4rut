@@ -62,7 +62,8 @@ class Penilaiandppp_model extends CI_Model {
         $this->db->join("pegawai_struktur",'pegawai_struktur.id_pegawai = pegawai.id_pegawai','left');
         $this->db->join("mst_peg_golruang",'mst_peg_golruang.id_golongan = pangkat.id_mst_peg_golruang','left');
         $this->db->join("app_users_list",'app_users_list.id_pegawai = pegawai.id_pegawai','left');
-        $this->db->join("mst_peg_struktur_org",'mst_peg_struktur_org.tar_id_struktur_org = pegawai_struktur.tar_id_struktur_org','left');
+        $this->db->join("mst_peg_struktur_org",'mst_peg_struktur_org.tar_id_struktur_org = pegawai_struktur.tar_id_struktur_org AND mst_peg_struktur_org.code_cl_phc="'.$puskesmas_.'"','left');
+        $this->db->group_by("pegawai.id_pegawai");
 		$query =$this->db->get('pegawai',$limit,$start);
         return $query->result();
     }
