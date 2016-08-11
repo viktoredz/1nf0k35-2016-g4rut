@@ -141,7 +141,7 @@
       </div>
       <div class="box-footer">
         <button type="submit" class="btn btn-primary"><i class='fa fa-save'></i> &nbsp; Simpan & Lanjutkan</button>
-        <button type="button" id="btn-kembali-rusak" name="btn-kembali-rusak" class="btn btn-warning"><i class='fa fa-arrow-circle-left'></i> &nbsp;Kembali</button>
+        <button type="button" id="btn-kembali-opname" name="btn-kembali-opname" class="btn btn-warning"><i class='fa fa-arrow-circle-left'></i> &nbsp;Kembali</button>
       </div>
       </div>
           
@@ -187,7 +187,7 @@ $(function(){
             return false;
         });
     kodedistribusi();
-    $("#btn-kembali-rusak").click(function(){
+    $("#btn-kembali-opname").click(function(){
        $.ajax({
             url : '<?php echo site_url('inventory/bhp_pemusnahan/daftar_opname/') ?>',
           

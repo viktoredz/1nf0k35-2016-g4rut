@@ -47,7 +47,7 @@
 
 
         <div class="row" style="margin: 5px">
-          <div class="col-md-4" style="padding: 5px">puskesmas_rusak</div>
+          <div class="col-md-4" style="padding: 5px">Puskesmas</div>
           <div class="col-md-8">
           <?php if($action!="view") {?>
             <select id="puskesmas_rusak" name="puskesmas_rusak" class="form-control">
