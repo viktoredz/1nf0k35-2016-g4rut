@@ -622,8 +622,8 @@ class Keuangan_transaksi extends CI_Controller {
 			$data['urutan']				= $this->keutransaksi_model->get_data_urutan_debit($id);
 
 			die($this->parser->parse("mst/keutransaksi/form_transaksi_edit",$data,true));
-		}elseif($this->keutransaksi_model->jurnal_transaksi_update_debit($id)){
-			die("OK");
+		}elseif($ret = $this->keutransaksi_model->jurnal_transaksi_update_debit($id)){
+			die("$ret");
 		}else{
 			$data['alert_form'] = 'Save data failed...';
 		}
@@ -680,8 +680,8 @@ class Keuangan_transaksi extends CI_Controller {
 			$data['debit']				= $this->keutransaksi_model->get_data_debit($id);
 
 			die($this->parser->parse("mst/keutransaksi/form_transaksi_edit",$data,true));
-		}elseif($this->keutransaksi_model->jurnal_transaksi_update_kredit($id)){
-			die("OK");
+		}elseif($res = $this->keutransaksi_model->jurnal_transaksi_update_kredit($id)){
+			die("$res");
 		}else{
 			$data['alert_form'] = 'Save data failed...';
 		}
@@ -730,7 +730,31 @@ class Keuangan_transaksi extends CI_Controller {
 			$this->session->set_flashdata('alert', 'Delete data error');
 		}
 	}
+	function changeselect($id_transaksi='',$group='',$tipe=''){
 
+		$this->db->where('id_mst_transaksi',$id_transaksi);
+		$this->db->where('`group`',$group);
+		$this->db->where('type',$tipe);
+		$this->db->join('mst_keu_akun','mst_keu_akun.id_mst_akun = mst_keu_transaksi_item.id_mst_akun');
+		$this->db->select('mst_keu_transaksi_item.id_mst_akun,mst_keu_akun.uraian,id_mst_transaksi_item,`group`');
+		$query = $this->db->get('mst_keu_transaksi_item');
+		if ($query->num_rows() > 1) {
+			foreach ($query->result() as $key) {
+				$arr[]=array(
+					'id_mst_akun' =>$key->id_mst_akun,
+					'uraian' => $key->uraian
+				);
+			}
+			foreach ($query->result() as $dat) {				
+				$data[$dat->id_mst_transaksi_item]['child']=$arr;
+				$data[$dat->id_mst_transaksi_item]['idakun']=$dat->id_mst_akun;
+			}
+		}else{
+			$data[] = array("$tipe##$group##$id_transaksi" => "All $tipe");
+		}
+		echo json_encode($data);
+		die();
+	}
 	function transaksi_edit($id=0){
 		$this->authentication->verify('mst','edit');
 
@@ -751,7 +775,8 @@ class Keuangan_transaksi extends CI_Controller {
 			$data['kategori']			= $this->keutransaksi_model->get_data_kategori_transaksi();
 			$data['title_form']			= "Transaksi Baru / Ubah Transaksi";
 			$data['title_group'] 		= "Keuangan";
-			$data['nilai_debit']		= $this->keutransaksi_model->get_data_nilai_debit($id);
+			$data['nilai_debit']		= $this->keutransaksi_model->get_data_nilai_debit($id,'debit');
+			$data['nilai_kredit']		= $this->keutransaksi_model->get_data_nilai_debit($id,'kredit');
 			$data['urutan_debit']   	= $this->keutransaksi_model->get_data_urutan_debit($id);
 			$data['urutan_kredit']   	= $this->keutransaksi_model->get_data_urutan_kredit($id);
 			$data['jurnal_transaksi']	= $this->keutransaksi_model->get_data_jurnal_transaksi($id);
