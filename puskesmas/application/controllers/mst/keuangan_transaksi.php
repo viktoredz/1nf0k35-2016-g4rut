@@ -739,6 +739,8 @@ class Keuangan_transaksi extends CI_Controller {
 		$this->db->select('mst_keu_transaksi_item.id_mst_akun,mst_keu_akun.uraian,id_mst_transaksi_item,`group`');
 		$query = $this->db->get('mst_keu_transaksi_item');
 		if ($query->num_rows() > 1) {
+				$arr[]=array('id_mst_akun' =>'',
+					'uraian' => '');
 			foreach ($query->result() as $key) {
 				$arr[]=array(
 					'id_mst_akun' =>$key->id_mst_akun,
@@ -750,7 +752,9 @@ class Keuangan_transaksi extends CI_Controller {
 				$data[$dat->id_mst_transaksi_item]['idakun']=$dat->id_mst_akun;
 			}
 		}else{
-			$data[] = array("$tipe##$group##$id_transaksi" => "All $tipe");
+			$que=$query->row_array();
+			$data["$que[id_mst_transaksi_item]"]['child'] = array(array('id_mst_akun' =>"$tipe##$group##$id_transaksi",'uraian' =>"All $tipe"));
+			$data["$que[id_mst_transaksi_item]"]['idakun'] = $que['id_mst_akun'];
 		}
 		echo json_encode($data);
 		die();

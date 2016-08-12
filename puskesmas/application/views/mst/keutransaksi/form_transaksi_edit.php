@@ -207,6 +207,7 @@
                             <select  name="debit_cmbx_nilai-<?php echo $row->group ?>" id="debit_cmbx_nilai-<?php echo $row->id_mst_transaksi_item ?>" type="text" class="form-control">
                                 <?php
                               if(count($debit[$jt->group]) > "1"){
+                                echo '<option value=""></option>';
                                  foreach($nilai_debit[$row->group] as $nd) { ?>
                                   <?php
                                     if(set_value('id_mst_akun')=="" && isset($row->id_mst_akun)){
@@ -344,6 +345,7 @@
                             <select id="kredit_cmbx_nilai-<?php echo $row->id_mst_transaksi_item ?>" name="kredit_cmbx_nilai-<?php echo $row->group?>" type="text" class="form-control">
                               <?php 
                               if(count($kredit[$jt->group]) > "1"){
+                                  echo '<option value=""></option>';
                                   foreach($nilai_kredit[$row->group] as $nd) { ?>
                                   <?php
                                     if(set_value('id_mst_akun')=="" && isset($row->id_mst_akun)){
@@ -455,7 +457,7 @@ function add_debit(group){
                             </div>\
                             <div class="col-md-8" style="padding-top:5px;">\
                               <select id="debit_akun-'+a[1]+'" name="debit_akun-'+a[2]+'" onchange="debit_akun('+a[1]+','+group+')" class="form-control" type="text">\
-                                <?php foreach($akun as $a) : ?>\
+                                <?php foreach($akun as $a) { ?>\
                                   <?php
                                     if(set_value('id_mst_akun')=="" && isset($id_mst_akun)){
                                       $id_mst_akun = $id_mst_akun;
@@ -466,7 +468,7 @@ function add_debit(group){
                                   ?>\
                                   <option value="<?php echo $a->id_mst_akun ?>"><?php echo $a->uraian ?>\
                                   </option>\
-                                  <?php endforeach ?>\
+                                  <?php } ?>\
                               </select>\
                             </div>\
                             <div class="col-md-1">\
@@ -629,7 +631,7 @@ function add_debit(group){
                                                             </div>\
                                                             <div class="col-md-8" style="padding-top:5px;">\
                                                              <select id="debit_akun-'+a[1]+'" name="debit_akun-'+a[3]+'" onchange="debit_akun('+a[1]+','+a[3]+')" type="text" class="form-control">\
-                                                                <?php foreach($akun as $a) : ?>\
+                                                                <?php foreach($akun as $a) { ?>\
                                                                   <?php
                                                                     if(set_value('id_mst_akun')=="" && isset($id_mst_akun)){
                                                                       $id_mst_akun = $id_mst_akun;
@@ -638,7 +640,7 @@ function add_debit(group){
                                                                     }
                                                                       $select = $a->id_mst_akun == $id_mst_akun ? "selected" : "" ;?>\
                                                                   <option value="<?php echo $a->id_mst_akun ?>"><?php echo $a->uraian ?></option>\
-                                                                  <?php endforeach ?>\
+                                                                  <?php } ?>\
                                                               </select>\
                                                             </div>\
                                                             <div class="col-md-1">\
@@ -912,12 +914,15 @@ function delete_debit(id,group) {
         if(res[0]=="OK"){
             $("#debt-"+id).remove();
             var countdelbit = res[1];
+            alert(countdelbit);
             if (countdelbit > 1) {
+              alert('uh');
               $('[name="add_kredit-'+group+'"]').hide();
               $('[name="debit_value_nilai-'+group+'"]').show();
               $('[name="label_persen_debit-'+group+'"]').show();
               $('[name="delete_debit-'+group+'"]').show();
             }else{
+              alert('ah');
               $('[name="add_kredit-'+group+'"]').show();
               $('[name="debit_value_nilai-'+group+'"]').hide();
               $('[name="label_persen_debit-'+group+'"]').hide();
@@ -1021,19 +1026,17 @@ function add_kredit(group) {
                                     <div class="row">\
                                       <div class="col-md-2" style="padding-top:5px;"><label> Nilai </label> </div>\
                                       <div class="col-md-7">\
-                                        <select  name="kredit_cmbx_nilai-'+group+'" id_mst_akun="kredit_cmbx_nilai-'+a[1]+'" type="text" class="form-control">\
-                                          <?php foreach($kategori as $k) : ?>\
+                                        <select  name="kredit_cmbx_nilai-'+group+'" name="kredit_cmbx_nilai-'+a[1]+'" type="text" class="form-control">\
+                                          <?php foreach($nilai_kredit[$row->group] as $nd) : ?>\
                                               <?php
-                                                if(set_value('id_mst_kategori_transaksi')=="" && isset($id_mst_kategori_transaksi)){
-                                                  $id_mst_kategori_transaksi = $id_mst_kategori_transaksi;
+                                                if(set_value('id_mst_akun')=="" && isset($id_mst_akun)){
+                                                  $id_mst_akunsa = $id_mst_akun;
                                                 }else{
-                                                  $id_mst_kategori_transaksi = set_value('id_mst_kategori_transaksi');
+                                                  $id_mst_akunsa = set_value('id_mst_akun');
                                                 }
-                                                $select = $k->id_mst_kategori_transaksi == $id_mst_kategori_transaksi ? 'selected' : '' ;
+                                                $select = $nd->id_mst_akun == $id_mst_akunsa ? 'style="display:none"' : '' ;
                                               ?>\
-                                              <option value="<?php echo $k->id_mst_kategori_transaksi ?>"\
-                                               <?php echo $select ?>><?php echo $k->nama ?>\
-                                              </option>\
+                                              <option value="<?php echo $nd->id_mst_akun ?>" <?php echo $select ?>><?php echo $nd->uraian ?></option>\
                                           <?php endforeach ?>\
                                         </select>\
                                       </div>\
@@ -1071,7 +1074,8 @@ function add_kredit(group) {
                                 </div>\
                               </div>\
                           </div>';
-
+          
+                          //alert(group);
            $('#kredit-'+group).append(form_kredit);
            var countkre = a[3];
            if (countkre > 1) {
@@ -1137,20 +1141,13 @@ function debit_akun(id,group) {
 
   var debit_akun_val    = $("#debit_akun-"+id+"").val();
   var debit_akun_select = $("#debit_akun-"+id+">option:selected").text();
-
-  $("[name='kredit_cmbx_nilai-"+group+"']").each(function(){
-    var id_kredit_sementara = this.id;
-    var fields = id_kredit_sementara.split(/-/);
-    var id_kredit_cmbx = fields[1];
-
     $.ajax({
        type: 'POST',
        url : '<?php echo base_url()."mst/keuangan_transaksi/jurnal_transaksi_edit_debit/{id}" ?>',
-       data : 'id_mst_akun='+debit_akun_val+'&id_mst_transaksi_item='+id+'&id_mst_transaksi_item_from='+debit_akun_val+'&id_mst_transaksi_item_kredit='+id_kredit_cmbx+'&group='+group,
+       data : 'id_mst_akun='+debit_akun_val+'&id_mst_transaksi_item='+id+'&id_mst_transaksi_item_from='+debit_akun_val+'&group='+group,
        success: function (response) {
         // alert(response);
         if(response=="OK"){
-          $("[name='kredit_cmbx_nilai-"+group+"']>").val(debit_akun_val).text(debit_akun_select);
           changeselect(group,'debit');
         }else if (response=="dataada") {
           alert('Maaf, data tersebut sudah dipilih pada jurnal pasangan yang sama');
@@ -1159,7 +1156,6 @@ function debit_akun(id,group) {
         }
        }
     });
-  });
 }
 function kredit_akun(id,group) {
 
@@ -1191,7 +1187,7 @@ function debit_isi_otomatis(id,group,obj) {
         contentType : false,
         processData : false,
         type : 'POST',
-        url : '<?php echo base_url()."mst/keuangan_transaksi/jurnal_transaksi_edit_debit/{id}" ?>',
+        url : '<?php  echo base_url()."mst/keuangan_transaksi/jurnal_transaksi_edit_debit/{id}" ?>',
         data : data,
         success : function(response){
           if(response=="OK"){
@@ -1221,7 +1217,6 @@ function changeselect(group,tipe) {
          $.each(response, function (key, value) {
             var options = [];
             $.each(value.child, function (i, data) {
-              // alert(data.idakun);
                 if (value.idakun!=data.id_mst_akun) {
                   options.push($('<option/>', 
                   {
@@ -1229,7 +1224,11 @@ function changeselect(group,tipe) {
                   }));  
                 }
             }); 
-            $('#debit_cmbx_nilai-'+key+'').html(options);
+            if (tipe==='kredit') {
+              $('#kredit_cmbx_nilai-'+key+'').html(options);
+            }else{
+              $('#debit_cmbx_nilai-'+key+'').html(options);
+            }
         });      
         
       }
