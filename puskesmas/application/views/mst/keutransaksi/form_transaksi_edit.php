@@ -238,9 +238,9 @@
                       <div class="col-md-7">
                         <div class="row">
                           <div class="col-md-1">
-                            <input type="checkbox" id="debit_opsional-<?php echo $row->id_mst_transaksi_item ?>" name="debit_opsional" value="<?php echo ((isset($row->opsional) && $row->opsional!='0') ? $row->opsional : '0')?>" <?php 
+                            <input type="checkbox" id="debit_opsional-<?php echo $row->id_mst_transaksi_item ?>" name="debit_opsional-<?php echo $row->group ?>" value="<?php echo ((isset($row->opsional) && $row->opsional!='0') ? $row->opsional : '0')?>" <?php 
                               if(!empty($row->opsional)){ echo "checked";}
-                            ?>>
+                            ?> onclick="select_opsional(<?php echo $row->id_mst_transaksi_item ?>,<?php echo $row->group ?>,'debit')">
                           </div> 
                           <div class="col-md-3" style="padding-top:5px;"><label> Opsional </label> </div>
                         </div>
@@ -379,11 +379,11 @@
                       <div class="col-sm-7">
                         <div class="row">
                           <div class="col-md-1">
-                            <input type="checkbox" id="kredit_opsional-<?php echo $row->id_mst_transaksi_item ?>" name="kredit_opsional" value="<?php echo ((isset($row->opsional) && $row->opsional!='0') ? $row->opsional : '0')?>" <?php 
+                            <input type="checkbox" id="kredit_opsional-<?php echo $row->id_mst_transaksi_item ?>" name="kredit_opsional-<?php echo $row->group ?>" value="<?php echo ((isset($row->opsional) && $row->opsional!='0') ? $row->opsional : '0')?>" <?php 
                               if(!empty($row->opsional)){
                                echo "checked";
                               }
-                            ?>>
+                            ?>  onclick="select_opsional(<?php echo $row->id_mst_transaksi_item ?>,<?php echo $row->group ?>,'kredit')">
                           </div> 
                           <div class="col-md-3" style="padding-top:5px;"><label> Opsional </label> </div>
                         </div>
@@ -540,7 +540,7 @@ function add_debit(group){
                         <div class="col-md-7">\
                           <div class="row">\
                             <div class="col-md-1">\
-                              <input type="checkbox" id="debit_opsional-'+a[1]+'" name="debit_opsional" onclick="d_opsional('+a[1]+',this)" value="1" <?php 
+                              <input type="checkbox" id="debit_opsional-'+a[1]+'" name="debit_opsional" onclick="select_opsional('+a[1]+','+group+',\'debit\')" value="1" <?php 
                               if(set_value('auto_fill')=="" && isset($auto_fill)){
                                   $auto_fill = $auto_fill;
                               }else{
@@ -661,7 +661,7 @@ function add_debit(group){
                                                         <div class="col-md-7">\
                                                           <div class="row">\
                                                             <div class="col-md-1">\
-                                                              <input type="checkbox" id="debit_isi_otomatis-'+a[1]+'" onclick="debit_isi_otomatis('+a[1]+','+a[3]+','+'this'+')" name="debit_isi_otomatis'+a[3]+'" value="1" <?php 
+                                                              <input type="checkbox" id="debit_isi_otomatis-'+a[1]+'" onclick="debit_isi_otomatis('+a[1]+','+a[3]+','+'this'+')" name="debit_isi_otomatis-'+a[3]+'" value="1" <?php 
                                                                 if(set_value('auto_fill')=="" && isset($auto_fill)){
                                                                   $auto_fill = $auto_fill;
                                                                 }else{
@@ -681,7 +681,7 @@ function add_debit(group){
                                                           <div class="row">\
                                                             <div class="col-md-2" style="padding-top:5px;"><label> Nilai </label></div>\
                                                             <div class="col-md-7">\
-                                                              <select disabled name="debit_cmbx_nilai" type="text" class="form-control">\
+                                                              <select disabled name="debit_cmbx_nilai-'+a[3]+'" id="debit_cmbx_nilai-'+a[1]+'" type="text" class="form-control">\
                                                                 <option value="kredit##'+a[3]+'##{id}" echo "selected" ?> All Kredit</option>\
                                                               </select>\
                                                             </div>\
@@ -703,7 +703,7 @@ function add_debit(group){
                                                                   $auto_fill = set_value('auto_fill');
                                                               }
                                                                   if($auto_fill == 1) echo "checked";
-                                                              ?>>\
+                                                              ?> onclick="select_opsional('+a[1]+','+a[3]+',\'debit\')">\
                                                             </div>\
                                                             <div class="col-md-3" style="padding-top:5px;"><label> Opsional </label> </div>\
                                                           </div>\
@@ -764,7 +764,7 @@ function add_debit(group){
                                                         <div class="col-sm-7">\
                                                           <div class="row">\
                                                             <div class="col-md-1">\
-                                                              <input type="checkbox" onclick="kr_isi_otomatis('+a[2]+','+a[3]+',this);" id="kredit_isi_otomatis-'+a[2]+'" name="kredit_isi_otomatis" value="1" <?php 
+                                                              <input type="checkbox" onclick="kr_isi_otomatis('+a[2]+','+a[3]+',this)" id="kredit_isi_otomatis-'+a[2]+'" name="kredit_isi_otomatis" value="1" <?php 
                                                                 if(set_value('auto_fill')=="" && isset($auto_fill)){
                                                                   $auto_fill = $auto_fill;
                                                                 }else{
@@ -810,7 +810,7 @@ function add_debit(group){
                                                                   $opsional = set_value('opsional');
                                                                 }
                                                                   if($opsional == 1) echo "checked";
-                                                              ?>>\
+                                                              ?> onclick="select_opsional('+a[2]+','+a[3]+',\'kredit\')">\
                                                             </div>\
                                                             <div class="col-md-3" style="padding-top:5px;"><label> Opsional </label> </div>\
                                                           </div>\
@@ -1046,7 +1046,7 @@ function add_kredit(group) {
                                   <div class="col-sm-7">\
                                     <div class="row">\
                                       <div class="col-md-1">\
-                                        <input type="checkbox" id="kredit_opsional-'+a[1]+'" name="kredit_opsional" onclick="k_opsional('+a[1]+',this);" value="1" <?php 
+                                        <input type="checkbox" id="kredit_opsional-'+a[1]+'" name="kredit_opsional" onclick="select_opsional('+a[1]+','+group+',\'kredit\');" value="1" <?php 
                                           if(set_value('opsional')=="" && isset($opsional)){
                                           $opsional = $opsional;
                                             }else{
@@ -1276,5 +1276,48 @@ function kr_isi_otomatis(id,group,obj){
         }
     });
 }
+function select_opsional(id,group,tipe){
+    var data = new FormData();
+        data.append('id' ,id);
+        data.append('group', id);
+        data.append('tipe',tipe);
+
+    $.ajax({
+        cache : false,
+        contentType : false,
+        processData : false,
+        type : 'POST',
+        url : '<?php  echo base_url()."mst/keuangan_transaksi/jurnal_transaksi_edit_optional" ?>/'+id+'/'+group+'/'+tipe,
+        data : data,
+        success : function(response){
+          res = response.split('|');
+          // alert(response);
+          if(res[0]=="OK"){
+          }else{
+              alert("Maaf data gagal di update");
+          }     
+        }
+    });
+}
+$("[name='transaksi_template']").click(function(){
+  var data = new FormData();
+    data.append('template',     $(this).val());
+    
+    $.ajax({
+        cache : false,
+        contentType : false,
+        processData : false,
+        type : 'POST',
+        url : '<?php echo base_url()."mst/keuangan_transaksi/transaksi_template_update/".$id?>',
+        data : data,
+        success : function(response){
+          if(response=="OK"){
+            $("#transaksi_template").prop("checked", true);
+          }else{
+            $("#transaksi_template").prop("checked", false);
+          }
+        }
+    });
+});
 </script>
 

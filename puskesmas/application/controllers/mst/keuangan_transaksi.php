@@ -629,7 +629,12 @@ class Keuangan_transaksi extends CI_Controller {
 		}
 		die($this->parser->parse("mst/keutransaksi/form_transaksi_edit",$data));
 	}
+	function jurnal_transaksi_edit_optional($id=0,$group='',$tipe=''){
+		$this->authentication->verify('mst','edit');
 
+    	$ret = $this->keutransaksi_model->jurnal_transaksi_update_optional($id,$tipe);
+		die("$ret");
+	}
 	function jurnal_transaksi_add_kredit($id=0){
 		$this->authentication->verify('mst','add');
     	
