@@ -736,7 +736,7 @@ class Keuangan_transaksi extends CI_Controller {
 		$this->db->where('`group`',$group);
 		$this->db->where('type',$tipe);
 		$this->db->join('mst_keu_akun','mst_keu_akun.id_mst_akun = mst_keu_transaksi_item.id_mst_akun');
-		$this->db->select('mst_keu_transaksi_item.id_mst_akun,mst_keu_akun.uraian,id_mst_transaksi_item,`group`');
+		$this->db->select('mst_keu_transaksi_item.id_mst_akun,mst_keu_akun.uraian,id_mst_transaksi_item,`group`,auto_fill');
 		$query = $this->db->get('mst_keu_transaksi_item');
 		if ($query->num_rows() > 1) {
 				$arr[]=array('id_mst_akun' =>'',
@@ -744,12 +744,13 @@ class Keuangan_transaksi extends CI_Controller {
 			foreach ($query->result() as $key) {
 				$arr[]=array(
 					'id_mst_akun' =>$key->id_mst_akun,
-					'uraian' => $key->uraian
+					'uraian' => $key->uraian,
 				);
 			}
 			foreach ($query->result() as $dat) {				
 				$data[$dat->id_mst_transaksi_item]['child']=$arr;
 				$data[$dat->id_mst_transaksi_item]['idakun']=$dat->id_mst_akun;
+				$data[$dat->id_mst_transaksi_item]['auto_fill']=$dat->auto_fill;
 			}
 		}else{
 			$que=$query->row_array();
