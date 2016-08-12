@@ -687,7 +687,11 @@ class Keuangan_transaksi extends CI_Controller {
 		}
 		die($this->parser->parse("mst/keutransaksi/form_transaksi_edit",$data));
 	}
-
+	function jurnal_transaksi_edit_kreditotomatis($id=0){
+		$this->authentication->verify('mst','edit');
+		$res = $this->keutransaksi_model->jurnal_transaksi_update_kreditotomatis($id);
+		die($res);
+	}
 	function set_debit_akun(){
 		$this->authentication->verify('mst','edit');
 		$this->session->set_userdata('debit_akun',$this->input->post('debit_akun'));		

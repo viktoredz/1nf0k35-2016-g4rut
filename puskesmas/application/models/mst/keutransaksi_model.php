@@ -371,8 +371,8 @@ class Keutransaksi_model extends CI_Model {
                     'id_mst_transaksi' =>$id,
                     'type' => 'debit',
                     );
-                $quer = $this->db->get_where('mst_keu_transaksi_item',$datawhere);
-                if ($quer->num_rows() > 0) {
+                $quer = $this->db->get_where('mst_keu_transaksi_item',$datawhere)->row_array();
+                if ($quer['auto_fill'] == '1') {
                     $dataup = array('auto_fill'=>'0');
                     $chk ='0';
                 }else{
@@ -385,6 +385,26 @@ class Keutransaksi_model extends CI_Model {
                     return mysql_error();
                 }
             }
+        }
+    }
+    function jurnal_transaksi_update_kreditotomatis($id){
+        $datawhere = array(
+            'id_mst_transaksi_item' =>$this->input->post('id_mst_transaksi_item'),
+            'id_mst_transaksi' =>$id,
+            'type' => 'kredit',
+            );
+        $quer = $this->db->get_where('mst_keu_transaksi_item',$datawhere)->row_array();
+        if ($quer['auto_fill'] == '1') {
+            $dataup = array('auto_fill'=>'0');
+            $chk ='0';
+        }else{
+            $dataup = array('auto_fill'=>'1');
+            $chk ='1';
+        }
+        if($this->db->update('mst_keu_transaksi_item',$dataup,$datawhere)){
+            return "OK|$chk";
+        }else{
+            return mysql_error();
         }
     }
     function jurnal_transaksi_update_kredit($id=0){
