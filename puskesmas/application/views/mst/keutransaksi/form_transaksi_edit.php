@@ -1268,6 +1268,13 @@ function changeselect(group,tipe) {
                   options.push('<option value="'+ data.id_mst_akun +'" '+selec+'>'+ data.uraian +'</option>');
                 }
             }); 
+            if (value.id_mst_transaksi_item_from=='' || value.id_mst_transaksi_item_from ==null) {
+              if (tipe=='kredit') {
+                $('#kredit_value_nilai-'+key+'').val(0);
+              }else{
+                $('#debit_value_nilai-'+key+'').val(0);
+              }
+            }
             if (tipe==='kredit') {
               $('#kredit_cmbx_nilai-'+key+'').html(options);
               if (value.auto_fill=='1') {

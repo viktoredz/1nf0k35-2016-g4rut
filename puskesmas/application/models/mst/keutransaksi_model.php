@@ -394,6 +394,7 @@ class Keutransaksi_model extends CI_Model {
                         $this->db->where('type', 'debit');
                         $this->db->where('id_mst_transaksi',$id);
                         $this->db->set('id_mst_transaksi_item_from','0');
+                        $this->db->set('value','0');
                         $this->db->where('id_mst_transaksi_item',$key->id_mst_transaksi_item);
                         $this->db->update('mst_keu_transaksi_item');
                     }
@@ -537,6 +538,7 @@ class Keutransaksi_model extends CI_Model {
                         $this->db->where('type', 'kredit');
                         $this->db->where('id_mst_transaksi',$id);
                         $this->db->set('id_mst_transaksi_item_from','0');
+                        $this->db->set('value','0');
                         $this->db->where('id_mst_transaksi_item',$key->id_mst_transaksi_item);
                         $this->db->update('mst_keu_transaksi_item');
                     }
