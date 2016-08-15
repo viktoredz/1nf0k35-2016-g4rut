@@ -51,7 +51,29 @@ class Keuangan_transaksi extends CI_Controller {
 				break;
 		}
 	}
-
+	function reloadakun($id='',$group='',$tipe=''){
+		$this->db->where('id_mst_transaksi',$id);
+		$this->db->where('group',$group);
+		$this->db->where('type',$tipe);
+		$this->db->select('mst_keu_transaksi_item.id_mst_akun,mst_keu_akun.uraian,id_mst_transaksi_item,`group`,auto_fill,id_mst_transaksi_item_from');
+		$this->db->join('mst_keu_akun','mst_keu_akun.id_mst_akun = mst_keu_transaksi_item.id_mst_akun');
+		$query= $this->db->get('mst_keu_transaksi_item');
+		if ($query->num_rows() > 1) {
+			$querydata = $this->db->get('mst_keu_akun');
+			foreach ($querydata->result() as $key) {
+				$arr[]=array(
+					'id_mst_akun' =>$key->id_mst_akun,
+					'uraian' => $key->uraian,
+				);
+			}
+			foreach ($query->result() as $dat) {				
+				$data[$dat->id_mst_transaksi_item]['child']=$arr;
+				$data[$dat->id_mst_transaksi_item]['idakun']=$dat->id_mst_akun;
+			}
+		}
+		echo json_encode($data);
+		die();
+	}
 	function tab_pengaturan_transaksi($pageIndex){
 		$data = array();
 

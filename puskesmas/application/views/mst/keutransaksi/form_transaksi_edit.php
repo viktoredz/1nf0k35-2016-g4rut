@@ -1152,10 +1152,41 @@ function debit_akun(id,group) {
           changeselect(group,'debit');
         }else if (response=="dataada") {
           alert('Maaf, data tersebut sudah dipilih pada jurnal pasangan yang sama');
+          reloadakun(id,group,'debit');
         }else{
             alert("Failed.");
         }
        }
+    });
+}
+function reloadakun(id,group,tipe) {
+    $.ajax({
+        cache : false,
+        contentType : false,
+        processData : false,
+        type : 'POST',
+        dataType: "json",
+        url : '<?php echo base_url()."mst/keuangan_transaksi/reloadakun/{id}" ?>/'+group+'/'+tipe,
+        success : function(response){
+         $.each(response, function (key, value) {
+            var options = [];
+            $.each(value.child, function (i, data) {
+                if (value.idakun==data.id_mst_akun) {
+                    selec ='selected';
+                }else{
+                    selec ='';
+                }
+                  options.push('<option value="'+ data.id_mst_akun +'" '+selec+'>'+ data.uraian +'</option>');
+                
+            }); 
+            if (tipe==='kredit') {
+              $('#kredit_akun-'+key+'').html(options);
+            }else{
+              $('#debit_akun-'+key+'').html(options);
+            }
+        });      
+        
+      }
     });
 }
 function kredit_akun(id,group) {
@@ -1172,6 +1203,7 @@ function kredit_akun(id,group) {
         changeselect(group,'kredit');
       }else if(response=="dataada"){
         alert('Maaf, data tersebut sudah dipilih pada jurnal pasangan yang sama');
+        reloadakun(id,group,'kredit');
       }else{
           alert("Failed.");
       }
@@ -1403,7 +1435,6 @@ function kredit_value_nilai(id,group){
        url : '<?php echo base_url()."mst/keuangan_transaksi/jurnal_transaksi_edit_nilai_value/{id}/kredit" ?>',
        data : 'debit_value_nilai='+kredit_value_nilai+'&id_mst_transaksi_item='+id+'&group='+group,
        success: function (response) {
-        // alert(response);
         res = response.split('|');
         if(res[0]=="OK"){
         }else if (response=="dataada") {
