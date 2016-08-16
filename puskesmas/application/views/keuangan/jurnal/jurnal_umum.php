@@ -1,3 +1,7 @@
+<div id="popup_jurnal" style="display:none">
+  <div id="popup_title">Data Jurnal</div>
+  <div id="popup_content">&nbsp;</div>
+</div>
 <section class="content">
 <form action="<?php echo base_url()?>kepegawaian/drh/dodel_multi" method="POST" name="">
   <div class="row">
@@ -112,6 +116,9 @@ $(document).ready(function () {
     $('#btncollapseall').click(function () {
        $("#jqxgrid_jurnal_umum").jqxTreeGrid('collapseAll');
     });
+    $("#jqxgrid_jurnal_umum_refresh").click(function(){
+        $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
+    });
     var source =
     {
         dataType: "json",
@@ -154,9 +161,11 @@ $(document).ready(function () {
         pagerButtonsCount: 8,
         toolbarHeight: 40,
         columns: [
-          { text: 'Action', dataField: 'id_jurnal', width: '10%', cellsrenderer: function (row, column, value) {
-              if(row){
-                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(" + row + ");'>   <a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='detail(" + row + ");'></div>";
+          { text: 'Action', dataField: 'id_jurnal', width: '10%', cellsrenderer: function (row, dataField, cellText, rowData) {
+              if(rowData.edit==1){
+                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail("+rowData.id_jurnal+");'>   <a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='detail("+rowData.id_jurnal+");'></div>";
+              }else{
+                return "";
               }
             },
           },
@@ -168,5 +177,36 @@ $(document).ready(function () {
           { text: 'Status', dataField: 'status', width: '10%' },
         ]
     });
+
 });
+function detail(id){   
+  $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+  $.get("<?php echo base_url().'keuangan/jurnal/detail_jurnal/'; ?>"+id, function(data) {
+    $("#popup_content").html(data);
+  });
+  $("#popup_jurnal").jqxWindow({
+    theme: theme, resizable: false,
+    width: 500,
+    height: 800,
+    isModal: true, autoOpen: false, modalOpacity: 0.2
+  });
+  $("#popup_jurnal").jqxWindow('open');
+}
+function edit(id){   
+  $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+  $.get("<?php echo base_url().'keuangan/jurnal/edit_junal/'; ?>"+id, function(data) {
+    $("#popup_content").html(data);
+  });
+  $("#popup_jurnal").jqxWindow({
+    theme: theme, resizable: false,
+    width: 500,
+    height: 800,
+    isModal: true, autoOpen: false, modalOpacity: 0.2
+  });
+  $("#popup_jurnal").jqxWindow('open');
+}
+function close_popup(){
+  $("#popup_jurnal").jqxWindow('close');
+  $("#jqxgrid_barang_distribusi").jqxGrid('updatebounddata', 'cells');
+}
     </script>
