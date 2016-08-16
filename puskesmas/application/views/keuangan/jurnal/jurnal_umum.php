@@ -74,19 +74,27 @@
           <div class="row">
             <div class="col-md-8">
              <div class="row">
-                <div class="col-md-6">
-                  <label>Tambah Transaksi</label>
-                  <select class="form-control" id="">
-                    <?php foreach ($tambahtransaksi as $key => $value) {?>
-                        <option value="<?php echo $key;?>"><?php echo $value?></option>
+                <div class="col-md-4">
+                  <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Tambah Transaksi
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                      <?php foreach ($tambahtransaksi as $key => $value) {?>
+                        <li><a onclick='tambahtransaksi("<?php echo $key;?>")'><?php echo $value;?></a></li>
                       <?php }?>
-                  </select>
+                    </ul>
+                  </div>
                 </div>
                 <div class="col-md-6">
-                  <label>Tambah Transaksi</label>
-                  <select class="form-control" id=""> 
-                
-                  </select>
+                  <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Tambah Transaksi Otomatis
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                      <?php foreach ($tambahtransaksiotomatis as $key => $value) {?>
+                        <li><a onclick='tambahotomatis("<?php echo $key ?>")'><?php echo $value;?></a></li>
+                      <?php }?>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -181,12 +189,12 @@ $(document).ready(function () {
 });
 function detail(id){   
   $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-  $.get("<?php echo base_url().'keuangan/jurnal/detail_jurnal/'; ?>"+id, function(data) {
+  $.get("<?php echo base_url().'keuangan/jurnal/detail_jurnal_umum/'; ?>"+id, function(data) {
     $("#popup_content").html(data);
   });
   $("#popup_jurnal").jqxWindow({
     theme: theme, resizable: false,
-    width: 500,
+    width: 600,
     height: 800,
     isModal: true, autoOpen: false, modalOpacity: 0.2
   });
@@ -194,7 +202,7 @@ function detail(id){
 }
 function edit(id){   
   $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-  $.get("<?php echo base_url().'keuangan/jurnal/edit_junal/'; ?>"+id, function(data) {
+  $.get("<?php echo base_url().'keuangan/jurnal/edit_junal_umum/'; ?>"+id, function(data) {
     $("#popup_content").html(data);
   });
   $("#popup_jurnal").jqxWindow({
@@ -205,8 +213,35 @@ function edit(id){
   });
   $("#popup_jurnal").jqxWindow('open');
 }
+
 function close_popup(){
   $("#popup_jurnal").jqxWindow('close');
-  $("#jqxgrid_barang_distribusi").jqxGrid('updatebounddata', 'cells');
+  $("#jqxgrid_jurnal_umum").jqxGrid('updatebounddata');
 }
-    </script>
+function tambahotomatis(id){
+  $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+  $.get("<?php echo base_url().'keuangan/jurnal/transaksi_otomatis_jurum/'; ?>"+id, function(data) {
+    $("#popup_content").html(data);
+  });
+  $("#popup_jurnal").jqxWindow({
+    theme: theme, resizable: false,
+    width: 500,
+    height: 800,
+    isModal: true, autoOpen: false, modalOpacity: 0.2
+  });
+  $("#popup_jurnal").jqxWindow('open');
+}
+function tambahtransaksi(id){
+  $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+  $.get("<?php echo base_url().'keuangan/jurnal/pilih_tipe_transaksijurum/'; ?>"+id, function(data) {
+    $("#popup_content").html(data);
+  });
+  $("#popup_jurnal").jqxWindow({
+    theme: theme, resizable: false,
+    width: 500,
+    height: 800,
+    isModal: true, autoOpen: false, modalOpacity: 0.2
+  });
+  $("#popup_jurnal").jqxWindow('open');
+}
+</script>

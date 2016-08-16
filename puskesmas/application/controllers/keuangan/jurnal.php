@@ -26,6 +26,7 @@ class Jurnal extends CI_Controller {
 				$data['filekategori'] =array('all'=>"Semua Kategori","penerimaankas" => 'Penerimaan Kas',"Pembelian" => 'pembelian',"Biaya" => 'biaya',"penjualan" => 'Penjualan',"pembukuan"=>'Pembukuan');
 				$data['filetransaksi'] =array('all'=>"Semua Transaksi","transaksidisimpan" => 'Transaksi Disimpan',"transaksidraf" => 'Transaksi Draf');
 				$data['tambahtransaksi'] =array('pendapatanumum'=>"Pendapatan Umum","pendapatanbpjs" => 'Pendapatan BPJS Kapasitas',"pembelian" => 'Pembelian Persediaan');
+				$data['tambahtransaksiotomatis'] =array('transaksiotomatis'=>"Transaksi Otomatis");
 				die($this->parser->parse("keuangan/jurnal/jurnal_umum",$data));
 
 				break;
@@ -240,16 +241,110 @@ class Jurnal extends CI_Controller {
 		echo json_encode(array($json));
 	}
 
-	function filter_kategori(){
-		if($_POST) {
-			if($this->input->post('kategori') != '') {
-				$this->session->set_userdata('filter_kategori',$this->input->post('kategori'));
-			}
+function detail_jurnal_umum($id=0){
+	$this->authentication->verify('keuangan','show');
+
+    $this->form_validation->set_rules('jumlahdistribusi', 'Jumlah Distribusi', 'trim|required');
+    $this->form_validation->set_rules('uraian', 'Nama Barang', 'trim');
+    $this->form_validation->set_rules('jumlah', 'Jumlah', 'trim');
+
+	if($this->form_validation->run()== FALSE){
+
+		$data 					= array('nomor_transaksi' =>'0112153','uraian'=>'Dibayar belaja Pengamanan Kantor','keterangan'=>'Biaya rutin untuk pengamanan kantor', 'tgl_transaksi' => '1 Desember 2016','kategori_transaksi' =>'Biaya','id_akun_debit'=>'3010 - Belanja Rutin','jml_debit'=>'41300000','id_akun_kredit'=>'1010 - Hutang Dagang','jml_kredit'=>'41300000','lampiran' =>'Download File','syarat' =>'n/EOM','jth_tempo'=>'1 Januari 2016','no_faktur'=>'13121414','instansi'=>'CV. Medika','kode_kegiatan'=>'2093001','sub_kegaitan'=>'01');
+		$data['notice']			= validation_errors();
+		$data['id']				= $id;
+		$data['action']			= "detail";
+		$data['title']			= "Detail Transaksi";
+		$data['datadraft']		= array('cetak' => 'Cetak','kuitansi'=>'Kuitansi');
+
+		die($this->parser->parse('keuangan/jurnal/detail_form_jurum', $data));
+	}else{
+		
+		$values = array(
+			'id_inv_inventaris_habispakai_distribusi'=>$id_distribusi,
+			'id_mst_inv_barang_habispakai'=> $kode,
+			'batch' => $batch,
+			'jml' => $this->input->post('jumlahdistribusi'),
+		);
+		$simpan=$this->db->insert('inv_inventaris_habispakai_distribusi_item', $values);
+		if($simpan==true){
+			die("OK|Data Tersimpan");
+		}else{
+			 die("Error|Proses data gagal");
 		}
+		
 	}
+}
 
-	
+function transaksi_otomatis_jurum($id=0){
+	$this->authentication->verify('keuangan','show');
 
+    $this->form_validation->set_rules('jumlahdistribusi', 'Jumlah Distribusi', 'trim|required');
+    $this->form_validation->set_rules('uraian', 'Nama Barang', 'trim');
+    $this->form_validation->set_rules('jumlah', 'Jumlah', 'trim');
+
+	if($this->form_validation->run()== FALSE){
+
+		$data 					= array('nomor_transaksi' =>'0112153','uraian'=>'Dibayar belaja Pengamanan Kantor','transaksi_urut'=>'Transaksi 1','id_akun_debit'=>'3010 - Belanja Rutin','jml_debit'=>'41300000','id_akun_kredit'=>'1010 - Hutang Dagang','jml_kredit'=>'41300000');
+		$data['notice']			= validation_errors();
+		$data['id']				= $id;
+		$data['action']			= "detail";
+		$data['title']			= "Konfirmasi Transaksi Otomatis";
+		
+		die($this->parser->parse('keuangan/jurnal/form_otomatis_jurum', $data));
+
+	}else{
+		
+		$values = array(
+			'id_inv_inventaris_habispakai_distribusi'=>$id_distribusi,
+			'id_mst_inv_barang_habispakai'=> $kode,
+			'batch' => $batch,
+			'jml' => $this->input->post('jumlahdistribusi'),
+		);
+		$simpan=$this->db->insert('inv_inventaris_habispakai_distribusi_item', $values);
+		if($simpan==true){
+			die("OK|Data Tersimpan");
+		}else{
+			 die("Error|Proses data gagal");
+		}
+		
+	}
+}	
+function pilih_tipe_transaksijurum($id=0){
+	$this->authentication->verify('keuangan','show');
+
+    $this->form_validation->set_rules('jumlahdistribusi', 'Jumlah Distribusi', 'trim|required');
+    $this->form_validation->set_rules('uraian', 'Nama Barang', 'trim');
+    $this->form_validation->set_rules('jumlah', 'Jumlah', 'trim');
+
+	if($this->form_validation->run()== FALSE){
+
+		$data 					= array('nomor_transaksi' =>'0112153','uraian'=>'Dibayar belaja Pengamanan Kantor','transaksi_urut'=>'Transaksi 1','id_akun_debit'=>'3010 - Belanja Rutin','jml_debit'=>'41300000','id_akun_kredit'=>'1010 - Hutang Dagang','jml_kredit'=>'41300000');
+		$data['notice']			= validation_errors();
+		$data['id']				= $id;
+		$data['action']			= "detail";
+		$data['title']			= "Pilih Tipe Transaksi";
+		
+		// die($this->parser->parse('keuangan/jurnal/form_tipe_transaksi_jurum',$data));
+		die($this->parser->parse('keuangan/jurnal/form_riwayat_perubahan_jurum',$data));
+
+	}else{
+		
+		$values = array(
+			'id_inv_inventaris_habispakai_distribusi'=>$id_distribusi,
+			'id_mst_inv_barang_habispakai'=> $kode,
+			'batch' => $batch,
+			'jml' => $this->input->post('jumlahdistribusi'),
+		);
+		$simpan=$this->db->insert('inv_inventaris_habispakai_distribusi_item', $values);
+		if($simpan==true){
+			die("OK|Data Tersimpan");
+		}else{
+			 die("Error|Proses data gagal");
+		}
+		
+	}
+}
 
 }
 
