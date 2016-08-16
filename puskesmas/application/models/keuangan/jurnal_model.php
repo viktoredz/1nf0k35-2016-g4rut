@@ -41,6 +41,6 @@ class Jurnal_model extends CI_Model {
                 'child'                 => $this->getchild($category->id_mst_transaksi)
             );
         }
-        return $category_data;
+        print_r($category_data);
     }
 }

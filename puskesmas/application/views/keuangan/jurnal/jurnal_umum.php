@@ -9,6 +9,8 @@
         <div class="box-footer pull-right">
          <button type="button" class="btn btn-primary" id="jqxgrid_jurnal_umum_refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button> 
          <button type="button" class="btn btn-success" onclick='add()'><i class='glyphicon glyphicon-floppy-save'></i> &nbsp; Export</button> 
+         <button type="button" class="btn btn-danger" id="btnexpandall"><i class='glyphicon glyphicon-save-file'></i> &nbsp; Expand All</button> 
+         <button type="button" class="btn btn-warning" id="btncollapseall"><i class='glyphicon glyphicon-open-file'></i> &nbsp; Collapse All</button>
         </div>
         <div class="row">
         <div class="box-body">
@@ -20,13 +22,17 @@
                     <label> Filter Transaksi</label>
                   </div>
                   <div class="col-md-4">
-                    <select class="form-control" id="">
-                      
+                    <select class="form-control" id="filekategori" name="filekategori">
+                      <?php foreach ($filekategori as $key => $value) {?>
+                        <option value="<?php echo $key;?>"><?php echo $value?></option>
+                      <?php }?>
                     </select>
                   </div>
                   <div class="col-md-5">
-                    <select class="form-control" id=""> 
-                  
+                    <select class="form-control" id="filetransaksi" name="filetransaksi"> 
+                      <?php foreach ($filetransaksi as $key => $value) {?>
+                        <option value="<?php echo $key;?>"><?php echo $value?></option>
+                      <?php }?>
                     </select>
                   </div>
                 </div>
@@ -67,7 +73,9 @@
                 <div class="col-md-6">
                   <label>Tambah Transaksi</label>
                   <select class="form-control" id="">
-                    
+                    <?php foreach ($tambahtransaksi as $key => $value) {?>
+                        <option value="<?php echo $key;?>"><?php echo $value?></option>
+                      <?php }?>
                   </select>
                 </div>
                 <div class="col-md-6">
@@ -98,52 +106,66 @@
 
 <script type="text/javascript">
 $(document).ready(function () {
-    // prepare the data
+    $('#btnexpandall').click(function () {
+        $("#jqxgrid_jurnal_umum").jqxTreeGrid('expandAll');
+    });
+    $('#btncollapseall').click(function () {
+       $("#jqxgrid_jurnal_umum").jqxTreeGrid('collapseAll');
+    });
     var source =
     {
         dataType: "json",
         dataFields: [
-            { name: 'id_mst_transaksi', type: 'number' },
-            { name: 'nama', type: 'string' },
-            { name: 'untuk_jurnal', type: 'string' },
-            { name: 'deskripsi', type: 'string' },
-            { name: 'jumlah_transaksi', type: 'string' },
-            { name: 'bisa_diubah', type: 'string' },
-            { name: 'id_mst_kategori_transaksi', type: 'string' },
-            { name: 'id_mst_transaksi_item', type: 'string' },
-            { name: 'id_mst_akun', type: 'string' },
-            { name: 'id_mst_transaksi', type: 'string' },
-            { name: 'type', type: 'string' },
-            { name: 'group', type: 'string' },
-            { name: 'auto_fill', type: 'string' },
-            { name: 'id_mst_transaksi_item_from', type: 'string' },
-            { name: 'value', type: 'string' },
+            { name: 'id_jurnal', type: 'number' },
+            { name: 'tanggal', type: 'string' },
+            { name: 'transaksi', type: 'string' },
+            { name: 'status', type: 'string' },
+            { name: 'kodeakun', type: 'string' },
+            { name: 'debet', type: 'string' },
+            { name: 'kredit', type: 'string' },
             { name: 'child', type: 'array' },
-            { name: 'urutan', type: 'string' },
-            { name: 'opsional', type: 'string' },  
+            { name: 'edit', type: 'string' },
         ],
         hierarchy:
         {
             root: 'child'
         },
-        id: 'id_mst_transaksi',
+        id: 'id_jurnal',
         url: "<?php echo site_url('keuangan/jurnal/json_jurnal_umum'); ?>",
     };
-    var dataAdapter = new $.jqx.dataAdapter(source);
+      var dataAdapter = new $.jqx.dataAdapter(source, {
+          loadComplete: function () {
+          }
+      });
     // create Tree Grid
     $("#jqxgrid_jurnal_umum").jqxTreeGrid(
     {
-        width: 850,
+        width: '100%',
         source: dataAdapter,
         sortable: true,
+        pageable: false,
+        editable: false,
+        columnsResize: true,
+        showToolbar: true,
+        altRows: true,
+        ready: function(){
+           $("#jqxgrid_jurnal_umum").jqxTreeGrid('expandAll');            
+        },
+        pagerButtonsCount: 8,
+        toolbarHeight: 40,
         columns: [
-          { text: 'Action', dataField: 'id_mst_transaksi', width: 120 },
-          { text: 'Tanggal', dataField: 'nama', width: 120 },
-          { text: 'Transaksi', dataField: 'untuk_jurnal', width: 120 },
-          { text: 'Kode AKun', dataField: 'id_mst_transaksi_item', cellsFormat: 'd', width: 120 },
-          { text: 'Debet', dataField: 'id_mst_akun', cellsFormat: 'd', width: 120 },
-          { text: 'Kredit', dataField: 'Kredit', width: 120 },
-          { text: 'Status', dataField: 'status', width: 120 },
+          { text: 'Action', dataField: 'id_jurnal', width: '10%', cellsrenderer: function (row, column, value) {
+              if(row){
+                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(" + row + ");'>   <a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='detail(" + row + ");'></div>";
+              }
+            },
+          },
+          { text: 'Tanggal', dataField: 'tanggal', width: '15%' },
+          { text: 'Transaksi', dataField: 'transaksi', width: '25%' },
+          { text: 'Kode AKun', dataField: 'kodeakun', cellsFormat: 'd', width: '10%' },
+          { text: 'Debet', dataField: 'debet', cellsFormat: 'd', width: '15%',cellsAlign: "right" },
+          { text: 'Kredit', dataField: 'kredit', width: '15%',cellsAlign: "right" },
+          { text: 'Status', dataField: 'status', width: '10%' },
         ]
     });
 });

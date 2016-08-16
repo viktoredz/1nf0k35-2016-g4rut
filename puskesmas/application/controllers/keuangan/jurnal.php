@@ -23,6 +23,9 @@ class Jurnal extends CI_Controller {
 				$data['title_group']   = "Keuangan";
 				$data['title_form']    = "Jurnal Umum";
 				$data['bulan'] =array(1=>"Januari","Februari","Maret","April","Mei","Juni","July","Agustus","September","Oktober","November","Desember");
+				$data['filekategori'] =array('all'=>"Semua Kategori","penerimaankas" => 'Penerimaan Kas',"Pembelian" => 'pembelian',"Biaya" => 'biaya',"penjualan" => 'Penjualan',"pembukuan"=>'Pembukuan');
+				$data['filetransaksi'] =array('all'=>"Semua Transaksi","transaksidisimpan" => 'Transaksi Disimpan',"transaksidraf" => 'Transaksi Draf');
+				$data['tambahtransaksi'] =array('pendapatanumum'=>"Pendapatan Umum","pendapatanbpjs" => 'Pendapatan BPJS Kapasitas',"pembelian" => 'Pembelian Persediaan');
 				die($this->parser->parse("keuangan/jurnal/jurnal_umum",$data));
 
 				break;
@@ -55,7 +58,19 @@ class Jurnal extends CI_Controller {
 	function json_jurnal_umum(){
 		$this->authentication->verify('keuangan','show');
 
-		$data = $this->jurnal_model->get_data_jurnal_umum($this->input->post('recordstartindex'), $this->input->post('pagesize'));
+		$data = array(
+						'0'=>array('id_jurnal' => '2','edit'=>'1','tanggal'=>'11-Maret-2016','transaksi'=>'Penerimaan Pendapatan Puskesmas - 110316-1','status'=>'Disimpan','child' => array(
+											'0' => array('id_jurnal' => '3','transaksi'=>'Kas Bendahara','kodeakun'=>'111110','debet'=>'47850000'),
+											'1'=>array('id_jurnal' => '4','transaksi'=>'Pendapatan Pasien Umum','kodeakun' =>'511110','kredit'=>'47850000')
+											)
+							),
+						'1' => array('id_jurnal'=>'5','edit'=>'1','tanggal'=>'15-Maret-2016','transaksi'=>'Penerimaan Jasa Giro - 110316-2','status'=>'Draf','child'=>array(
+											'0'=>array('id_jurnal' => '6','transaksi'=>'Rekening Bank JKN','kodeakun'=>'11220','debet'=>'1055693'),
+											'1'=>array('id_jurnal' => '7','transaksi'=>'Jasa Giro','kodeakun'=>'54300','kredit'=>'1055693')
+										)
+							)
+				);
+		// $data = $this->jurnal_model->get_data_jurnal_umum($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		
 
 		echo json_encode($data);
