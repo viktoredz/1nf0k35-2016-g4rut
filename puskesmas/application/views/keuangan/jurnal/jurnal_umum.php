@@ -12,7 +12,7 @@
         </div>
         <div class="box-footer pull-right">
          <button type="button" class="btn btn-primary" id="jqxgrid_jurnal_umum_refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button> 
-         <button type="button" class="btn btn-success" onclick='add()'><i class='glyphicon glyphicon-floppy-save'></i> &nbsp; Export</button> 
+         <button type="button" class="btn btn-success" onclick='export(1)'><i class='glyphicon glyphicon-floppy-save'></i> &nbsp; Export</button> 
          <button type="button" class="btn btn-danger" id="btnexpandall"><i class='glyphicon glyphicon-save-file'></i> &nbsp; Expand All</button> 
          <button type="button" class="btn btn-warning" id="btncollapseall"><i class='glyphicon glyphicon-open-file'></i> &nbsp; Collapse All</button>
         </div>
@@ -111,11 +111,6 @@
 </form>
 </section>
 
-<div id="popup_kategori_transaksi" style="display:none">
-  <div id="popup_title">{title_form}</div>
-  <div id="popup_kategori_transaksi_content">&nbsp;</div>
-</div>
-
 <script type="text/javascript">
 $(document).ready(function () {
     $('#btnexpandall').click(function () {
@@ -171,7 +166,7 @@ $(document).ready(function () {
         columns: [
           { text: 'Action', dataField: 'id_jurnal', width: '10%', cellsrenderer: function (row, dataField, cellText, rowData) {
               if(rowData.edit==1){
-                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail("+rowData.id_jurnal+");'>   <a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='detail("+rowData.id_jurnal+");'></div>";
+                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail("+rowData.id_jurnal+");'>   <a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit("+rowData.id_jurnal+");'></div>";
               }else{
                 return "";
               }
@@ -201,19 +196,15 @@ function detail(id){
   $("#popup_jurnal").jqxWindow('open');
 }
 function edit(id){   
-  $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
   $.get("<?php echo base_url().'keuangan/jurnal/edit_junal_umum/'; ?>"+id, function(data) {
-    $("#popup_content").html(data);
+    $("#content1").html(data);
   });
-  $("#popup_jurnal").jqxWindow({
-    theme: theme, resizable: false,
-    width: 500,
-    height: 800,
-    isModal: true, autoOpen: false, modalOpacity: 0.2
-  });
-  $("#popup_jurnal").jqxWindow('open');
 }
-
+function penyusutaninventaris(id){   
+  $.get("<?php echo base_url().'keuangan/jurnal/penyusutan_inventaris/'; ?>"+id, function(data) {
+    $("#content1").html(data);
+  });
+}
 function close_popup(){
   $("#popup_jurnal").jqxWindow('close');
   $("#jqxgrid_jurnal_umum").jqxGrid('updatebounddata');

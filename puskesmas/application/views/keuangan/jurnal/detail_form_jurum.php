@@ -156,7 +156,7 @@
           </div>
         </div>
         <div class="row" style="margin: 5px">
-          <div class="col-md-12" style="padding: 5px"><h3>Instansi</h3></div>
+          <div class="col-md-12" style="padding: 5px"><h3>Data untuk Cetak</h3></div>
         </div>
         <div class="row" style="margin: 5px">
           <div class="col-md-4" style="padding: 5px">Kode Kegiatan</div>

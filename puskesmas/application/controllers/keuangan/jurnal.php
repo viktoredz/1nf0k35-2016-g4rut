@@ -33,10 +33,9 @@ class Jurnal extends CI_Controller {
 			case 2:
 				$data['title_group']   = "Keuangan";
 				$data['title_form']    = "Jurnal Penyesuaian";
-				$data['kategori']	   = $this->jurnal_model->get_data_kategori_transaksi();
-				$this->session->set_userdata('filter_kategori','');
 				
-				die($this->parser->parse("keuangan/jurnal/jurnal_penyesuaian",$data));
+				// die($this->parser->parse("keuangan/jurnal/jurnal_penyesuaian",$data));
+				 die($this->parser->parse("keuangan/jurnal/form_penyusutan_inventaris",$data));
 
 				break;
 			case 3:
@@ -345,6 +344,203 @@ function pilih_tipe_transaksijurum($id=0){
 		
 	}
 }
+function pilihversi($id='0'){
+	if ($id==1) {
+		$data[] 					= array('tanggal_perubahan'=>'17 Agustus 2016');
+		echo json_encode($data);
+	}else{
+		$data[] 					= array('tanggal_perubahan'=>'17 Agustus 2016','alasan_perubahan'=>'kebutuhan','dirubaholeh'=>'aku','nomor_transaksi' =>'0112153','uraian'=>'Dibayar belaja Pengamanan Kantor','keterangan'=>'Biaya rutin untuk pengamanan kantor', 'tgl_transaksi' => '1 Desember 2016','kategori_transaksi' =>'Biaya','id_akun_debit'=>'3010 - Belanja Rutin','jml_debit'=>'41300000','id_akun_kredit'=>'1010 - Hutang Dagang','jml_kredit'=>'41300000','lampiran' =>'Download File','syarat' =>'n/EOM','jth_tempo'=>'1 Januari 2016','no_faktur'=>'13121414','instansi'=>'CV. Medika','kode_kegiatan'=>'2093001','sub_kegaitan'=>'01');
+		echo json_encode($data);
+	}
+}
+function edit_junal_umum($id='0'){
+	$this->authentication->verify('keuangan','edit');
 
+    $this->form_validation->set_rules('jumlahdistribusi', 'Jumlah Distribusi', 'trim|required');
+    $this->form_validation->set_rules('uraian', 'Nama Barang', 'trim');
+    $this->form_validation->set_rules('jumlah', 'Jumlah', 'trim');
+
+	if($this->form_validation->run()== FALSE){
+
+		$data 					= array('nomor_transaksi' =>'0112153','uraian'=>'Dibayar belaja Pengamanan Kantor','transaksi_urut'=>'Transaksi 1','id_akun_debit'=>'3010 - Belanja Rutin','jml_debit'=>'41300000','id_akun_kredit'=>'1010 - Hutang Dagang','jml_kredit'=>'41300000');
+		$data['notice']			= validation_errors();
+		$data['id']				= $id;
+		$data['action']			= "edit";
+		$data['title']			= "Jurnal Umum";
+		$data['sub_title']		= "Transaksi Baru";
+		
+		// die($this->parser->parse('keuangan/jurnal/form_tipe_transaksi_jurum',$data));
+		die($this->parser->parse('keuangan/jurnal/form_jurnal_umum',$data));
+
+	}else{
+		
+		$values = array(
+			'id_inv_inventaris_habispakai_distribusi'=>$id_distribusi,
+			'id_mst_inv_barang_habispakai'=> $kode,
+			'batch' => $batch,
+			'jml' => $this->input->post('jumlahdistribusi'),
+		);
+		$simpan=$this->db->insert('inv_inventaris_habispakai_distribusi_item', $values);
+		if($simpan==true){
+			die("OK|Data Tersimpan");
+		}else{
+			 die("Error|Proses data gagal");
+		}
+		
+	}
+}
+
+function penyusutan_inventaris($id='0'){
+	$this->authentication->verify('keuangan','edit');
+
+    $this->form_validation->set_rules('jumlahdistribusi', 'Jumlah Distribusi', 'trim|required');
+    $this->form_validation->set_rules('uraian', 'Nama Barang', 'trim');
+    $this->form_validation->set_rules('jumlah', 'Jumlah', 'trim');
+
+	if($this->form_validation->run()== FALSE){
+
+		$data 					= array('nomor_transaksi' =>'0112153','uraian'=>'Dibayar belaja Pengamanan Kantor','transaksi_urut'=>'Transaksi 1','id_akun_debit'=>'3010 - Belanja Rutin','jml_debit'=>'41300000','id_akun_kredit'=>'1010 - Hutang Dagang','jml_kredit'=>'41300000');
+		$data['notice']			= validation_errors();
+		$data['id']				= $id;
+		$data['action']			= "edit";
+		$data['title']			= "Jurnal Umum";
+		$data['sub_title']		= "Transaksi Baru";
+		
+		// die($this->parser->parse('keuangan/jurnal/form_tipe_transaksi_jurum',$data));
+		die($this->parser->parse('keuangan/jurnal/form_penyusutan_inventaris',$data));
+
+	}else{
+		
+		$values = array(
+			'id_inv_inventaris_habispakai_distribusi'=>$id_distribusi,
+			'id_mst_inv_barang_habispakai'=> $kode,
+			'batch' => $batch,
+			'jml' => $this->input->post('jumlahdistribusi'),
+		);
+		$simpan=$this->db->insert('inv_inventaris_habispakai_distribusi_item', $values);
+		if($simpan==true){
+			die("OK|Data Tersimpan");
+		}else{
+			 die("Error|Proses data gagal");
+		}
+		
+	}
+}
+function add_penyusutan_inventaris($id=0){
+	$this->authentication->verify('keuangan','add');
+
+    $this->form_validation->set_rules('jumlahdistribusi', 'Jumlah Distribusi', 'trim|required');
+    $this->form_validation->set_rules('uraian', 'Nama Barang', 'trim');
+    $this->form_validation->set_rules('jumlah', 'Jumlah', 'trim');
+
+	if($this->form_validation->run()== FALSE){
+
+		$data['notice']			= validation_errors();
+		$data['id']				= $id;
+		$data['action']			= "edit";
+		$data['title']			= "Tambah Penyusustan Inventaris";
+		
+		// die($this->parser->parse('keuangan/jurnal/form_tipe_transaksi_jurum',$data));
+		die($this->parser->parse('keuangan/jurnal/add_penyusutan',$data));
+
+	}else{
+		
+		$values = array(
+			'id_inv_inventaris_habispakai_distribusi'=>$id_distribusi,
+			'id_mst_inv_barang_habispakai'=> $kode,
+			'batch' => $batch,
+			'jml' => $this->input->post('jumlahdistribusi'),
+		);
+		$simpan=$this->db->insert('inv_inventaris_habispakai_distribusi_item', $values);
+		if($simpan==true){
+			die("OK|Data Tersimpan");
+		}else{
+			 die("Error|Proses data gagal");
+		}
+		
+	}
+}
+function json_penyusutan(){
+		$this->authentication->verify('keuangan','show');
+
+
+		// if($_POST) {
+		// 	$fil = $this->input->post('filterscount');
+		// 	$ord = $this->input->post('sortdatafield');
+
+		// 	for($i=0;$i<$fil;$i++) {
+		// 		$field = $this->input->post('filterdatafield'.$i);
+		// 		$value = $this->input->post('filtervalue'.$i);
+
+		// 		if($field == 'tgl_pengadaan') {
+		// 			$value = date("Y-m-d",strtotime($value));
+		// 			$this->db->where($field,$value);
+		// 		}
+		// 		elseif($field == 'kode') {
+		// 			$this->db->like('inv_inventaris_barang.id_mst_inv_barang',$value);
+		// 		}
+		// 		elseif($field != 'year') {
+		// 			$this->db->like($field,$value);
+		// 		}
+		// 	}
+
+		// 	if(!empty($ord)) {
+		// 		$this->db->order_by($ord, $this->input->post('sortorder'));
+		// 	}
+		// }
+		
+		// $rows_all = $this->jurnal_model->get_data();
+
+
+		// if($_POST) {
+		// 	$fil = $this->input->post('filterscount');
+		// 	$ord = $this->input->post('sortdatafield');
+
+		// 	for($i=0;$i<$fil;$i++) {
+		// 		$field = $this->input->post('filterdatafield'.$i);
+		// 		$value = $this->input->post('filtervalue'.$i);
+
+		// 		if($field == 'tgl_pengadaan') {
+		// 			$value = date("Y-m-d",strtotime($value));
+		// 			$this->db->where($field,$value);
+		// 		}
+		// 		elseif($field == 'kode') {
+		// 			$this->db->like('inv_inventaris_barang.id_mst_inv_barang',$value);
+		// 		}
+		// 		elseif($field != 'year') {
+		// 			$this->db->like($field,$value);
+		// 		}
+		// 	}
+
+		// 	if(!empty($ord)) {
+		// 		$this->db->order_by($ord, $this->input->post('sortorder'));
+		// 	}
+		// }
+		
+		// $rows = $this->jurnal_model->get_data($this->input->post('recordstartindex'), $this->input->post('pagesize'));
+		// $data = array();
+		// foreach($rows as $act) {
+		// 	$data[] = array(
+		// 		'kode' 				=> substr(chunk_split($act->id_mst_inv_barang, 2, '.'), 0,14),
+		// 		'kode_barang' 		=> $act->id_mst_inv_barang,
+		// 		'register' 			=> $act->register,
+		// 		'nama_barang' 		=> $act->nama_barang,
+		// 		'harga' 			=> $act->harga,
+		// 		'kondisi'			=> $act->pilihan_keadaan_barang." - ".$act->val,		
+		// 		'id_barang'			=> $act->id_inventaris_barang,				
+		// 		'nama' 				=> preg_replace('/[^A-Za-z0-9\-]/', '_', $act->nama_barang)
+		// 	);
+		// }
+
+		$data[] = array('id_inventaris'=>'1','nm_iventaris' => 'Mobil','id_inventaris'=>'2','nm_iventaris' => 'Komputer','id_inventaris'=>'3','nm_iventaris' => 'Meja');
+		
+		$size = sizeof($data);
+		$json = array(
+			'TotalRows' => (int) $size,
+			'Rows' => $data
+		);
+
+		echo json_encode(array($json));
+	}
 }
 
