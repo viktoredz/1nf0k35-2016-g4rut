@@ -233,11 +233,11 @@ function detail_versi(id)
     <div class="box-footer">
           <div class="box-footer">
             <div style="float:left">
-              <button type="button" class="btn btn-danger">Hapus Transaksi</button>
+              <button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> Hapus Transaksi</button>
             </div>
             <div style="float:right">
-              <button type="button" class="btn btn-primary">Ubah</button>
-              <button type="button" id="btn-close" class="btn btn-warning">Batal</button>
+              <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i> Ubah</button>
+              <button type="button" id="btn-close" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
             </div>
         </div>
     </div>

@@ -10,36 +10,15 @@
         <div class="box-header pull-left">
           <h3 class="box-title">{title_form}</h3>
         </div>
-        <div class="box-footer pull-right">
-         <button type="button" class="btn btn-primary" id="jqxgrid_jurnal_umum_refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button> 
-         <button type="button" class="btn btn-success" onclick='export(1)'><i class='glyphicon glyphicon-floppy-disk'></i> &nbsp; Export</button> 
-         <button type="button" class="btn btn-danger" id="btnexpandall"><i class='glyphicon glyphicon-save-file'></i> &nbsp; Expand All</button> 
-         <button type="button" class="btn btn-warning" id="btncollapseall"><i class='glyphicon glyphicon-open-file'></i> &nbsp; Collapse All</button>
+        <div class="box-footer pull-right"> 
+         <button type="button" class="btn btn-danger" id="btnexpandall_hapus"><i class='glyphicon glyphicon-save-file'></i> &nbsp; Expand All</button> 
+         <button type="button" class="btn btn-warning" id="btncollapseall_hapus"><i class='glyphicon glyphicon-open-file'></i> &nbsp; Collapse All</button>
         </div>
         <div class="row">
         <div class="box-body">
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-8">
-                <div class="row">
-                  <div class="col-md-3">
-                    <label> Filter Transaksi</label>
-                  </div>
-                  <div class="col-md-4">
-                    <select class="form-control" id="filekategori" name="filekategori">
-                      <?php foreach ($filekategori as $key => $value) {?>
-                        <option value="<?php echo $key;?>"><?php echo $value?></option>
-                      <?php }?>
-                    </select>
-                  </div>
-                  <div class="col-md-5">
-                    <select class="form-control" id="filetransaksi" name="filetransaksi"> 
-                      <?php foreach ($filetransaksi as $key => $value) {?>
-                        <option value="<?php echo $key;?>"><?php echo $value?></option>
-                      <?php }?>
-                    </select>
-                  </div>
-                </div>
               </div>
               <div class="col-md-4">
                 <div class="row">
@@ -71,38 +50,8 @@
         </div>
         </div>
         <div class="box-body">
-          <div class="row">
-            <div class="col-md-8">
-             <div class="row">
-                <div class="col-md-4">
-                  <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="glyphicon glyphicon-plus"></i> Tambah Transaksi
-                    <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                      <?php foreach ($tambahtransaksi as $key => $value) {?>
-                        <li><a onclick='tambahtransaksi("<?php echo $key;?>")'><?php echo $value;?></a></li>
-                      <?php }?>
-                    </ul>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="glyphicon glyphicon-plus-sign"></i> Tambah Transaksi Otomatis
-                    <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                      <?php foreach ($tambahtransaksiotomatis as $key => $value) {?>
-                        <li><a onclick='tambahotomatis("<?php echo $key ?>")'><?php echo $value;?></a></li>
-                      <?php }?>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="box-body">
           <div class="div-grid">
-            <div id="jqxgrid_jurnal_umum"></div>
+            <div id="jqxgrid_jurnal_hapus"></div>
           </div>
         </div>
       </div>
@@ -113,14 +62,14 @@
 
 <script type="text/javascript">
 $(document).ready(function () {
-    $('#btnexpandall').click(function () {
-        $("#jqxgrid_jurnal_umum").jqxTreeGrid('expandAll');
+    $('#btnexpandall_hapus').click(function () {
+        $("#jqxgrid_jurnal_hapus").jqxTreeGrid('expandAll');
     });
-    $('#btncollapseall').click(function () {
-       $("#jqxgrid_jurnal_umum").jqxTreeGrid('collapseAll');
+    $('#btncollapseall_hapus').click(function () {
+       $("#jqxgrid_jurnal_hapus").jqxTreeGrid('collapseAll');
     });
-    $("#jqxgrid_jurnal_umum_refresh").click(function(){
-        $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
+    $("#jqxgrid_jurnal_hapus_refresh").click(function(){
+        $("#jqxgrid_jurnal_hapus").jqxTreeGrid('updateBoundData');
     });
     var source =
     {
@@ -148,7 +97,7 @@ $(document).ready(function () {
           }
       });
     // create Tree Grid
-    $("#jqxgrid_jurnal_umum").jqxTreeGrid(
+    $("#jqxgrid_jurnal_hapus").jqxTreeGrid(
     {
         width: '100%',
         source: dataAdapter,
@@ -159,7 +108,7 @@ $(document).ready(function () {
         showToolbar: true,
         altRows: true,
         ready: function(){
-           $("#jqxgrid_jurnal_umum").jqxTreeGrid('expandAll');            
+           $("#jqxgrid_jurnal_hapus").jqxTreeGrid('expandAll');            
         },
         pagerButtonsCount: 8,
         toolbarHeight: 40,
@@ -200,39 +149,5 @@ function edit(id){
     $("#content1").html(data);
   });
 }
-function penyusutaninventaris(id){   
-  $.get("<?php echo base_url().'keuangan/jurnal/penyusutan_inventaris/'; ?>"+id, function(data) {
-    $("#content1").html(data);
-  });
-}
-function close_popup(){
-  $("#popup_jurnal").jqxWindow('close');
-  $("#jqxgrid_jurnal_umum").jqxGrid('updatebounddata');
-}
-function tambahotomatis(id){
-  $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-  $.get("<?php echo base_url().'keuangan/jurnal/transaksi_otomatis_jurum/'; ?>"+id, function(data) {
-    $("#popup_content").html(data);
-  });
-  $("#popup_jurnal").jqxWindow({
-    theme: theme, resizable: false,
-    width: 500,
-    height: 800,
-    isModal: true, autoOpen: false, modalOpacity: 0.2
-  });
-  $("#popup_jurnal").jqxWindow('open');
-}
-function tambahtransaksi(id){
-  $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-  $.get("<?php echo base_url().'keuangan/jurnal/pilih_tipe_transaksijurum/'; ?>"+id, function(data) {
-    $("#popup_content").html(data);
-  });
-  $("#popup_jurnal").jqxWindow({
-    theme: theme, resizable: false,
-    width: 500,
-    height: 800,
-    isModal: true, autoOpen: false, modalOpacity: 0.2
-  });
-  $("#popup_jurnal").jqxWindow('open');
-}
+
 </script>

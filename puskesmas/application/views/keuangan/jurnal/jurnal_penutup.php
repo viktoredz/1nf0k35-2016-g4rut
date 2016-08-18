@@ -1,3 +1,7 @@
+<div id="popup_jurnal_penutup" style="display:none">
+  <div id="popup_title">Data Jurnal</div>
+  <div id="popup_contenttutpbuku">&nbsp;</div>
+</div>
 <section class="content">
 <form action="<?php echo base_url()?>kepegawaian/drh/dodel_multi" method="POST" name="">
   <div class="row">
@@ -8,7 +12,94 @@
         </div>
         <div class="box-footer pull-right">
          <button type="button" class="btn btn-primary" id="jqxgrid_jurnal_penutup_refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button> 
-         <button type="button" class="btn btn-success" onclick='add()'><i class='fa fa-plus-square'></i> &nbsp; Tambah Kategori Transaksi</button> 
+         <button type="button" class="btn btn-success" onclick='export(1)'><i class='glyphicon glyphicon-floppy-disk'></i> &nbsp; Export</button> 
+         <button type="button" class="btn btn-danger" id="btnexpandall_penutup"><i class='glyphicon glyphicon-save-file'></i> &nbsp; Expand All</button> 
+         <button type="button" class="btn btn-warning" id="btncollapseall_penutup"><i class='glyphicon glyphicon-open-file'></i> &nbsp; Collapse All</button>
+         <button type="button" class="btn btn-info" id="jqxgrid_jurnal_penutup_tutupbuku" onclick="tutupbuku()"><i class='glyphicon glyphicon-folder-close'></i> &nbsp; Tutup Buku</button>
+        </div>
+        <div class="row">
+        <div class="box-body">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="row">
+                  <div class="col-md-3">
+                    <label> Filter Transaksi</label>
+                  </div>
+                  <div class="col-md-4">
+                    <select class="form-control" id="filekategori" name="filekategori">
+                      <?php foreach ($filekategori as $key => $value) {?>
+                        <option value="<?php echo $key;?>"><?php echo $value?></option>
+                      <?php }?>
+                    </select>
+                  </div>
+                  <div class="col-md-5">
+                    <select class="form-control" id="filetransaksi" name="filetransaksi"> 
+                      <?php foreach ($filetransaksi as $key => $value) {?>
+                        <option value="<?php echo $key;?>"><?php echo $value?></option>
+                      <?php }?>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-3">
+                    <label> Periode</label>
+                  </div>
+                  <div class="col-md-4">
+                    <select class="form-control" id="periodetahun" name="periodetahun">
+                      <?php for($i=date("Y"); $i>=date("Y")-5; $i--){
+                        $select = ($i==date('Y') ? 'selected' : '');
+                      ?>
+                        <option value="<?php echo $i?>" <?php echo $select?>><?php echo $i?></option>
+                      <?php }?>
+                    </select>
+                  </div>
+                  <div class="col-md-5">
+                    <select class="form-control" id="periodebulan" name="periodebulan"> 
+                      <?php foreach ($bulan as $key => $value) { 
+                        $select = ($key==date('n') ? 'selected' : '');
+                      ?>  
+                        <option value="<?php echo $key?>" <?php echo $select?>><?php echo $value?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="box-body">
+          <div class="row">
+            <div class="col-md-8">
+             <div class="row">
+                <div class="col-md-4">
+                  <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Tambah Transaksi
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                      <?php foreach ($tambahtransaksi as $key => $value) {?>
+                        <li><a onclick='tambahtransaksi("<?php echo $key;?>")'><?php echo $value;?></a></li>
+                      <?php }?>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Tambah Transaksi Otomatis
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                      <?php foreach ($tambahtransaksiotomatis as $key => $value) {?>
+                        <li><a onclick='tambahotomatis("<?php echo $key ?>")'><?php echo $value;?></a></li>
+                      <?php }?>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="box-body">
           <div class="div-grid">
@@ -21,122 +112,141 @@
 </form>
 </section>
 
-<div id="popup_kategori_transaksi" style="display:none">
-  <div id="popup_title">{title_form}</div>
-  <div id="popup_kategori_transaksi_content">&nbsp;</div>
-</div>
-
 <script type="text/javascript">
-
-     var source = {
-      datatype: "json",
-      type  : "POST",
-      datafields: [
-      { name: 'id_mst_kategori_transaksi', type: 'string'},
-      { name: 'nama', type: 'string'},
-      { name: 'deskripsi', type: 'string'},
-      { name: 'edit', type: 'number'},
-      { name: 'delete', type: 'number'}
+$(document).ready(function () {
+    $('#btnexpandall_penutup').click(function () {
+        $("#jqxgrid_jurnal_penutup").jqxTreeGrid('expandAll');
+    });
+    $('#btncollapseall_penutup').click(function () {
+       $("#jqxgrid_jurnal_penutup").jqxTreeGrid('collapseAll');
+    });
+    $("#jqxgrid_jurnal_penutup_refresh").click(function(){
+        $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');
+    });
+    var sourcepenutup =
+    {
+        dataType: "json",
+        dataFields: [
+            { name: 'id_jurnal', type: 'number' },
+            { name: 'tanggal', type: 'string' },
+            { name: 'transaksi', type: 'string' },
+            { name: 'status', type: 'string' },
+            { name: 'kodeakun', type: 'string' },
+            { name: 'debet', type: 'string' },
+            { name: 'kredit', type: 'string' },
+            { name: 'child', type: 'array' },
+            { name: 'edit', type: 'string' },
         ],
-    url: "<?php echo site_url('keuangan/jurnal/json_jurnal_penutup'); ?>",
-    cache: false,
-    updaterow: function (rowid, rowdata, commit) {
-      },
-    filter: function(){
-      $("#jqxgrid_jurnal_penutup").jqxGrid('updatebounddata', 'filter');
-    },
-    sort: function(){
-      $("#jqxgrid_jurnal_penutup").jqxGrid('updatebounddata', 'sort');
-    },
-    root: 'Rows',
-        pagesize: 10,
-        beforeprocessing: function(data){   
-      if (data != null){
-        source.totalrecords = data[0].TotalRows;          
-      }
-    }
-    };    
-    var dataadapter = new $.jqx.dataAdapter(source, {
-      loadError: function(xhr, status, error){
-        alert(error);
-      }
-    });
-     
-    $('#jqxgrid_jurnal_penutup_refresh').click(function () {
-      $("#jqxgrid_jurnal_penutup").jqxGrid('clearfilters');
-    });
-
-    $("#jqxgrid_jurnal_penutup").jqxGrid(
-    {   
-      width: '100%',
-      selectionmode: 'singlerow',
-      source: dataadapter, theme: theme,columnsresize: true,showtoolbar: false, pagesizeoptions: ['10', '25', '50', '100'],
-      showfilterrow: true, filterable: true, sortable: true, autoheight: true, pageable: true, virtualmode: true, editable: false,
-      rendergridrows: function(obj)
-      {
-        return obj.data;    
-      },
-      columns: [
-        { text: 'Detail', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
-            var dataRecord = $("#jqxgrid_jurnal_penutup").jqxGrid('getrowdata', row);
-            if(dataRecord.edit==1){
-            return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='detail(\""+dataRecord.id_mst_kategori_transaksi+"\");'></a></div>";
-          }else{
-            return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif'></a></div>";
+        hierarchy:
+        {
+            root: 'child'
+        },
+        id: 'id_jurnal',
+        url: "<?php echo site_url('keuangan/jurnal/json_jurnal_umum'); ?>",
+    };
+      var dataAdapterpenutup = new $.jqx.dataAdapter(sourcepenutup, {
+          loadComplete: function () {
           }
-                  }
-                },
-
-        { text: 'Del', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
-            var dataRecord = $("#jqxgrid_jurnal_penutup").jqxGrid('getrowdata', row);
-            if(dataRecord.delete==1){
-            return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_del.gif' onclick='del(\""+dataRecord.id_mst_kategori_transaksi+"\");'></a></div>";
-          }else{
-            return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
-          }
-                  }
-                },
-        { text: 'Nama Kategori', datafield: 'nama', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '30%' },
-        { text: 'Deskripsi', datafield: 'deskripsi', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '60%' }
-            ]
-    });
-
-  function add(){
-      $("#popup_kategori_transaksi #popup_kategori_transaksi_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-        $.get("<?php echo base_url().'keuangan/jurnal/kategori_transaksi_add' ?>/", function(data) {
-          $("#popup_kategori_transaksi_content").html(data);
-        });
-        $("#popup_kategori_transaksi").jqxWindow({
-          theme: theme, resizable: false,
-          width: 600,
-          height: 240,
-          isModal: true, autoOpen: false, modalOpacity: 0.2
-        });
-        $("#popup_kategori_transaksi").jqxWindow('open');
-  }
-
-  function detail(id){
-      $("#popup_kategori_transaksi #popup_kategori_transaksi_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-        $.get("<?php echo base_url().'keuangan/jurnal/kategori_transaksi_edit' ?>/"+ id, function(data) {
-          $("#popup_kategori_transaksi_content").html(data);
-        });
-        $("#popup_kategori_transaksi").jqxWindow({
-          theme: theme, resizable: false,
-          width: 600,
-          height: 600,
-          isModal: true, autoOpen: false, modalOpacity: 0.2
-        });
-        $("#popup_kategori_transaksi").jqxWindow('open');
-    }
-
-  function del(id){
-    var confirms = confirm("Hapus Data ?");
-    if(confirms == true){
-      $.post("<?php echo base_url().'keuangan/jurnal/delete_kategori_transaksi' ?>/" + id,  function(){
-        $("#jqxgrid_jurnal_penutup").jqxGrid('updatebounddata', 'cells');
-        alert('Data berhasil dihapus');
       });
-    }
-  }
-</script>
+    // create Tree Grid
+    $("#jqxgrid_jurnal_penutup").jqxTreeGrid(
+    {
+        width: '100%',
+        source: dataAdapterpenutup,
+        sortable: true,
+        pageable: false,
+        editable: false,
+        columnsResize: true,
+        showToolbar: true,
+        altRows: true,
+        ready: function(){
+           $("#jqxgrid_jurnal_penutup").jqxTreeGrid('expandAll');            
+        },
+        pagerButtonsCount: 8,
+        toolbarHeight: 40,
+        columns: [
+          { text: 'Action', dataField: 'id_jurnal', width: '10%', cellsrenderer: function (row, dataField, cellText, rowData) {
+              if(rowData.edit==1){
+                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail("+rowData.id_jurnal+");'>   <a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit("+rowData.id_jurnal+");'></div>";
+              }else{
+                return "";
+              }
+            },
+          },
+          { text: 'Tanggal', dataField: 'tanggal', width: '15%' },
+          { text: 'Transaksi', dataField: 'transaksi', width: '25%' },
+          { text: 'Kode AKun', dataField: 'kodeakun', cellsFormat: 'd', width: '10%' },
+          { text: 'Debet', dataField: 'debet', cellsFormat: 'd', width: '15%',cellsAlign: "right" },
+          { text: 'Kredit', dataField: 'kredit', width: '15%',cellsAlign: "right" },
+          { text: 'Status', dataField: 'status', width: '10%' },
+        ]
+    });
 
+});
+function detail(id){   
+  $("#popup_jurnal_penutup #popup_contenttutpbuku").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+  $.get("<?php echo base_url().'keuangan/jurnal/detail_jurnal_umum/'; ?>"+id, function(data) {
+    $("#popup_contenttutpbuku").html(data);
+  });
+  $("#popup_jurnal_penutup").jqxWindow({
+    theme: theme, resizable: false,
+    width: 600,
+    height: 800,
+    isModal: true, autoOpen: false, modalOpacity: 0.2
+  });
+  $("#popup_jurnal_penutup").jqxWindow('open');
+}
+function edit(id){   
+  $.get("<?php echo base_url().'keuangan/jurnal/edit_junal_umum/'; ?>"+id, function(data) {
+    $("#content3").html(data);
+  });
+}
+function penyusutaninventaris(id){   
+  $.get("<?php echo base_url().'keuangan/jurnal/penyusutan_inventaris/'; ?>"+id, function(data) {
+    $("#content3").html(data);
+  });
+}
+function close_popup(){
+  $("#popup_jurnal_penutup").jqxWindow('close');
+  $("#jqxgrid_jurnal_penutup").jqxGrid('updatebounddata');
+}
+function tambahotomatis(id){
+  $("#popup_jurnal_penutup #popup_contenttutpbuku").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+  $.get("<?php echo base_url().'keuangan/jurnal/transaksi_otomatis_jurum/'; ?>"+id, function(data) {
+    $("#popup_contenttutpbuku").html(data);
+  });
+  $("#popup_jurnal_penutup").jqxWindow({
+    theme: theme, resizable: false,
+    width: 500,
+    height: 800,
+    isModal: true, autoOpen: false, modalOpacity: 0.2
+  });
+  $("#popup_jurnal_penutup").jqxWindow('open');
+}
+function tambahtransaksi(id){
+  $("#popup_jurnal_penutup #popup_contenttutpbuku").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+  $.get("<?php echo base_url().'keuangan/jurnal/pilih_tipe_transaksijurum/'; ?>"+id, function(data) {
+    $("#popup_contenttutpbuku").html(data);
+  });
+  $("#popup_jurnal_penutup").jqxWindow({
+    theme: theme, resizable: false,
+    width: 500,
+    height: 800,
+    isModal: true, autoOpen: false, modalOpacity: 0.2
+  });
+  $("#popup_jurnal_penutup").jqxWindow('open');
+}
+function tutupbuku(){
+  $("#popup_jurnal_penutup #popup_contenttutpbuku").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+  $.get("<?php echo base_url().'keuangan/jurnal/tutupbuku/'; ?>", function(data) {
+    $("#popup_contenttutpbuku").html(data);
+  });
+  $("#popup_jurnal_penutup").jqxWindow({
+    theme: theme, resizable: false,
+    width: 500,
+    height: 800,
+    isModal: true, autoOpen: false, modalOpacity: 0.2
+  });
+  $("#popup_jurnal_penutup").jqxWindow('open');
+}
+</script>

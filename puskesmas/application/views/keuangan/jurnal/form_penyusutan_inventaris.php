@@ -20,10 +20,10 @@
     <div class="box-body">
       <div class="row pull-right">
         <div class="box-body">
-          <button type="reset" id="btn-reset_penyusutan_jurum" class="btn btn-success">Reset</button>
-          <button type="button" id="btn-simpan_penyusutan_jurum" class="btn btn-primary">Simpan Perubahan</button>
-          <button type="button" id="btn-delete_penyusutan_jurum" class="btn btn-danger">Hapus</button>
-          <button type="button" id="btn-close_penyusutan_jurum" class="btn btn-warning">Batal</button>
+          <button type="reset" id="btn-reset_penyusutan_jurum" class="btn btn-success"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
+          <button type="button" id="btn-simpan_penyusutan_jurum" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-saved"></i> Simpan Perubahan</button>
+          <button type="button" id="btn-delete_penyusutan_jurum" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> Hapus</button>
+          <button type="button" id="btn-close_penyusutan_jurum" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
         </div>
       </div>
         <div class="box-body">
@@ -92,7 +92,7 @@
         ini create
         -->
         <div class="row" style="margin: 5px">
-          <div class="col-md-12" style="padding: 5px"><button type="button" id="add_inventaris" onclick="add_datainventaris()" class="btn btn-success">Tambah Inventaris</button></div>
+          <div class="col-md-12" style="padding: 5px"><button type="button" id="add_inventaris" onclick="add_datainventaris()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Tambah Inventaris</button></div>
         </div>
         <div class="row" style="margin: 5px">
           <div class="col-md-12">

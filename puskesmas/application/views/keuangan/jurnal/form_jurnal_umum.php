@@ -20,11 +20,11 @@
     <div class="box-body">
       <div class="row pull-right">
         <div class="box-body">
-          <button type="reset" id="btn-reset_jurum" class="btn btn-success">Reset</button>
-          <button type="button" id="btn-simpan_jurum" class="btn btn-primary">Simpan</button>
-          <button type="button" id="btn-draf_jurum" class="btn btn-info">Simpan Sebagai Draf</button>
-          <button type="button" id="btn-delete_jurum" class="btn btn-danger">Hapus</button>
-          <button type="button" id="btn-close_jurum" class="btn btn-warning">Batal</button>
+          <button type="reset" id="btn-reset_jurum" class="btn btn-success"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
+          <button type="button" id="btn-simpan_jurum" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-saved"></i> Simpan</button>
+          <button type="button" id="btn-draf_jurum" class="btn btn-info"><i class="glyphicon glyphicon-floppy-save"></i> Simpan Sebagai Draf</button>
+          <button type="button" id="btn-delete_jurum" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> Hapus</button>
+          <button type="button" id="btn-close_jurum" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
         </div>
       </div>
         <div class="box-body">

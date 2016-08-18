@@ -152,7 +152,7 @@ var source = {
       <div id="jqxgridpilihtipe"></div>
     </div>
     <div class="box-footer pull-right">
-          <button type="button" id="btn-close" class="btn btn-warning">Batal</button>
+          <button type="button" id="btn-close" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
     </div>
     </form>
   </div>

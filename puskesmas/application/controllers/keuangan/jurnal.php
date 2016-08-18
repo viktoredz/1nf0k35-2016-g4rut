@@ -41,15 +41,30 @@ class Jurnal extends CI_Controller {
 			case 3:
 				$data['title_group']   = "Keuangan";
 				$data['title_form']    = "Jurnal Penutup";
+				$data['title_group']   = "Keuangan";
+				$data['title_form']    = "Jurnal Umum";
+				$data['bulan'] =array(1=>"Januari","Februari","Maret","April","Mei","Juni","July","Agustus","September","Oktober","November","Desember");
+				$data['filekategori'] =array('all'=>"Semua Kategori","penerimaankas" => 'Penerimaan Kas',"Pembelian" => 'pembelian',"Biaya" => 'biaya',"penjualan" => 'Penjualan',"pembukuan"=>'Pembukuan');
+				$data['filetransaksi'] =array('all'=>"Semua Transaksi","transaksidisimpan" => 'Transaksi Disimpan',"transaksidraf" => 'Transaksi Draf');
+				$data['tambahtransaksi'] =array('pendapatanumum'=>"Pendapatan Umum","pendapatanbpjs" => 'Pendapatan BPJS Kapasitas',"pembelian" => 'Pembelian Persediaan');
+				$data['tambahtransaksiotomatis'] =array('transaksiotomatis'=>"Transaksi Otomatis");
 				
 				die($this->parser->parse("keuangan/jurnal/jurnal_penutup",$data));
 
 				break;
 			default:
 				$data['title_group']   = "Keuangan";
-				$data['title_form']    = "Jurnal Umum";
+				$data['title_form']    = "Jurnal Penutup";
+				$data['title_group']   = "Keuangan";
+				$data['title_form']    = "Transaksi di hapus";
 				$data['bulan'] =array(1=>"Januari","Februari","Maret","April","Mei","Juni","July","Agustus","September","Oktober","November","Desember");
-				die($this->parser->parse("keuangan/jurnal/kategori_transaksi",$data));
+				$data['filekategori'] =array('all'=>"Semua Kategori","penerimaankas" => 'Penerimaan Kas',"Pembelian" => 'pembelian',"Biaya" => 'biaya',"penjualan" => 'Penjualan',"pembukuan"=>'Pembukuan');
+				$data['filetransaksi'] =array('all'=>"Semua Transaksi","transaksidisimpan" => 'Transaksi Disimpan',"transaksidraf" => 'Transaksi Draf');
+				$data['tambahtransaksi'] =array('pendapatanumum'=>"Pendapatan Umum","pendapatanbpjs" => 'Pendapatan BPJS Kapasitas',"pembelian" => 'Pembelian Persediaan');
+				$data['tambahtransaksiotomatis'] =array('transaksiotomatis'=>"Transaksi Otomatis");
+				
+				die($this->parser->parse("keuangan/jurnal/transaksi_hapus",$data));
+
 				break;
 		}
 	}
@@ -542,5 +557,39 @@ function json_penyusutan(){
 
 		echo json_encode(array($json));
 	}
+function tutupbuku($id=0){
+	$this->authentication->verify('keuangan','add');
+
+    $this->form_validation->set_rules('jumlahdistribusi', 'Jumlah Distribusi', 'trim|required');
+    $this->form_validation->set_rules('uraian', 'Nama Barang', 'trim');
+    $this->form_validation->set_rules('jumlah', 'Jumlah', 'trim');
+
+	if($this->form_validation->run()== FALSE){
+
+		$data['notice']			= validation_errors();
+		$data['id']				= $id;
+		$data['action']			= "edit";
+		$data['title']			= "Tutup Buku";
+		
+		// die($this->parser->parse('keuangan/jurnal/form_tipe_transaksi_jurum',$data));
+		die($this->parser->parse('keuangan/jurnal/form_tutupbuku',$data));
+
+	}else{
+		
+		$values = array(
+			'id_inv_inventaris_habispakai_distribusi'=>$id_distribusi,
+			'id_mst_inv_barang_habispakai'=> $kode,
+			'batch' => $batch,
+			'jml' => $this->input->post('jumlahdistribusi'),
+		);
+		$simpan=$this->db->insert('inv_inventaris_habispakai_distribusi_item', $values);
+		if($simpan==true){
+			die("OK|Data Tersimpan");
+		}else{
+			 die("Error|Proses data gagal");
+		}
+		
+	}
+}
 }
 

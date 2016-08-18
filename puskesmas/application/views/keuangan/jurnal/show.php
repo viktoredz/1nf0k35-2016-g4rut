@@ -27,7 +27,7 @@
             <li style="margin-left: 15px;">
               <div style="height: 20px; margin-top: 5px;">
                   <div style="float: left;">
-                      <i class="icon fa fa-list" style="font-size: 18px"></i>
+                      <i class="glyphicon glyphicon-th-list" style="font-size: 18px"></i>
                   </div>
                   <div style="margin-left: 8px; vertical-align: middle; text-align: center; float: left;">
                       Jurnal Umum</div>
@@ -36,7 +36,7 @@
             <li style="margin-left: 15px;">
               <div style="height: 20px; margin-top: 5px;">
                   <div style="float: left;">
-                      <i class="icon fa fa-list-alt" style="font-size: 18px"></i>
+                      <i class="glyphicon glyphicon-list-alt" style="font-size: 18px"></i>
                   </div>
                   <div style="margin-left: 8px; vertical-align: middle; text-align: center; float: left;">
                       Jurnal Penyesuaian </div>
@@ -46,10 +46,19 @@
             <li style="margin-left: 15px;">
               <div style="height: 20px; margin-top: 5px;">
                   <div style="float: left;">
-                      <i class="icon fa fa-list-alt" style="font-size: 18px"></i>
+                      <i class="glyphicon glyphicon-book" style="font-size: 18px"></i>
                   </div>
                   <div style="margin-left: 8px; vertical-align: middle; text-align: center; float: left;">
                       Jurnal Penutup</div>
+              </div>
+            </li>
+            <li style="margin-left: 15px;">
+              <div style="height: 20px; margin-top: 5px;">
+                  <div style="float: left;">
+                      <i class="glyphicon glyphicon-trash" style="font-size: 18px"></i>
+                  </div>
+                  <div style="margin-left: 8px; vertical-align: middle; text-align: center; float: left;">
+                      Jurnal Hapus</div>
               </div>
             </li>
             
@@ -57,6 +66,7 @@
         <div id="content1" style="background: #FAFAFA"></div>
         <div id="content2" style="background: #FAFAFA"></div>
         <div id="content3" style="background: #FAFAFA"></div>
+        <div id="content4" style="background: #FAFAFA"></div>
 
     </div>
   </div>

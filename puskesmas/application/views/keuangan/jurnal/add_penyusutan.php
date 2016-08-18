@@ -11,8 +11,8 @@
 	</div>
 </div>
 <div class="box-header pull-right">
-	<button type="button" class="btn btn-primary">Tambahkan</button>
-	<button type="button" id="btn-close_inventaris" class="btn btn-warning">Batal</button>
+	<button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Tambahkan</button>
+	<button type="button" id="btn-close_inventaris" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
 </div>
 </section>
 

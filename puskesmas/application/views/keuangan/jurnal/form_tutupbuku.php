@@ -63,47 +63,21 @@
     <?php echo form_open(current_url(), 'id="form-ss-jurnal_umum"') ?>
     <div class="box-body">
         <div class="row" style="margin: 5px">
-          <div class="col-md-12" style="padding: 5px"><h3>{title}</h3></div>
+          <div class="col-md-4" style="padding: 5px"><h3>{title}</h3></div>
         </div>
         <div class="row" style="margin: 5px">
-          <div class="col-md-12" style="padding: 5px"><h4>Transaksi akan disimpan di database</h4></div>
-        </div>
-      <div class="alert alert-success" role="alert">
-        <div class="row" style="margin: 5px">
-          <div class="col-md-12" style="padding: 5px">{transaksi_urut}</div>
-        </div>
-        <div class="row" style="margin: 5px">
-          <div class="col-md-4" style="padding: 5px">Nomor Tranasksi</div>
-          <div class="col-md-8">
-            {nomor_transaksi}
+          <div class="col-md-12" style="padding: 5px">
+          <b>Konfirmasi tutup buku periode 1 Agustus -31 Agustus 2016</b><br>
+          Sebelum tutup buku, Pastikan Semua periode ini dan transaski untuk tutup buku sudah di masukan. Jurnal yang sudah ditutup tidak bisa dirubah lagi. <br>
+          <b>Yakin akan menutup buku periode ini ?</b>
           </div>
         </div>
-        <div class="row" style="margin: 5px">
-          <div class="col-md-4" style="padding: 5px">Uraian</div>
-          <div class="col-md-8">
-            {uraian}
-          </div>
-        </div>
-        <div class="row" style="margin: 5px">
-          <div class="col-md-4" style="padding: 5px">Debit</div>
-          <div class="col-md-8">
-            <font size="4">{jml_debit}</font><br>
-            {id_akun_debit}
-          </div>
-        </div>
-        <div class="row" style="margin: 5px">
-          <div class="col-md-4" style="padding: 5px">Kredit</div>
-          <div class="col-md-8">
-            <font size="4">{jml_kredit}</font><br>
-            {id_akun_kredit}
-          </div>
-        </div>
-      </div>
+        
     </div>
-        <div class="box-footer pull-right">
+        <div class="box-footer">
+            <div style="float:right">
               <button type="button" id="btn-close" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
-              <button type="button" class="btn btn-success"><i class="glyphicon glyphicon-floppy-saved"></i> Simpan Transaksi</button>
-              <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> Simpan Sebagai Draf</button>
+              <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-book"></i> Tutup Buku</button>
             </div>
         </div>
     </div>
