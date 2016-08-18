@@ -74,14 +74,14 @@ class Jurnal extends CI_Controller {
 		$this->authentication->verify('keuangan','show');
 
 		$data = array(
-						'0'=>array('id_jurnal' => '2','edit'=>'1','tanggal'=>'11-Maret-2016','transaksi'=>'Penerimaan Pendapatan Puskesmas - 110316-1','status'=>'Disimpan','child' => array(
-											'0' => array('id_jurnal' => '3','transaksi'=>'Kas Bendahara','kodeakun'=>'111110','debet'=>'47850000'),
-											'1'=>array('id_jurnal' => '4','transaksi'=>'Pendapatan Pasien Umum','kodeakun' =>'511110','kredit'=>'47850000')
+						'0'=>array('id_jurnal' => '2','edit'=>'1','tanggal'=>'11-Maret-2016','debet'=>'0','transaksi'=>'Penerimaan Pendapatan Puskesmas - 110316-1','status'=>'Disimpan','kredit'=>'0','child' => array(
+											'0' => array('id_jurnal' => '3','transaksi'=>'Kas Bendahara','kodeakun'=>'111110','debet'=>'47850000','kredit'=>'0'),
+											'1'=>array('id_jurnal' => '4','debet'=>'0','transaksi'=>'Pendapatan Pasien Umum','kodeakun' =>'511110','kredit'=>'47850000')
 											)
 							),
-						'1' => array('id_jurnal'=>'5','edit'=>'1','tanggal'=>'15-Maret-2016','transaksi'=>'Penerimaan Jasa Giro - 110316-2','status'=>'Draf','child'=>array(
-											'0'=>array('id_jurnal' => '6','transaksi'=>'Rekening Bank JKN','kodeakun'=>'11220','debet'=>'1055693'),
-											'1'=>array('id_jurnal' => '7','transaksi'=>'Jasa Giro','kodeakun'=>'54300','kredit'=>'1055693')
+						'1' => array('id_jurnal'=>'5','edit'=>'1','tanggal'=>'15-Maret-2016','debet'=>'0','transaksi'=>'Penerimaan Jasa Giro - 110316-2','status'=>'Draf','kredit'=>'0','child'=>array(
+											'0'=>array('id_jurnal' => '6','transaksi'=>'Rekening Bank JKN','kodeakun'=>'11220','debet'=>'1055693','kredit'=>'0'),
+											'1'=>array('id_jurnal' => '7','transaksi'=>'Jasa Giro','debet'=>'0','kodeakun'=>'54300','kredit'=>'1055693')
 										)
 							)
 				);

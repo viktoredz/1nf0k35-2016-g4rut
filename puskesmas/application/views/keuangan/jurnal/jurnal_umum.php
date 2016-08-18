@@ -131,8 +131,8 @@ $(document).ready(function () {
             { name: 'transaksi', type: 'string' },
             { name: 'status', type: 'string' },
             { name: 'kodeakun', type: 'string' },
-            { name: 'debet', type: 'string' },
-            { name: 'kredit', type: 'string' },
+            { name: 'debet', type: 'number' },
+            { name: 'kredit', type: 'number' },
             { name: 'child', type: 'array' },
             { name: 'edit', type: 'string' },
         ],
@@ -158,6 +158,9 @@ $(document).ready(function () {
         columnsResize: true,
         showToolbar: true,
         altRows: true,
+        showSubAggregates: true,
+        showAggregates: true,
+        aggregatesHeight: 55,
         ready: function(){
            $("#jqxgrid_jurnal_umum").jqxTreeGrid('expandAll');            
         },
@@ -174,9 +177,46 @@ $(document).ready(function () {
           },
           { text: 'Tanggal', dataField: 'tanggal', width: '15%' },
           { text: 'Transaksi', dataField: 'transaksi', width: '25%' },
-          { text: 'Kode AKun', dataField: 'kodeakun', cellsFormat: 'd', width: '10%' },
-          { text: 'Debet', dataField: 'debet', cellsFormat: 'd', width: '15%',cellsAlign: "right" },
-          { text: 'Kredit', dataField: 'kredit', width: '15%',cellsAlign: "right" },
+          { text: 'Kode AKun', dataField: 'kodeakun', width: '10%' },
+          { text: 'Debet', dataField: 'debet', cellsFormat: 'd', width: '15%',cellsAlign: "right", 
+                      aggregates: [{
+                          'Total':
+                            function (aggregatedValue, currentValue, column, record, aggregateLevel) {
+                                    return aggregatedValue + currentValue;
+                            }
+                      }],
+                      aggregatesRenderer: function (aggregatesText, column, element, aggregates, type) {
+                          if (type == "aggregates") {
+                              var renderString = "<div style='margin: 4px; float: right;  height: 100%;'>";
+                          }
+                          else {
+                              var renderString = "<div style='float: right;  height: 100%;'>";
+                          }
+                          var totdeb = dataAdapter.formatNumber(aggregates.Total, "f2");
+                          renderString += "<table><tr><td rowspan='2'><strong>Total: </strong></td><td align='right'>" + totdeb + "</td></table>";
+                          return renderString;
+                      }
+          },
+
+          { text: 'Kredit', dataField: 'kredit', width: '15%', cellsFormat: 'd', width: '15%',cellsAlign: "right", 
+                      aggregates: [{
+                          'Total':
+                            function (aggregatedValue, currentValue, column, record, aggregateLevel) {
+                                    return aggregatedValue + currentValue;
+                            }
+                      }],
+                      aggregatesRenderer: function (aggregatesText, column, element, aggregates, type) {
+                          if (type == "aggregates") {
+                              var renderString = "<div style='margin: 4px; float: right;  height: 100%;'>";
+                          }
+                          else {
+                              var renderString = "<div style='float: right;  height: 100%;'>";
+                          }
+                          var totkre = dataAdapter.formatNumber(aggregates.Total, "f2");
+                          renderString += "<table><tr><td rowspan='2'><strong>Total: </strong></td><td align='right'>" + totkre + "</td></table>";
+                          return renderString;
+                      }
+          },
           { text: 'Status', dataField: 'status', width: '10%' },
         ]
     });
