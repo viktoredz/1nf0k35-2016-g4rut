@@ -49,8 +49,8 @@
 
 <script type="text/javascript">
 	$(function () {	
-	    $("#menu_aset_tetap").addClass("active");
 	    $("#menu_inventory_permohonanbarang").addClass("active");
+    	$("#menu_einventory").addClass("active");
 	});
 
 	   var source = {

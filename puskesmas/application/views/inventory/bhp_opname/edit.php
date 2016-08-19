@@ -276,8 +276,8 @@ $(function(){
     });
 
 
-    $("#menu_bahan_habis_pakai").addClass("active");
-    $("#menu_inventory_bhp_opname").addClass("active");
+    $("#menu_einventory").addClass("active");
+      $("#menu_inventory_bhp_opname").addClass("active");
 
     <?php if($action!="view"){?>
       $("#tgl_opname").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme , height: '30px' , disabled: true});

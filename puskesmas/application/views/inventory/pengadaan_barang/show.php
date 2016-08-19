@@ -52,7 +52,7 @@
 
 <script type="text/javascript">
 	$(function () {	
-	    $("#menu_aset_tetap").addClass("active");
+	    $("#menu_einventory").addClass("active");
 	    $("#menu_inventory_pengadaanbarang").addClass("active");
 	});
 

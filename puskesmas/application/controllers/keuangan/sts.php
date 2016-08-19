@@ -203,7 +203,7 @@ class Sts extends CI_Controller {
 		$data['nomor'] 					= $this->generate_nomor(date("Y-m-d H:i:s"));		
 
 		if($this->form_validation->run()== FALSE){
-			die($this->parser->parse("keuangan/form_tambah_sts",$data));
+			die($this->parser->parse("keuangan/sts/form_tambah_sts",$data));
 		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){
 				$id=$this->sts_model->add_sts();
 				die("OK | $id");
@@ -211,7 +211,7 @@ class Sts extends CI_Controller {
 			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
 			redirect(base_url()."keuangan/sts/add_sts");
 		}
-		die($this->parser->parse("keuangan/form_tambah_sts",$data));
+		die($this->parser->parse("keuangan/sts/form_tambah_sts",$data));
 	}
 
 	function sts_tgl(){
@@ -286,7 +286,7 @@ class Sts extends CI_Controller {
 		$this->session->set_userdata('filter_tahun','');
 		$data['bulan']			= array('01'=>'Januari', '02'=>'Februari', '03'=>'Maret', '04'=>'April', '05'=>'Mei', '06'=>'Juni', '07'=>'Juli', '08'=>'Agustus', '09'=>'September', '10'=>'Oktober', '11'=>'November', '12'=>'Desember');
 
-		$data['content'] = $this->parser->parse("keuangan/main_sts",$data,true);						
+		$data['content'] = $this->parser->parse("keuangan/sts/main_sts",$data,true);						
 		
 		$this->template->show($data,"home");
 	}
@@ -300,7 +300,7 @@ class Sts extends CI_Controller {
 		$data['data_sts_total'] = $this->sts_model->get_data_sts_total($id, $this->session->userdata('puskesmas'));
 		$data['nomor'] = $this->generate_nomor(date("Y-m-d H:i:s"));		
 		$data['id'] = $id;
-		$data['content'] = $this->parser->parse("keuangan/detail_sts",$data,true);		
+		$data['content'] = $this->parser->parse("keuangan/sts/detail_sts",$data,true);		
 				
 		$this->template->show($data,"home");
 	}	
@@ -441,7 +441,7 @@ class Sts extends CI_Controller {
 		$data['title_group'] = "Kode Anggaran";
 		$data['title_form'] = "Master Data - Kode Anggaran";
 
-		$data['content'] = $this->parser->parse("keuangan/kode_rekening",$data,true);						
+		$data['content'] = $this->parser->parse("keuangan/sts/kode_rekening",$data,true);						
 
 		$this->template->show($data,"home");
 	}

@@ -1396,7 +1396,7 @@
         });
 
     $("#menu_inventory_inv_barang").addClass("active");
-    $("#menu_inventory").addClass("active");
+    $("#menu_einventory").addClass("active");
 
     $('#code_cl_phc').change(function(){
       var code_cl_phc = $(this).val();

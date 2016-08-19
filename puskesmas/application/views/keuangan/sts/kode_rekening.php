@@ -34,8 +34,8 @@
 
 <script type="text/javascript">
 	$(function () {	
-		$("#menu_mst_agama").addClass("active");
-		$("#menu_master_data").addClass("active");
+		$("#menu_ekeuangan").addClass("active");
+        $("#menu_keuangan_sts_general").addClass("active");
 	});
 
 	   var source = {

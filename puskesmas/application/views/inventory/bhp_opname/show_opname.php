@@ -121,7 +121,7 @@
 				$("#jqxgridopname").jqxGrid('updatebounddata', 'cells');
 			});
 		});
-	    $("#menu_bahan_habis_pakai").addClass("active");
+	    $("#menu_einventory").addClass("active");
 	    $("#menu_inventory_bhp_opname").addClass("active");
 	});
 	   var source = {

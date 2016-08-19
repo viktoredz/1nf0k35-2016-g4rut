@@ -122,8 +122,8 @@ $(function(){
         window.location.href="<?php echo base_url()?>inventory/pengadaanbarang";
     });
 
-    $("#menu_aset_tetap").addClass("active");
-    $("#menu_inventory_pengadaanbarang").addClass("active");
+    $("#menu_einventory").addClass("active");
+      $("#menu_inventory_pengadaanbarang").addClass("active");
 
     $("#tgl").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
     $("#tgl1").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});

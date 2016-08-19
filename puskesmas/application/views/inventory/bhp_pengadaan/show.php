@@ -51,7 +51,7 @@
 
 <script type="text/javascript">
 	$(function () {	
-	    $("#menu_bahan_habis_pakai").addClass("active");
+	    $("#menu_einventory").addClass("active");
 	    $("#menu_inventory_bhp_pengadaan").addClass("active");
 	});
 	   var source = {
