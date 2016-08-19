@@ -318,19 +318,6 @@ class Penilaiandppp extends CI_Controller {
 
 			$this->template->show($data,"home");
 	}
-	// function adddatadppp($id_pegawai=0,$tahun=0,$id_mst_peg_struktur_org=0,$id_mst_peg_struktur_skp=0){
-	// 	$this->authentication->verify('kepegawaian','add');
-
-	// 	$data['title_group'] = "Kepegawaian";
-	// 	$data['title_form']="Penilaian DP3";
-	// 	$data['id_pegawai']=$id_pegawai;
-
-	// 	$data['id_mst_peg_struktur_org']=$id_mst_peg_struktur_org;
-	// 	$data['tahun']=$tahun;
-	// 	$data['id_mst_peg_struktur_skp']=$id_mst_peg_struktur_skp;
-
-	// 	die($this->parser->parse("kepegawaian/penilaiandppp/tab_dppp",$data));
-	// }
 	function add_pengukuran($id_pegawai=0,$tahun=0,$id_mst_peg_struktur_org=0,$id_mst_peg_struktur_skp=0){
 		$data['action']				= "add";
 		$data['id_pegawai']			= $id_pegawai;
@@ -353,7 +340,7 @@ class Penilaiandppp extends CI_Controller {
         $this->form_validation->set_rules('id_pegawai_pengukuran', 'id Pegawai', 'trim|required');
         $this->form_validation->set_rules('id_pegawai_pengukuran_penilai', 'id_penilai', 'trim|required');
         $this->form_validation->set_rules('periode', 'Periode', 'trim|required');
-        $this->form_validation->set_rules('id_pegawai_pengukuran_penilai_atasan', 'id_penilai_atasan', 'trim');
+        // $this->form_validation->set_rules('id_pegawai_pengukuran_penilai_atasan', 'id_penilai_atasan', 'trim');
         $this->form_validation->set_rules('tahun_pengukuran', 'Tahun', 'trim|required');
 
 		if($this->form_validation->run()== FALSE){
@@ -993,7 +980,8 @@ class Penilaiandppp extends CI_Controller {
 	}
 
 	function nippenilai($id_pegawai=0){
-		$query = $this->db->query("select id_pegawai from pegawai_struktur where tar_id_struktur_org= (select tar_id_struktur_org_parent from mst_peg_struktur_org where tar_id_struktur_org = (select tar_id_struktur_org from pegawai_struktur where id_pegawai =".'"'.$id_pegawai.'"'."))");
+		$puskes = $this->session->userdata('puskesmas');
+		$query = $this->db->query("select id_pegawai from pegawai_struktur where tar_id_struktur_org= (select tar_id_struktur_org_parent from mst_peg_struktur_org where tar_id_struktur_org = (select tar_id_struktur_org from pegawai_struktur where id_pegawai =".'"'.$id_pegawai.'"'.") AND code_cl_phc="."'P".$puskes."'".")");
 		if($query->num_rows() >0 ){
 			foreach ($query->result() as $key) {
 				$data = $key->id_pegawai;
@@ -1027,7 +1015,8 @@ class Penilaiandppp extends CI_Controller {
 		}
 	}
 	function nippenilaiatasan($id_pegawai=0){
-		$query = $this->db->query("select id_pegawai from pegawai_struktur where tar_id_struktur_org = (select tar_id_struktur_org_parent from mst_peg_struktur_org where tar_id_struktur_org=(select tar_id_struktur_org from pegawai_struktur where id_pegawai = (select id_pegawai from pegawai_struktur where tar_id_struktur_org= (select tar_id_struktur_org_parent from mst_peg_struktur_org where tar_id_struktur_org = (select tar_id_struktur_org from pegawai_struktur where id_pegawai =".'"'.$id_pegawai.'"'.")))))");
+		$puskes=$this->session->userdata('puskesmas');
+		$query = $this->db->query("select id_pegawai from pegawai_struktur where tar_id_struktur_org = (select tar_id_struktur_org_parent from mst_peg_struktur_org where tar_id_struktur_org=(select tar_id_struktur_org from pegawai_struktur where id_pegawai = (select id_pegawai from pegawai_struktur where tar_id_struktur_org= (select tar_id_struktur_org_parent from mst_peg_struktur_org where tar_id_struktur_org = (select tar_id_struktur_org from pegawai_struktur where id_pegawai =".'"'.$id_pegawai.'"'.")AND code_cl_phc="."'P".$puskes."'".")))AND code_cl_phc="."'P".$puskes."'".")");
 		if($query->num_rows() >0 ){
 			foreach ($query->result() as $key) {
 				$data = $key->id_pegawai;
