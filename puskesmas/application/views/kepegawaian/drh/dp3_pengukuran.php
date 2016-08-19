@@ -110,7 +110,7 @@ $(function(){
       $("#jqxgridPenilaianSKP").jqxGrid('updatebounddata', 'cells');
       ambilnilairataskp();
     });
-    $("#menu_kepegawaian").addClass("active");
+    $("#menu_ekepegawaian").addClass("active");
     $("#menu_kepegawaian_drh").addClass("active");
       var tahungrid = $("#tahungrid_datapengukuran").val();
       $("#tahungrid_datapengukuran").change(function(){

@@ -114,7 +114,7 @@
 <script type="text/javascript">
 	$(function () {	
 		
-		$("#menu_ketuk_pintu").addClass("active");
+		$("#menu_eprokesga").addClass("active");
 		$("#menu_eform_laporan_kpldh").addClass("active");
 
 		$("#hilang").hide(); 

@@ -667,7 +667,7 @@ if (($statusanakbuah == 'diasendiri') || ($statusanakbuah == 'atasan')) {
 $(function(){
     $("#btn-refresh-datagrid").hide();
     $("#btn-export-datagrid").show();
-    $("#menu_kepegawaian").addClass("active");
+    $("#menu_ekepegawaian").addClass("active");
     $("#menu_kepegawaian_penilaiandppp").addClass("active");
 
      $("#btn-export-datagrid").click(function(){

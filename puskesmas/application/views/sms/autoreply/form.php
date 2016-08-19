@@ -113,7 +113,7 @@
 
 <script>
   $(function () { 
-    $("#menu_sms_gateway").addClass("active");
+    $("#menu_esms").addClass("active");
     $("#menu_sms_autoreply").addClass("active");
 
     $("#tgl_mulai").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});

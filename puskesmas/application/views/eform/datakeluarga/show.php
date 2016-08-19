@@ -71,7 +71,7 @@
 
 <script type="text/javascript">
 	$(function () {	
-		$("#menu_ketuk_pintu").addClass("active");
+		$("#menu_eprokesga").addClass("active");
 		$("#menu_eform_data_kepala_keluarga").addClass("active");
 	});
 		

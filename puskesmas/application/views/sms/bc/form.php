@@ -208,7 +208,7 @@
 
 <script>
 	$(function () {	
-    $("#menu_sms_gateway").addClass("active");
+    $("#menu_esms").addClass("active");
     $("#menu_sms_bc").addClass("active");
 
     $("#Pesan").keyup(function(){

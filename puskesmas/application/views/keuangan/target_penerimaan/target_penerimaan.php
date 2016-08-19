@@ -107,6 +107,8 @@
 <script>
 	
 	$(function(){
+		$("#menu_ekeuangan").addClass("active");
+        $("#menu_keuangan_target_penerimaan").addClass("active");
 	   var source = {
 			datatype: "json",
 			type	: "POST",
@@ -155,8 +157,9 @@
 			selectionmode: 'singlerow',			
 			showstatusbar: true,
 			statusbarheight: 50,
+			showSubAggregates: true,
+        	showAggregates: true,
 			source: dataadapter, 
-			showaggregates: true,
 			theme: theme,columnsresize: true,showtoolbar: false, pagesizeoptions: ['10', '25', '50', '100'],
 			showfilterrow: true, filterable: true, sortable: true, autoheight: true, pageable: false, virtualmode: true, editable: false,
 			rendergridrows: function(obj)

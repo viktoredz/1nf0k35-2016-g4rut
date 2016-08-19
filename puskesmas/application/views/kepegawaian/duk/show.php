@@ -49,7 +49,7 @@
 
 <script type="text/javascript">
 	$(function () {	
-	    $("#menu_kepegawaian").addClass("active");
+	    $("#menu_ekepegawaian").addClass("active");
 	    $("#menu_kepegawaian_duk").addClass("active");
 	});
 	   var source = {

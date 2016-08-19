@@ -77,8 +77,8 @@ $(function(){
         window.location.href="<?php echo base_url()?>inventory/permohonanbarang";
     });
 
-    $("#menu_aset_tetap").addClass("active");
-    $("#menu_inventory_permohonanbarang").addClass("active");
+    $("#menu_ekepegawaian").addClass("active");
+      $("#menu_kepegawaian_stuktur_kepegawaian").addClass("active");
 
     $("#tgl").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
 

@@ -181,8 +181,8 @@ $(function(){
         window.location.href="<?php echo base_url()?>inventory/permohonanbarang";
     });
 
-    $("#menu_kepegawaian").addClass("active");
-      $("#menu_kepegawaian_penilaiandppp").addClass("active");
+    $("#menu_ekepegawaian").addClass("active");
+    $("#menu_kepegawaian_penilaiandppp").addClass("active");
 
 
     $.ajax({

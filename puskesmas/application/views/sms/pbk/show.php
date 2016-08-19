@@ -50,7 +50,7 @@
 
 <script type="text/javascript">
 	$(function () {	
-		$("#menu_sms_gateway").addClass("active");
+		$("#menu_esms").addClass("active");
 		$("#menu_sms_pbk").addClass("active");
 
 		$("#id_sms_grup").change(function(){

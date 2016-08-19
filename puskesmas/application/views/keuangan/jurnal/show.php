@@ -14,7 +14,7 @@
         loadPage('<?php echo base_url()?>keuangan/jurnal/tab/'+pageIndex , pageIndex);
     });
 
-    $("#menu_keuangan").addClass("active");
+    $("#menu_ekeuangan").addClass("active");
     $("#menu_keuangan_jurnal").addClass("active");
   });
 </script>
