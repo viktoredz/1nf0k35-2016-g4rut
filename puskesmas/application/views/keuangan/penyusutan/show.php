@@ -14,7 +14,7 @@
           <h3 class="box-title">{title_form}</h3>
         </div>
           <div class="box-footer">
-            <button type="button" class="btn btn-primary" onclick='add_sts()'><i class='fa fa-plus-square'></i> &nbsp;Tambah STS</button> 
+            <button type="button" class="btn btn-primary" onclick='add_inventaris()'><i class='fa fa-plus-square'></i> &nbsp;Tambah Inventaris</button> 
             <button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp;Refresh</button>    
          </div>
       <div class="box-body">
@@ -139,7 +139,7 @@
                     }
                  }
                 },
-                { text: 'ID Inventaris', datafield: 'id_inventaris', columntype: 'textbox', filtertype: 'textbox',align: 'center', cellsalign: 'center', width: '8%',cellsalign: 'center'},
+                { text: 'ID Inventaris', datafield: 'id_inventaris', columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '8%',cellsalign: 'center'},
                 { text: 'Nama Inventaris', datafield: 'nama_inventaris', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '25%'},
                 { text: 'Nilai Awal', datafield: 'nilai_awal', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '15%',cellsalign: 'right' },
                 { text: 'Nilai Sekarang', datafield: 'nilai_akhir', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '15%',cellsalign: 'right' },
@@ -172,9 +172,9 @@
         }
     }
 
-    function add_sts(){
+    function add_inventaris(){
       $("#popup_keuangan_penyusutan #popup_keuangan_penyusutan_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-        $.get("<?php echo base_url().'keuangan/penyusutan/add_sts' ?>/", function(data) {
+        $.get("<?php echo base_url().'keuangan/penyusutan/add_inventaris' ?>/", function(data) {
           $("#popup_keuangan_penyusutan_content").html(data);
         });
         $("#popup_keuangan_penyusutan").jqxWindow({

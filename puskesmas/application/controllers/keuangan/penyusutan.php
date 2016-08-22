@@ -133,11 +133,11 @@ class Penyusutan extends CI_Controller {
 		// }
 
 		$data = array(
-			'0' => array('id_inventaris' => '1','nama_inventaris' => 'Mobil Tesla - Model S','nilai_awal' => '800000000','nilai_akhir' => '500000000','metode' => 'Jumlah Angka Tahun','edit'	   => 1,'delete'   => 1,'view'   => 1),
-			'1' => array('id_inventaris' => '2','nama_inventaris' => 'Komputer Mac Pro','nilai_awal' => '40000000','nilai_akhir' => '30000000','metode' => 'Saldo Menurun','edit'	   => 1,'delete'   => 1,'view'   => 1),
-			'2' => array('id_inventaris' => '3','nama_inventaris' => 'Bangunan Gedung A','nilai_awal' => '40000000','nilai_akhir' => '30000000','metode' => 'Metode Garis Lurus','edit'	   => 1,'delete'   => 1,'view'   => 1),
-			'3' => array('id_inventaris' => '4','nama_inventaris' => 'Tanah - Tanah Jalan X','nilai_awal' => '40000000','nilai_akhir' => '40000000','metode' => 'Tanpa Penyusutan','edit'	   => 1,'delete'   => 1,'view'   => 1),
-			'4' => array('id_inventaris' => '5','nama_inventaris' => 'Alat Kesehatan _ MRI','nilai_awal' => '800000000','nilai_akhir' => '500000000','metode' => 'Metode Unit Produksi','edit'	   => 1,'delete'   => 1,'view'   => 1),
+			'0' => array('id_inventaris' => '1','status'=>'ditambahkan','nama_inventaris' => 'Mobil Tesla - Model S','nilai_awal' => '800000000','nilai_akhir' => '500000000','metode' => 'Jumlah Angka Tahun','edit'	   => 1,'delete'   => 1,'view'   => 1),
+			'1' => array('id_inventaris' => '2','status'=>'ditambahkan','nama_inventaris' => 'Komputer Mac Pro','nilai_awal' => '40000000','nilai_akhir' => '30000000','metode' => 'Saldo Menurun','edit'	   => 1,'delete'   => 1,'view'   => 1),
+			'2' => array('id_inventaris' => '3','id'=>'3','nama_inventaris' => 'Bangunan Gedung A','nilai_awal' => '40000000','nilai_akhir' => '30000000','metode' => 'Metode Garis Lurus','edit'	   => 1,'delete'   => 1,'view'   => 1),
+			'3' => array('id_inventaris' => '4','id'=>'4','nama_inventaris' => 'Tanah - Tanah Jalan X','nilai_awal' => '40000000','nilai_akhir' => '40000000','metode' => 'Tanpa Penyusutan','edit'	   => 1,'delete'   => 1,'view'   => 1),
+			'4' => array('id_inventaris' => '5','id'=>'5','nama_inventaris' => 'Alat Kesehatan _ MRI','nilai_awal' => '800000000','nilai_akhir' => '500000000','metode' => 'Metode Unit Produksi','edit'	   => 1,'delete'   => 1,'view'   => 1),
 			);
 		$size = sizeof($data);
 		$json = array(
@@ -158,7 +158,7 @@ class Penyusutan extends CI_Controller {
 		}
 	}
 
-	function add_sts(){
+	function add_inventaris(){
 		$this->authentication->verify('keuangan','add');
 
 	    $this->form_validation->set_rules('id_sts', 'ID STS', 'trim|required');
@@ -168,17 +168,18 @@ class Penyusutan extends CI_Controller {
 		$data['id_sts']	   			    = "";
 		$data['alert_form']		   	    = "";
 	    $data['action']					= "add";
+	    $data['form_title']				= "Add Inventaris - Step 1";
 
 		if($this->form_validation->run()== FALSE){
-			die($this->parser->parse("keuangan/penyusutan/form_tambah_sts",$data));
+			die($this->parser->parse("keuangan/penyusutan/form_tambah_penyusutantahapsatu",$data));
 		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){
 				$id=$this->penyusutan_model->add_sts();
 				die("OK | $id");
 		}else{
 			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
-			redirect(base_url()."keuangan/penyusutan/add_sts");
+			redirect(base_url()."keuangan/penyusutan/add_inventaris");
 		}
-		die($this->parser->parse("keuangan/penyusutan/form_tambah_sts",$data));
+		die($this->parser->parse("keuangan/penyusutan/form_tambah_penyusutantahapsatu",$data));
 	}
 
 	function detail_penyusutan($id=''){
@@ -201,7 +202,7 @@ class Penyusutan extends CI_Controller {
 				die("OK | $id");
 		}else{
 			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
-			redirect(base_url()."keuangan/penyusutan/add_sts");
+			redirect(base_url()."keuangan/penyusutan/detail_penyusutan");
 		}
 		die($this->parser->parse("keuangan/penyusutan/form_detail_penyusutan",$data));
 	}	

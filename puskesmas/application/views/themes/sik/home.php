@@ -48,6 +48,7 @@
     <script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/js/jqwidgets/jqxlistbox.js"></script>
     <script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/js/jqwidgets/jqxcombobox.js"></script>
     <script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/js/jqwidgets/jqxexpander.js"></script>
+    <script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/js/jqwidgets/jqxcheckbox.js"></script>
     <link rel="stylesheet" href="<?php echo base_url()?>plugins/js/jquery-ui.css" />
     <script src="<?php echo base_url()?>plugins/js/jquery-ui.js"></script>
 	 
