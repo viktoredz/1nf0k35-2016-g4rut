@@ -272,7 +272,7 @@ $(function(){
     });
 
 
-    $("#menu_bahan_habis_pakai").addClass("active");
+    $("#menu_einventory").addClass("active");
     $("#menu_inventory_bhp_pemusnahan").addClass("active");
 
     <?php if($action!="view"){?>
