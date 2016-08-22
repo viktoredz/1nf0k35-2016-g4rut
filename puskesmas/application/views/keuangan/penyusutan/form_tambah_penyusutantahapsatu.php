@@ -12,7 +12,7 @@
       <h4>{form_title}</h4>
     </div>
     <div class="col-sm-6" style="text-align: right">
-      <button type="button" name="btn_keuangan_add_sts" class="btn btn-warning"><i class='glyphicon glyphicon-arrow-right'></i> &nbsp; Selanjutnya</button>
+      <button type="button" name="btn_keuangan_add_sts" class="btn btn-warning" onclick="addstepdua(2)"><i class='glyphicon glyphicon-arrow-right'></i> &nbsp; Selanjutnya</button>
       <button type="button" name="btn_keuangan_close" class="btn btn-primary"><i class='fa fa-close'></i> &nbsp; Batal</button>
     </div>
   </div>
@@ -167,4 +167,9 @@
           { text: 'Status', datafield: 'status', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'center', width: '30%' }
       ]
   });
+function addstepdua(id) {
+  $.get("<?php echo base_url().'keuangan/penyusutan/addstepdua' ?>/", function(data) {
+    $("#popup_keuangan_penyusutan_content").html(data);
+  });
+}
 </script>

@@ -347,7 +347,7 @@ class Penyusutan extends CI_Controller {
 				die("OK | $id");
 		}else{
 			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
-			redirect(base_url()."keuangan/penyusutan/form_edit_penyusutan");
+			redirect(base_url()."keuangan/penyusutan/edit_penyusutan");
 		}
 		die($this->parser->parse("keuangan/penyusutan/form_edit_penyusutan",$data));
 	}	
@@ -505,5 +505,57 @@ class Penyusutan extends CI_Controller {
 			'5' => array('value'=>'5','label' => 'Metode Unit Produksi'),
 		);
 		echo json_encode($data);
+	}
+	function addstepdua($id=0){
+		$this->authentication->verify('keuangan','add');
+
+	    $this->form_validation->set_rules('id_sts', 'ID STS', 'trim|required');
+		$this->form_validation->set_rules('nomor','Nomor','trim|required|callback_sts_nomor');
+		$this->form_validation->set_rules('tgl','Tanggal','trim|required|callback_sts_tgl');
+
+		$data['id_sts']	   			    = $id;
+		$data['alert_form']		   	    = "";
+	    $data['action']					= "edit";		
+	    $data 							= array('id_inventaris' => '121211213','nilai_ekonomis'=>10,'nama_inventaris'=>'Mobil Tesla - Model S');
+	    $data['akun_inventaris']		= array('212121' => '212121 - Alat Angkutan Darat','313131'=>'313131 - Alat Angkutan Udara');
+	    $data['akun_bebaninventaris']	= array('612123' => 'Biaya Penyusutan','6123213' => 'Biaya Tambahan');
+	    $data['metode_penyusutan']		= array('1' => 'Metode Garis Lurus','2' => 'Tanpa Penyusutan','3' => 'Saldo Menurun','4' => 'Metode Unit Produksi','5' => 'Tanpa Penyusutan');
+	    $data['title_form']				= "Tambah Inventaris - Step 2";	
+		if($this->form_validation->run()== FALSE){
+			die($this->parser->parse("keuangan/penyusutan/form_tambah_penyusutantahapdua",$data));
+		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){
+				$id=$this->penyusutan_model->add_sts();
+				die("OK | $id");
+		}else{
+			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
+			redirect(base_url()."keuangan/penyusutan/addstepdua");
+		}
+		die($this->parser->parse("keuangan/penyusutan/form_tambah_penyusutantahapdua",$data));
+	}
+	function addsteptiga($id=0){
+		$this->authentication->verify('keuangan','add');
+
+	    $this->form_validation->set_rules('id_sts', 'ID STS', 'trim|required');
+		$this->form_validation->set_rules('nomor','Nomor','trim|required|callback_sts_nomor');
+		$this->form_validation->set_rules('tgl','Tanggal','trim|required|callback_sts_tgl');
+
+		$data['id_sts']	   			    = $id;
+		$data['alert_form']		   	    = "";
+	    $data['action']					= "edit";		
+	    $data 							= array('id_inventaris' => '121211213','nilai_ekonomis'=>10,'nama_inventaris'=>'Mobil Tesla - Model S');
+	    $data['akun_inventaris']		= array('212121' => '212121 - Alat Angkutan Darat','313131'=>'313131 - Alat Angkutan Udara');
+	    $data['akun_bebaninventaris']	= array('612123' => 'Biaya Penyusutan','6123213' => 'Biaya Tambahan');
+	    $data['metode_penyusutan']		= array('1' => 'Metode Garis Lurus','2' => 'Tanpa Penyusutan','3' => 'Saldo Menurun','4' => 'Metode Unit Produksi','5' => 'Tanpa Penyusutan');
+	    $data['title_form']				= "Tambah Inventaris - Step 3";	
+		if($this->form_validation->run()== FALSE){
+			die($this->parser->parse("keuangan/penyusutan/form_tambah_penyusutantahaptiga",$data));
+		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){
+				$id=$this->penyusutan_model->add_sts();
+				die("OK | $id");
+		}else{
+			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
+			redirect(base_url()."keuangan/penyusutan/addsteptiga");
+		}
+		die($this->parser->parse("keuangan/penyusutan/form_tambah_penyusutantahaptiga",$data));
 	}
 }
