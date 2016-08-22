@@ -1,5 +1,7 @@
 <script>
+
 	$(function(){
+		ambil_total();
 	   var source = {
 			datatype: "json",
 			type	: "POST",
