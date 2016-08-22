@@ -29,13 +29,16 @@
 </section>
 
 <div id="popup_keuangan_penyusutan" style="display:none">
-  <div id="popup_title">Tambah STS Baru</div>
+  <div id="popup_title">Data Inventaris Penyusutan</div>
   <div id="popup_keuangan_penyusutan_content">&nbsp;</div>
 </div>
 
 <script type="text/javascript">
 
     $(function () { 
+        function closepopup(){
+            $("#popup_keuangan_penyusutan").jqxWindow('close');
+        }
         $("#menu_ekeuangan").addClass("active");
         $("#menu_keuangan_penyusutan").addClass("active");
 
@@ -146,13 +149,13 @@
 
     function detail(id){
         $("#popup_keuangan_penyusutan #popup_keuangan_penyusutan_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-        $.get("<?php echo base_url().'keuangan/penyusutan/add_sts' ?>/", function(data) {
+        $.get("<?php echo base_url().'keuangan/penyusutan/detail_penyusutan' ?>/", function(data) {
           $("#popup_keuangan_penyusutan_content").html(data);
         });
         $("#popup_keuangan_penyusutan").jqxWindow({
           theme: theme, resizable: false,
           width: 600,
-          height: 300,
+          height: 1200,
           isModal: true, autoOpen: false, modalOpacity: 0.2
         });
         $("#popup_keuangan_penyusutan").jqxWindow('open');
@@ -161,11 +164,11 @@
     function del(id){
         var confirms = confirm("Hapus Data ?");
         if(confirms == true){
-            $.post("<?php echo base_url().'keuangan/penyusutan/delete_sts' ?>/" + id,  function(){
-                alert('Data berhasil dihapus');
+            // $.post("<?php echo base_url().'keuangan/penyusutan/delete_sts' ?>/" + id,  function(){
+            //     alert('Data berhasil dihapus');
 
-                $("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-            });
+            //     $("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+            // });
         }
     }
 
@@ -177,7 +180,20 @@
         $("#popup_keuangan_penyusutan").jqxWindow({
           theme: theme, resizable: false,
           width: 600,
-          height: 300,
+          height: 1200,
+          isModal: true, autoOpen: false, modalOpacity: 0.2
+        });
+        $("#popup_keuangan_penyusutan").jqxWindow('open');
+    }
+    function edit(){
+      $("#popup_keuangan_penyusutan #popup_keuangan_penyusutan_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+        $.get("<?php echo base_url().'keuangan/penyusutan/edit_penyusutan' ?>/", function(data) {
+          $("#popup_keuangan_penyusutan_content").html(data);
+        });
+        $("#popup_keuangan_penyusutan").jqxWindow({
+          theme: theme, resizable: false,
+          width: 600,
+          height: 1200,
           isModal: true, autoOpen: false, modalOpacity: 0.2
         });
         $("#popup_keuangan_penyusutan").jqxWindow('open');
