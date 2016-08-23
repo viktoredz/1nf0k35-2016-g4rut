@@ -17,8 +17,8 @@ class Dashboard extends CI_Controller {
 	function index(){
 		$this->authentication->verify('inventory','show');
 		$data = array();
-		$data['title_group'] 	= "Dashboard Inventory";
-		$data['title_form'] 	= "Inventory";
+		$data['title_group'] 	= "Dashboard Kepegawaian";
+		$data['title_form'] 	= "Kepegawaian";
 
 		$BulanIndo = array("Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
 		$bln = (int) date('m');

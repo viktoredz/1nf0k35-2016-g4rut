@@ -55,7 +55,7 @@
   <div class="col-md-7">
     <div class="box">
       <div class="box-header with-border">
-        <h3 class="box-title">Jumlah Lulusan</h3>
+        <h3 class="box-title">Jumlah Pegawai Berdasarkan Pendidikan</h3>
           <br>
         <div class="box-tools pull-right">
           <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
