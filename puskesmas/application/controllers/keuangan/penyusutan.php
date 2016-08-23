@@ -513,14 +513,21 @@ class Penyusutan extends CI_Controller {
 		$this->form_validation->set_rules('nomor','Nomor','trim|required|callback_sts_nomor');
 		$this->form_validation->set_rules('tgl','Tanggal','trim|required|callback_sts_tgl');
 
-		$data['id_sts']	   			    = $id;
+		$data['id_sts']	   			    = "";
 		$data['alert_form']		   	    = "";
-	    $data['action']					= "edit";		
-	    $data 							= array('id_inventaris' => '121211213','nilai_ekonomis'=>10,'nama_inventaris'=>'Mobil Tesla - Model S');
-	    $data['akun_inventaris']		= array('212121' => '212121 - Alat Angkutan Darat','313131'=>'313131 - Alat Angkutan Udara');
-	    $data['akun_bebaninventaris']	= array('612123' => 'Biaya Penyusutan','6123213' => 'Biaya Tambahan');
-	    $data['metode_penyusutan']		= array('1' => 'Metode Garis Lurus','2' => 'Tanpa Penyusutan','3' => 'Saldo Menurun','4' => 'Metode Unit Produksi','5' => 'Tanpa Penyusutan');
-	    $data['title_form']				= "Tambah Inventaris - Step 2";	
+	    $data['action']					= "add";
+	    $data['form_title']				= "Add Inventaris - Step 2";
+	    $data['dataedit']				= array(
+	    										'0' => array('id_inventaris' => '21212121','judul' =>'Mobil Tesla - Model S','akun_inventaris'=>'211266','nilai_ekonomis'=>'2','akun_bebanpenyusustan'=>'62710','metode_penyusustan'=>'0'),
+	    										'1' => array('id_inventaris' => '32323232','judul' =>'Komputer - Mac Pro','akun_inventaris'=>'21122','nilai_ekonomis'=>'10','akun_bebanpenyusustan'=>'62711','metode_penyusustan'=>'1'),
+	    									);
+	    $data['nilaiakun_inventaris']	= array('0' =>array('key' => '21122', 'value'=>'21122 - Alat Angkutan'),
+	    										'1' =>array('key' => '211266', 'value'=>'211266 - Alat Komputer'));
+	    $data['nilaiakun_bebanpenyusustan']	= array('0' =>array('key' => '62710','value'=>'62710 - Biaya Penyusustan'),
+	    										 	'1' =>array('key' => '62711','value'=>'62711 - Biaya Tambahan'));
+	    $data['nilaimetode_penyusustan']	= array('0' =>array('key' => '1','value'=>'Saldo Menurun'),
+	    										 	'1' =>array('key' => '2','value'=>'Metode Garis Lurus'),
+	    										 	'2' =>array('key' => '3','value'=>'Tanpa Penyusutan'));
 		if($this->form_validation->run()== FALSE){
 			die($this->parser->parse("keuangan/penyusutan/form_tambah_penyusutantahapdua",$data));
 		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){
@@ -539,14 +546,21 @@ class Penyusutan extends CI_Controller {
 		$this->form_validation->set_rules('nomor','Nomor','trim|required|callback_sts_nomor');
 		$this->form_validation->set_rules('tgl','Tanggal','trim|required|callback_sts_tgl');
 
-		$data['id_sts']	   			    = $id;
+		$data['id_sts']	   			    = "";
 		$data['alert_form']		   	    = "";
-	    $data['action']					= "edit";		
-	    $data 							= array('id_inventaris' => '121211213','nilai_ekonomis'=>10,'nama_inventaris'=>'Mobil Tesla - Model S');
-	    $data['akun_inventaris']		= array('212121' => '212121 - Alat Angkutan Darat','313131'=>'313131 - Alat Angkutan Udara');
-	    $data['akun_bebaninventaris']	= array('612123' => 'Biaya Penyusutan','6123213' => 'Biaya Tambahan');
-	    $data['metode_penyusutan']		= array('1' => 'Metode Garis Lurus','2' => 'Tanpa Penyusutan','3' => 'Saldo Menurun','4' => 'Metode Unit Produksi','5' => 'Tanpa Penyusutan');
-	    $data['title_form']				= "Tambah Inventaris - Step 3";	
+	    $data['action']					= "add";
+	    $data['form_title']				= "Add Inventaris - Step 3";
+	    $data['dataedit']				= array(
+	    										'0' => array('id_inventaris' => '21212121','judul' =>'Mobil Tesla - Model S','akun_inventaris'=>'211266','nilai_ekonomis'=>'2','akun_bebanpenyusustan'=>'62710','metode_penyusustan'=>'0'),
+	    										'1' => array('id_inventaris' => '32323232','judul' =>'Komputer - Mac Pro','akun_inventaris'=>'21122','nilai_ekonomis'=>'10','akun_bebanpenyusustan'=>'62711','metode_penyusustan'=>'1'),
+	    									);
+	    $data['nilaiakun_inventaris']	= array('0' =>array('key' => '21122', 'value'=>'21122 - Alat Angkutan'),
+	    										'1' =>array('key' => '211266', 'value'=>'211266 - Alat Komputer'));
+	    $data['nilaiakun_bebanpenyusustan']	= array('0' =>array('key' => '62710','value'=>'62710 - Biaya Penyusustan'),
+	    										 	'1' =>array('key' => '62711','value'=>'62711 - Biaya Tambahan'));
+	    $data['nilaimetode_penyusustan']	= array('0' =>array('key' => '1','value'=>'Saldo Menurun'),
+	    										 	'1' =>array('key' => '2','value'=>'Metode Garis Lurus'),
+	    										 	'2' =>array('key' => '3','value'=>'Tanpa Penyusutan'));
 		if($this->form_validation->run()== FALSE){
 			die($this->parser->parse("keuangan/penyusutan/form_tambah_penyusutantahaptiga",$data));
 		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){

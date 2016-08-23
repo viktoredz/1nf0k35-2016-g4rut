@@ -22,26 +22,86 @@
             <div class="box box-primary">
             <div class="row" style="margin: 5px">
                 <div class="col-md-4" style="padding: 5px">
-                  Pengadaan 
+                  Menambahkan 2 Inventaris
                 </div>
-                <div class="col-md-8">
-                  <div id='tgl' name="pengadaan_tgl" value="<?=date("m/d/Y")?>" >
+                <div class="col-md-8" style="float:right">
+                  <input type="checkbox" name="transaksitambah" checked=""> Tambakan Sebagai Transaksi
                   </div>
+                </div>
+              </div>
+              <?php $i=1; foreach ($dataedit as $key) {
+              ?>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-12" style="padding: 5px">
+                 <font size="3"><b><?php echo $i;?> <?php echo $key['judul'] ?></b></font>
                 </div>
               </div>
               <div class="row" style="margin: 5px">
                 <div class="col-md-4" style="padding: 5px">
-                 Kata
+                 ID Inventaris
                 </div>
                 <div class="col-md-8">
-                  <input type="text" class="form-control" name="kata" placeholder="Filter Kata" >
+                  <?php echo $key['id_inventaris'] ?>
                 </div>
               </div>
               <div class="row" style="margin: 5px">
-                <div class="col-md-12" style="padding: 5px">
-                  <div id="jqxgridPilih"></div>
+                <div class="col-md-4" style="padding: 5px">
+                 Akun Inventaris
+                </div>
+                <div class="col-md-8">
+                 <select name='akun_inventaris' id='akun_inventaris' class="form-control">
+                  <?php 
+                   foreach ($nilaiakun_inventaris as $datainve) { 
+                        $select = $datainve['key'] == $key['akun_inventaris'] ? 'selected' :'';
+                    ?>
+                      <option value="<?php echo $datainve['key']?>" <?php echo $select?>><?php echo $datainve['value'];?></option>
+                    <?php } ?>
+                  </select>
                 </div>
               </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-4" style="padding: 5px">
+                 Akun Beban penyusutan
+                </div>
+                <div class="col-md-8">
+                  <select name='akun_bebanpenyusustan' id='akun_bebanpenyusustan' class="form-control">
+                  <?php  foreach ($nilaiakun_bebanpenyusustan as $databeban) { 
+                        $select = $databeban['key'] == $key['akun_bebanpenyusustan'] ? 'selected' :'';
+                    ?>
+                      <option value="<?php echo $databeban['key']?>" <?php echo $select?>><?php echo $databeban['value'];?></option>
+                    <?php } ?>
+                  </select>
+                </div>
+              </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-4" style="padding: 5px">
+                 Metode penyusutan
+                </div>
+                <div class="col-md-8">
+                  <select name='metode_penyusustan' id='metode_penyusustan' class="form-control">
+                    <?php  foreach ($nilaimetode_penyusustan as $datametode) { 
+                        $select = $datametode['key'] == $key['metode_penyusustan'] ? 'selected' :'';
+                    ?>
+                      <option value="<?php echo $datametode['key']?>" <?php echo $select?>><?php echo $datametode['value'];?></option>
+                    <?php } ?>
+                  </select>
+                </div>
+              </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-4" style="padding: 5px">
+                 Nilai Ekonomis
+                </div>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" name="nilai_ekonomis" id="nilai_ekonomis" placeholder="Nilai Ekonomis" value="<?php echo $key['nilai_ekonomis'];
+                      // if (isset($key['nilai_ekonomis']) && set_value('nilai_ekonomis')) {
+                      //   echo $key['nilai_ekonomis'];
+                      // }else{
+                      //   echo set_value('nilai_ekonomis');
+                      // }
+                    ?>">
+                </div>
+              </div>
+              <?php $i++; }?>
               <br>
             </div>
           </div>
@@ -64,12 +124,7 @@
       return false;
   }
 
-  $(function () { 
-    tabIndex = 1;
-    kodeSTS();
-
-    $("[name='pengadaan_tgl']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
-
+  $(function () {
     
    $("[name='btn_keuangan_close']").click(function(){
         $("#popup_keuangan_penyusutan").jqxWindow('close');
@@ -96,7 +151,6 @@
               if(a[0]=="OK"){
                 $("#popup_keuangan_penyusutan").jqxWindow('close');
                 alert("Data STS berhasil disimpan.");
-                $("#jqxgridPilih").jqxGrid('updatebounddata', 'cells');
                 window.location.href="<?php echo base_url().'keuangan/sts/detail';?>/" + a[1];
               }else{
                 $('#popup_keuangan_sts_content').html(response);
@@ -107,66 +161,7 @@
         return false;
     });
   });
- var sourcepilih = {
-      datatype: "json",
-      type    : "POST",
-      datafields: [
-      { name: 'id_inventaris', type: 'string'},
-      { name: 'nama_inventaris', type: 'string'},
-      { name: 'metode', type: 'string'},
-      { name: 'nilai_awal', type: 'string'},
-      { name: 'nilai_akhir',type: 'string'},   
-      { name: 'status',type: 'string'},
-      { name: 'edit', type: 'number'},
-      { name: 'id', type: 'number'},
-      { name: 'delete', type: 'number'},
-      { name: 'view', type: 'number'},
-  ],
-  url: "<?php echo site_url('keuangan/penyusutan/json'); ?>",
-  cache: false,
-  updaterow: function (rowid, rowdata, commit) {
-      },
-  filter: function(){
-      $("#jqxgridPilih").jqxGrid('updatebounddata', 'filter');
-  },
-  sort: function(){
-      $("#jqxgridPilih").jqxGrid('updatebounddata', 'sort');
-  },
-  root: 'Rows',
-  pagesize: 10,
-  beforeprocessing: function(data){       
-      if (data != null){
-          sourcepilih.totalrecords = data[0].TotalRows;                    
-      }
-  }
-  };      
-  var dataadapterpilih = new $.jqx.dataAdapter(sourcepilih, {
-      loadError: function(xhr, status, error){
-          alert(error);
-      }
-  });
 
-  $('#btn-refresh').click(function () {
-      $("#jqxgridPilih").jqxGrid('clearfilters');
-  });
-
-  $("#jqxgridPilih").jqxGrid(
-  {       
-      width: '100%',
-      selectionmode: 'singlerow',
-      source: dataadapterpilih, theme: theme,columnsresize: true,showtoolbar: false, pagesizeoptions: ['10', '25', '50', '100'],
-      showfilterrow: true, filterable: true, sortable: true, autoheight: true, pageable: true, virtualmode: true, editable: false,
-      rendergridrows: function(obj)
-      {
-          return obj.data;    
-      },
-      columns: [
-          { text: 'Pilih',filtertype: 'none', align:'center', datafield: 'id', columntype: 'checkbox', width: '8%' },
-          { text: 'ID Inventaris', datafield: 'id_inventaris', columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '15%',cellsalign: 'center'},
-          { text: 'Nama Inventaris', datafield: 'nama_inventaris', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '47%'},
-          { text: 'Status', datafield: 'status', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'center', width: '30%' }
-      ]
-  });
 function addsteptiga(id) {
   $.get("<?php echo base_url().'keuangan/penyusutan/addsteptiga' ?>/", function(data) {
     $("#popup_keuangan_penyusutan_content").html(data);

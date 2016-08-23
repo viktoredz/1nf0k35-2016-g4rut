@@ -12,7 +12,7 @@
       <h4>{form_title}</h4>
     </div>
     <div class="col-sm-6" style="text-align: right">
-      <button type="button" name="btn_keuangan_add_sts" class="btn btn-warning" onclick="addsteptiga(3)"><i class='glyphicon glyphicon-arrow-right'></i> &nbsp; Selanjutnya</button>
+      <button type="button" name="btn_keuangan_add_sts" class="btn btn-warning" onclick="addsteptiga(3)"><i class='glyphicon glyphicon-floppy-save'></i> &nbsp; Simpan</button>
       <button type="button" name="btn_keuangan_close" class="btn btn-primary"><i class='fa fa-close'></i> &nbsp; Batal</button>
     </div>
   </div>
@@ -22,26 +22,112 @@
             <div class="box box-primary">
             <div class="row" style="margin: 5px">
                 <div class="col-md-4" style="padding: 5px">
-                  Pengadaan 
+                  Buat Transaksi Inventaris
                 </div>
                 <div class="col-md-8">
-                  <div id='tgl' name="pengadaan_tgl" value="<?=date("m/d/Y")?>" >
+                  Pemisah 
+                  <select name="pemisah" id="pemisah" class='form-control'>
+                    <option value="1">Per Barang</option>
+                  </select>
                   </div>
                 </div>
               </div>
               <div class="row" style="margin: 5px">
-                <div class="col-md-4" style="padding: 5px">
-                 Kata
-                </div>
-                <div class="col-md-8">
-                  <input type="text" class="form-control" name="kata" placeholder="Filter Kata" >
+                <div class="col-md-12" style="padding: 5px">
+                 <font size="3"><b>#Transaks 1</b></font>
                 </div>
               </div>
               <div class="row" style="margin: 5px">
                 <div class="col-md-12" style="padding: 5px">
-                  <div id="jqxgridPilih"></div>
+                 <font size="3"><b>Informasi Dasar</b></font>
                 </div>
               </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-4" style="padding: 5px">
+                  Nama Transaksi
+                </div>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" name="auto" placeholder="(Auto)">
+                </div>
+              </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-4" style="padding: 5px">
+                  Tanggal Transaksi
+                </div>
+                <div class="col-md-8">
+                  <div name="transaksi_tgl"></div>
+                </div>
+              </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-4" style="padding: 5px">
+                  Uraian
+                </div>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" name="uraian" placeholder="uraian"  value="Pembelian Pengadaan 12223 - Angkutan Darat dan Komputer">
+                </div>
+              </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-12" style="padding: 5px">
+                 <font size="3"><b>Jurnal Transaksi</b></font>
+                </div>
+              </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-4" style="padding: 5px">
+                  Nama Akun
+                </div>
+                <div class="col-md-4">
+                  Debit
+                </div>
+                <div class="col-md-4">
+                  Kredit
+                </div>
+              </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-4" style="padding: 5px">
+                  21122 - Angkutan Darat
+                </div>
+                <div class="col-md-4">
+                  800.000.000
+                </div>
+                <div class="col-md-4">
+                  
+                </div>
+              </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-4" style="padding: 5px">
+                  21126 - Komputer
+                </div>
+                <div class="col-md-4">
+                  40.000.000
+                </div>
+                <div class="col-md-4">
+                  
+                </div>
+              </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-4" style="padding: 5px">
+                  <select id="jurnaltransaksi" name="jurnaltransaksi" class="form-control">
+                    <option value="1">Kas Bendahara Pengeluaran</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-4">
+                    840.000.000
+                </div>
+              </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-4" style="padding: 5px">
+                  <b>Total</b>
+                </div>
+                <div class="col-md-4">
+                  <b>840.000.000</b>
+                </div>
+                <div class="col-md-4">
+                  <b>840.000.000</b>
+                </div>
+              </div>
+
               <br>
             </div>
           </div>
@@ -68,7 +154,7 @@
     tabIndex = 1;
     kodeSTS();
 
-    $("[name='pengadaan_tgl']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
+    $("[name='transaksi_tgl']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
 
     
    $("[name='btn_keuangan_close']").click(function(){
@@ -107,69 +193,13 @@
         return false;
     });
   });
- var sourcepilih = {
-      datatype: "json",
-      type    : "POST",
-      datafields: [
-      { name: 'id_inventaris', type: 'string'},
-      { name: 'nama_inventaris', type: 'string'},
-      { name: 'metode', type: 'string'},
-      { name: 'nilai_awal', type: 'string'},
-      { name: 'nilai_akhir',type: 'string'},   
-      { name: 'status',type: 'string'},
-      { name: 'edit', type: 'number'},
-      { name: 'id', type: 'number'},
-      { name: 'delete', type: 'number'},
-      { name: 'view', type: 'number'},
-  ],
-  url: "<?php echo site_url('keuangan/penyusutan/json'); ?>",
-  cache: false,
-  updaterow: function (rowid, rowdata, commit) {
-      },
-  filter: function(){
-      $("#jqxgridPilih").jqxGrid('updatebounddata', 'filter');
-  },
-  sort: function(){
-      $("#jqxgridPilih").jqxGrid('updatebounddata', 'sort');
-  },
-  root: 'Rows',
-  pagesize: 10,
-  beforeprocessing: function(data){       
-      if (data != null){
-          sourcepilih.totalrecords = data[0].TotalRows;                    
-      }
-  }
-  };      
-  var dataadapterpilih = new $.jqx.dataAdapter(sourcepilih, {
-      loadError: function(xhr, status, error){
-          alert(error);
-      }
-  });
 
-  $('#btn-refresh').click(function () {
-      $("#jqxgridPilih").jqxGrid('clearfilters');
-  });
 
-  $("#jqxgridPilih").jqxGrid(
-  {       
-      width: '100%',
-      selectionmode: 'singlerow',
-      source: dataadapterpilih, theme: theme,columnsresize: true,showtoolbar: false, pagesizeoptions: ['10', '25', '50', '100'],
-      showfilterrow: true, filterable: true, sortable: true, autoheight: true, pageable: true, virtualmode: true, editable: false,
-      rendergridrows: function(obj)
-      {
-          return obj.data;    
-      },
-      columns: [
-          { text: 'Pilih',filtertype: 'none', align:'center', datafield: 'id', columntype: 'checkbox', width: '8%' },
-          { text: 'ID Inventaris', datafield: 'id_inventaris', columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '15%',cellsalign: 'center'},
-          { text: 'Nama Inventaris', datafield: 'nama_inventaris', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '47%'},
-          { text: 'Status', datafield: 'status', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'center', width: '30%' }
-      ]
-  });
 function addsteptiga(id) {
-  $.get("<?php echo base_url().'keuangan/penyusutan/addsteptiga' ?>/", function(data) {
-    $("#popup_keuangan_penyusutan_content").html(data);
-  });
+  $("#popup_keuangan_penyusutan").jqxWindow('close');
+  // $("#popup_keuangan_penyusutan").jqxWindow('close');
+  // $.get("<?php echo base_url().'keuangan/penyusutan/addsteptiga' ?>/", function(data) {
+  //   $("#popup_keuangan_penyusutan_content").html(data);
+  // });
 }
 </script>
