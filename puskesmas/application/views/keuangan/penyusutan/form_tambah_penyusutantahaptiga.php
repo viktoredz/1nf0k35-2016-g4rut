@@ -24,8 +24,10 @@
                 <div class="col-md-4" style="padding: 5px">
                   Buat Transaksi Inventaris
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-2" style="padding: 5px">
                   Pemisah 
+                </div>
+                <div class="col-md-6">
                   <select name="pemisah" id="pemisah" class='form-control'>
                     <option value="1">Per Barang</option>
                   </select>
