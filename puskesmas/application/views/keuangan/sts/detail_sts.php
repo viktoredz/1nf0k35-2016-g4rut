@@ -229,13 +229,13 @@ function simapandatatutup() {
 }	
 	function tutupakun(){
 		$("#popup_keuangan_sts_tutup #popup_keuangan_sts__tutup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-        $.get("<?php echo base_url().'keuangan/sts/add_tutup_buku' ?>/", function(data) {
+        $.get("<?php echo base_url().'keuangan/sts/add_tutup_buku/'.$id.'/'.$data_sts['code_cl_phc'] ?>/", function(data) {
           $("#popup_keuangan_sts__tutup_content").html(data);
         });
         $("#popup_keuangan_sts_tutup").jqxWindow({
           theme: theme, resizable: false,
           width: 600,
-          height: 300,
+          height: 1200,
           isModal: true, autoOpen: false, modalOpacity: 0.2
         });
         $("#popup_keuangan_sts_tutup").jqxWindow('open');

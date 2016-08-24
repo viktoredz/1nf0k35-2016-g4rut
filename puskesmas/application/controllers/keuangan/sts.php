@@ -390,26 +390,26 @@ class Sts extends CI_Controller {
 		}
 		die($this->parser->parse("keuangan/sts/form_tambah_sts",$data));
 	}
-	function add_tutup_buku(){
+	function add_tutup_buku($id=0,$kodeclphc=''){
 		$this->authentication->verify('keuangan','add');
 
 	    $this->form_validation->set_rules('id_sts', 'ID STS', 'trim|required');
-		$this->form_validation->set_rules('nomor','Nomor','trim|required|callback_sts_nomor');
-		$this->form_validation->set_rules('tgl','Tanggal','trim|required|callback_sts_tgl');
+		$this->form_validation->set_rules('kodeclphc','Kode Puskesmas','trim|required');
 
-		$data['id_sts']	   			    = "";
+		$data 							= $this->sts_model->get_detailsts($id);
+		$data['allkredit'] 				= $this->sts_model->getallkredit($id);
+		$data['id_sts']	   			    = $id;
+		$data['kodeclphc']	   			= $kodeclphc;
 		$data['alert_form']		   	    = "";
 	    $data['action']					= "add";
-		$data['nomor'] 					= $this->generate_nomor(date("Y-m-d H:i:s"));		
+	    $data['title_form']				= "Simpan & Tutup STS";
 
 		if($this->form_validation->run()== FALSE){
 			die($this->parser->parse("keuangan/sts/form_tutup_sts",$data));
-		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){
-				$id=$this->sts_model->add_sts();
-				die("OK | $id");
 		}else{
-			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
-			redirect(base_url()."keuangan/sts/add_sts");
+			$this->tutup_sts();
+			$data['notif_type'] = 'closed';
+			die("OK | ".json_encode($data));
 		}
 		die($this->parser->parse("keuangan/sts/form_tutup_sts",$data));
 	}
@@ -430,8 +430,6 @@ class Sts extends CI_Controller {
 			die('error | '.json_encode($data));
 		}else{
 			$this->sts_model->update_ttd();
-				//$this->tutup_sts();
-				//$this->session->set_flashdata('notif_type', 'closed');
 			$data['notif_type'] = 'saved';
 			die('OK | '.json_encode($data));
 		}

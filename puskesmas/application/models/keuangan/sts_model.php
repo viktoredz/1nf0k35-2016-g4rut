@@ -392,9 +392,7 @@ class Sts_model extends CI_Model {
 	
 	function tutup_sts(){
 		$data = array(		   
-			'id_sts' => $this->input->post('id_sts'),
-			'code_cl_phc' => $this->input->post('puskes'),
-			'status' => 'draft'
+			'status' => 'disetor'
 		);
 				
 		//update
@@ -491,5 +489,21 @@ class Sts_model extends CI_Model {
 		$this->db->select('*');
         $query = $this->db->get('mst_keu_akun',$limit,$start);
         return $query->result();
+    }
+    function get_detailsts($id=''){
+    	$this->db->select("*,(SELECT SUM(jumlah) FROM keu_sts_hasil WHERE id_sts =keu_sts.id_sts) AS totaldebit,(SELECT CONCAT(mst_keu_akun.kode,' - ',mst_keu_akun.uraian) FROM keu_setting JOIN mst_keu_akun ON mst_keu_akun.id_mst_akun = keu_setting.value WHERE keu_setting.key='akun_penerimaan_sts') AS id_akun_debit_uraian,(SELECT CONCAT(mst_keu_akun.kode,' - ',mst_keu_akun.uraian) FROM keu_setting JOIN mst_keu_akun ON mst_keu_akun.id_mst_akun = keu_setting.value WHERE keu_setting.key='akun_penyetoran_sts') AS akun_kredit",false);
+    	$this->db->where('id_sts',$id);
+    	$query = $this->db->get('keu_sts');
+    	return $query->row_array();
+    }	
+    function getallkredit($id=0){
+    	$this->db->select("SUM(jumlah) AS totalkredit,keu_sts_hasil.*,mst_keu_anggaran.uraian as uraiananggaran,mst_keu_anggaran.id_mst_akun, CONCAT(mst_keu_akun.kode,' - ',mst_keu_akun.uraian) AS id_akun_kredit_uraian",false);
+    	$this->db->join('mst_keu_anggaran','mst_keu_anggaran.id_mst_anggaran = keu_sts_hasil.id_mst_anggaran');
+    	$this->db->join('mst_keu_akun','mst_keu_anggaran.id_mst_akun = mst_keu_akun.id_mst_akun');
+    	$this->db->group_by('mst_keu_anggaran.id_mst_akun');
+    	$this->db->having('totalkredit > 0');
+    	$this->db->where('keu_sts_hasil.id_sts',$id);
+		$query = $this->db->get('keu_sts_hasil');
+    	return $query->result();
     }
 }
