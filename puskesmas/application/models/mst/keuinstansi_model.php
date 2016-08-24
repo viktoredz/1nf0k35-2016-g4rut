@@ -53,8 +53,7 @@ class Keuinstansi_model extends CI_Model {
         return $data;
     }
 
-    function update_entry_instansi($id)
-    {
+    function update_entry_instansi($id){
     	$data['nama']          = $this->input->post('nama');
         $data['tlp']		   = $this->input->post('tlp');
         $data['alamat']        = $this->input->post('alamat');
@@ -70,7 +69,7 @@ class Keuinstansi_model extends CI_Model {
         }
     }
 
-     	function get_data_row($id){
+   	function get_data_row($id){
 		$data = array();
 		$options = array('code' => $id);
 		$query = $this->db->get_where('mst_inv_pbf',$options);

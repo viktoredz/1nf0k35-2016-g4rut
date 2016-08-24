@@ -15,7 +15,7 @@ class Dashboard extends CI_Controller {
 
 
 	function index(){
-		$this->authentication->verify('inventory','show');
+		$this->authentication->verify('kepegawaian','show');
 		$data = array();
 		$data['title_group'] 	= "Dashboard Kepegawaian";
 		$data['title_form'] 	= "Kepegawaian";
