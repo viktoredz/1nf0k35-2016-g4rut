@@ -69,7 +69,6 @@
       }
       ?>.png">
     </div>
-    </div>
       
       <header class="main-header">
         <!-- Logo -->
