@@ -29,7 +29,7 @@
                   <br><br>
                 </div>
               </div>
-            <div class="alert alert-info alert-dismissible" role="alert">
+            <div class="backgroundhitam" role="alert"> <br>
               <div class="row" style="margin: 5px;  display: none;">
                 <div class="col-md-3" style="padding: 5px">
                  Nomor Transaksi
@@ -44,7 +44,7 @@
                   Tanggal 
                 </div>
                 <div class="col-md-9">
-                  <?php echo date('d-m-y',strtotime($tgl));?>
+                  <?php echo date('d-m-Y',strtotime($tgl));?>
                 </div>
               </div>
               <div class="row" style="margin: 5px">
@@ -52,7 +52,7 @@
                   Uraian
                 </div>
                 <div class="col-md-9">
-                  <input type="text" name="uraiantutup" id="uraiantutup" value="<?php echo "Penerimaan Puskesmas Tanggal ".date('d-m-y',strtotime($tgl)); ?>" class="form-control">
+                  <input type="text" name="uraiantutup" id="uraiantutup" value="<?php echo "Penerimaan Puskesmas Tanggal ".date('d-m-Y',strtotime($tgl)); ?>" class="form-control">
                 </div>
               </div>
               <div class="row" style="margin: 5px">
@@ -69,7 +69,7 @@
                   Kredit
                 </div>
               </div>
-              <?php foreach ($allkredit as $key) { ?>
+              <?php $jmldata=0; foreach ($allkredit as $key) { $jmldata++; ?>
               <div class="row" style="margin: 5px">
                 <div class="col-md-3" style="padding: 5px">
                 </div>
@@ -78,7 +78,7 @@
                   <?php echo $key->id_akun_kredit_uraian;?>
                 </div>
               </div>
-              <?php } ?>
+              <?php } ?><br>
             </div>
             <div class="row" style="margin: 5px">
               <div class="col-md-12" style="padding: 5px">
@@ -87,7 +87,7 @@
                 </div>
               </div>
             </div>
-            <div class="alert alert-info alert-dismissible" role="alert" id="transaksisetorbank">
+            <div class="backgroundhitam" role="alert" id="transaksisetorbank"><br>
               <div class="row" style="margin: 5px;  display: none;">
                 <div class="col-md-3" style="padding: 5px">
                  Nomor Transaksi
@@ -102,7 +102,7 @@
                   Tanggal 
                 </div>
                 <div class="col-md-9">
-                  <?php echo date('d-m-y',strtotime($tgl));?>
+                  <?php echo date('d-m-Y',strtotime($tgl));?>
                 </div>
               </div>
               <div class="row" style="margin: 5px">
@@ -110,7 +110,7 @@
                   Uraian
                 </div>
                 <div class="col-md-9">
-                  <input type="text" name="uraiantutup" id="uraiantutup" value="<?php  echo "Setoran Puskesmas Tanggal ".date('d-m-y',strtotime($tgl)); ?>" class="form-control">
+                  <input type="text" name="uraiantutupsetor" id="uraiantutupsetor" value="<?php  echo "Setoran Puskesmas Tanggal ".date('d-m-Y',strtotime($tgl)); ?>" class="form-control">
                 </div>
               </div>
               <div class="row" style="margin: 5px">
@@ -119,7 +119,7 @@
                 </div>
                 <div class="col-md-9">
                   <font size="3"><b>{totaldebit}</b></font><br>
-                  {id_akun_debit_uraian}
+                  {akun_kredit}
                 </div>
               </div>
               <div class="row" style="margin: 5px">
@@ -128,9 +128,9 @@
                 </div>
                 <div class="col-md-9">
                   <font size="3"><b>{totaldebit}</b></font><br>
-                  {akun_kredit}
+                  {id_akun_debit_uraian}
                 </div>
-              </div>
+              </div><br>
             </div>
             <input type="hidden" name="id_sts" id="id_sts" value="<?php 
             if(set_value('id_sts')=="" && isset($id_sts)){
@@ -146,6 +146,7 @@
                 echo  set_value('kodeclphc');
               }
             ?>">
+            <input type="hidden" name="isicheckbox" id="isicheckbox">
               <br>
             </div>
           </div>
@@ -157,12 +158,14 @@
 
   $(function () { 
     $("#transaksisetorbank").hide();
-
+    $("#isicheckbox").val('no');
     $("#setoranbank").click(function(){
       if ($(this).is(':checked')) {
           $("#transaksisetorbank").show();
+          $("#isicheckbox").val('yes');
       }else{
         $("#transaksisetorbank").hide();
+        $("#isicheckbox").val('no');
       }
     });
     $("[name='btn_keuangan_close_tutup']").click(function(){
@@ -173,9 +176,20 @@
         $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
         $('#biodata_notice').show();
 
-        data.append('id_sts',          $("[name='id_sts']").val());
-        data.append('kodeclphc',           $("[name='kodeclphc']").val());
-        
+        data.append('id_sts',               $("[name='id_sts']").val());
+        data.append('kodeclphc',            $("[name='kodeclphc']").val());
+        data.append('uraiantutup',          $("[name='uraiantutup']").val());
+        data.append('uraiantutupsetor',     $("[name='uraiantutupsetor']").val());
+        data.append('isicheckbox',          $("[name='isicheckbox']").val());
+        data.append('totaldebitkredit',     "<?php echo $totaldebit;?>");
+        data.append('tanggal',              "<?php echo $tgl;?>");
+        data.append('id_akun_debit_uraian', "<?php echo $id_akun_debit_uraian;?>");
+        data.append('akun_kredit',          "<?php echo $akun_kredit;?>");
+        data.append('jmldata',              "<?php echo $jmldata;?>");
+        <?php $i=1; foreach ($allkredit as $key) { ?>
+        data.append("id_akun_kredit_uraian<?php echo $i;?>",    "<?php echo $key->kodeakun;?>");
+        data.append("totalkredit<?php echo $i;?>",              "<?php echo $key->totalkredit;?>");
+        <?php $i++;} ?>
         $.ajax({
             cache : false,
             contentType : false,
@@ -200,3 +214,8 @@
   });
 
 </script>
+<style type="text/css">
+  .backgroundhitam{
+    background-color: #DCDCDC;
+  }
+</style>

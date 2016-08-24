@@ -395,6 +395,7 @@ class Sts extends CI_Controller {
 
 	    $this->form_validation->set_rules('id_sts', 'ID STS', 'trim|required');
 		$this->form_validation->set_rules('kodeclphc','Kode Puskesmas','trim|required');
+		
 
 		$data 							= $this->sts_model->get_detailsts($id);
 		$data['allkredit'] 				= $this->sts_model->getallkredit($id);

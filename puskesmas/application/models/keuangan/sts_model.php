@@ -389,7 +389,23 @@ class Sts_model extends CI_Model {
 		$this->db->update('keu_sts', $data);
 		
 	}	
-	
+	 function idtrasaksi($kodpus=''){
+        $q = $this->db->query("select MAX(RIGHT(id_transaksi,4)) as kd_max from keu_transaksi");
+        $nourut="";
+        if($q->num_rows()>0)
+        {
+            foreach($q->result() as $k)
+            {
+                $tmp = ((int)$k->kd_max)+1;
+                $nourut = sprintf("%04s", $tmp);
+            }
+        }
+        else
+        {
+            $nourut = "0001";
+        }
+        return $kodpus.date("Y").date('m').$nourut;
+    }
 	function tutup_sts(){
 		$data = array(		   
 			'status' => 'disetor'
@@ -397,8 +413,51 @@ class Sts_model extends CI_Model {
 				
 		//update
 		$this->db->where('id_sts', $this->input->post('id_sts'));		
-		$this->db->where('code_cl_phc', $this->input->post('puskes'));
+		$this->db->where('code_cl_phc', $this->input->post('kodeclphc'));
 		$this->db->update('keu_sts', $data);
+
+		$datakeu_transaksi=array(
+						'id_transaksi'=>$this->idtrasaksi($this->input->post('kodeclphc')),
+						'tanggal'=> $this->input->post('tanggal'),
+						'uraian'=>$this->input->post('uraiantutup'),
+						'tipe_jurnal'=>'jurnal_umum',
+						'status'=>'ditutup',
+						'code_cl_phc'=>$this->input->post('kodeclphc'),
+						);
+		$this->db->insert('keu_transaksi',$datakeu_transaksi);
+
+		$totalda=$this->input->post('jmldata')+1;
+		// for($i=1;$i<=$totalda;$i++){
+		// 	$datakeu_jurnal = array(
+		// 			'id_jurnal' 	=>$i,
+		// 			'id_transaksi' 	=>$i,
+		// 			'id_mst_akun' 	=>$this->input->post("id_akun_kredit_uraian$i"),
+		// 			'debet' 		=>$this->input->post("totaldebitkredit"),
+		// 			'kredit' 		=>$this->input->post("totalkredit$i"),
+		// 		);
+		// 	$this->db->insert('keu_jurnal',$datakeu_jurnal);
+		// }
+		$datachek=$this->input->post('isicheckbox');
+		if (isset($datachek) && $datachek=='yes') {
+			$datakeu_transaksi=array(
+						'id_transaksi'=>$this->idtrasaksi($this->input->post('kodeclphc')),
+						'tanggal'=> $this->input->post('tanggal'),
+						'uraian'=>$this->input->post('uraiantutupsetor'),
+						'tipe_jurnal'=>'jurnal_umum',
+						'status'=>'ditutup',
+						'code_cl_phc'=>$this->input->post('kodeclphc'),
+						);
+			$this->db->insert('keu_transaksi',$datakeu_transaksi);
+			// $datakeu_jurnal = array(
+			// 		'id_jurnal' 	=>$i,
+			// 		'id_transaksi' 	=>$i,
+			// 		'id_mst_akun' 	=>$this->input->post("id_akun_kredit_uraian$i"),
+			// 		'debet' 		=>$this->input->post("akun_kredit"),
+			// 		'kredit' 		=>$this->input->post("id_akun_debit_uraian"),
+			// 	);
+			// $this->db->insert('keu_jurnal',$datakeu_jurnal);
+		}
+
 		
 	}
 	
@@ -497,7 +556,7 @@ class Sts_model extends CI_Model {
     	return $query->row_array();
     }	
     function getallkredit($id=0){
-    	$this->db->select("SUM(jumlah) AS totalkredit,keu_sts_hasil.*,mst_keu_anggaran.uraian as uraiananggaran,mst_keu_anggaran.id_mst_akun, CONCAT(mst_keu_akun.kode,' - ',mst_keu_akun.uraian) AS id_akun_kredit_uraian",false);
+    	$this->db->select("SUM(jumlah) AS totalkredit,keu_sts_hasil.*,mst_keu_anggaran.uraian as uraiananggaran,mst_keu_anggaran.id_mst_akun, CONCAT(mst_keu_akun.kode,' - ',mst_keu_akun.uraian) AS id_akun_kredit_uraian,mst_keu_akun.kode as kodeakun",false);
     	$this->db->join('mst_keu_anggaran','mst_keu_anggaran.id_mst_anggaran = keu_sts_hasil.id_mst_anggaran');
     	$this->db->join('mst_keu_akun','mst_keu_anggaran.id_mst_akun = mst_keu_akun.id_mst_akun');
     	$this->db->group_by('mst_keu_anggaran.id_mst_akun');
