@@ -63,7 +63,15 @@
     <div id="top">
       <img id="logo_pus" src="<?php echo base_url()?>public/themes/sik/dist/img/logo.gif">
       <div id="pus_name">PUSKESMAS {puskesmas}<br>Dinas Kesehatan {district}</div>
-      <img id="logo_epus" class="hidden-xs" src="<?php echo base_url()?>public/themes/sik/dist/img/epuskesmas2.png">
+      <img id="logo_epus" class="hidden-xs" src="<?php echo base_url()?>public/themes/sik/dist/img/<?php 
+      $lvl = $this->session-> userdata('level');
+      if(in_array($lvl, array('sms','kepegawaian','inventory','keuangan','prokesga'))){
+        echo $lvl;
+      }else{
+        echo "epuskesmas2";
+      }
+      ?>.png">
+    </div>
     </div>
       
       <header class="main-header">
