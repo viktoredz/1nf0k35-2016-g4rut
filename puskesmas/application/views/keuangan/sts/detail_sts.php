@@ -108,6 +108,14 @@
 	          <h3 class="box-title">{title_form}</h3>
 		    </div>
 		    <div class="box-body">
+		    	<div class="alert alert-warning alert-dismissible" role="alert" id="showmssg">
+				  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				  <strong>Ups!</strong> <div id="showcontentmssg"></div>
+				</div>
+				<div class="alert alert-success alert-dismissible" role="alert" id="showmssgsimpanttd">
+					  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					  <strong>Data Telah Tersimpan !</strong> data telah tersimpan dan Anda masih bisa mengganti data.
+				</div>	
 				<?php
 					if($this->session->flashdata('notif_type') == 'error'){
 				?>
@@ -157,7 +165,7 @@
 						<input type="hidden" name="puskes" value="<?php echo $data_sts['code_cl_phc']?>" >
 		   	            <button type="button" id="btn-export" class="btn btn-warning"><i class='fa fa-save'></i> &nbsp; Export</button>
 						<input type="submit" name="save" class="btn btn-success" value="Simpan Sementara" >								
-						<input type="submit" name="delete" class="btn btn-danger" onclick="return confirm('apakah Anda yakin telah selesai mengisi form STS ? form yang telah ditutup tidak dapat diedit kembali')" value="Simpan & Tutup STS">
+						<input type="button" name="delete" class="btn btn-danger" onclick="simapandatatutup()" value="Simpan & Tutup STS">
 						<a href="<?php echo base_url()?>keuangan/sts/general" name="save" class="btn btn-primary" value="" ><i class='fa  fa-arrow-circle-o-left'></i> &nbsp;Kembali</a>						
 					</div>
 					</form>
@@ -175,9 +183,63 @@
   </div>
 </section>
 </form>
-
+<div id="popup_keuangan_sts_tutup" style="display:none">
+  <div id="popup_title_tutup">Simpan & Tutup STS</div>
+  <div id="popup_keuangan_sts__tutup_content">&nbsp;</div>
+</div>
 <script type="text/javascript">
-	
+$(function(){
+	$("#showmssg").hide();
+	$("#showmssgsimpanttd").hide();
+});
+function simapandatatutup() {
+  var r = confirm("apakah Anda yakin telah selesai mengisi form STS ? form yang telah ditutup tidak dapat diedit kembali");
+  if (r == true) {
+      var data = new FormData();	
+        data.append('ttd_pimpinan_nama',          $("[name='ttd_pimpinan_nama']").val());
+        data.append('ttd_penerima_nama',          $("[name='ttd_penerima_nama']").val());
+        data.append('ttd_penyetor_nama',          $("[name='ttd_penyetor_nama']").val());
+        data.append('ttd_pimpinan_nip',           $("[name='ttd_pimpinan_nip']").val());
+        data.append('ttd_penerima_nip',           $("[name='ttd_penerima_nip']").val());
+        data.append('ttd_penyetor_nip',           $("[name='ttd_penerima_nip']").val());
+        
+        $.ajax({
+            cache : false,
+            contentType : false,
+            processData : false,
+            type : 'POST',
+            url : '<?php echo base_url()."keuangan/sts/update_ttd_baru/$id"?>',
+            data : data ,
+            success : function(response){
+              a = response.split(" | ");
+              if(a[0]=="OK"){
+                var obj = jQuery.parseJSON(a[1]);
+              	$("#showmssgsimpanttd").show();
+              	tutupakun();
+              }else{
+              	var obj = jQuery.parseJSON(a[1]);
+              	$("#showmssg").show();
+              	$("#showcontentmssg").html(obj.notif_content);
+              }
+            }
+         });
+
+        return false;
+  } 
+}	
+	function tutupakun(){
+		$("#popup_keuangan_sts_tutup #popup_keuangan_sts__tutup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+        $.get("<?php echo base_url().'keuangan/sts/add_tutup_buku' ?>/", function(data) {
+          $("#popup_keuangan_sts__tutup_content").html(data);
+        });
+        $("#popup_keuangan_sts_tutup").jqxWindow({
+          theme: theme, resizable: false,
+          width: 600,
+          height: 300,
+          isModal: true, autoOpen: false, modalOpacity: 0.2
+        });
+        $("#popup_keuangan_sts_tutup").jqxWindow('open');
+	}
 	function getDemoTheme() {
 		var theme = document.body ? $.data(document.body, 'theme') : null
 		if (theme == null) {
@@ -332,7 +394,7 @@
 				$.post( '<?php echo base_url()?>keuangan/sts/update_volume', {id_sts:'<?php echo $id?>',id_mst_anggaran: arr[0], tarif:arr[5], vol:arr[6]},function( data ) {
 					$("#terbilangTotal").html(terbilang(data.split('.')[0]));
 					$("#angkaTotal").html(formatMoney(data, "Rp"));	
-					//$("#treeGrid").jqxTreeGrid('updateBoundData');
+					$("#treeGrid").jqxTreeGrid('updateBoundData');
 				});
              },
              deleteRow: function (rowID, commit) {

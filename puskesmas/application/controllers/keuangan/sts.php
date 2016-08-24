@@ -190,29 +190,7 @@ class Sts extends CI_Controller {
 		}
 	}
 
-	function add_sts(){
-		$this->authentication->verify('keuangan','add');
-
-	    $this->form_validation->set_rules('id_sts', 'ID STS', 'trim|required');
-		$this->form_validation->set_rules('nomor','Nomor','trim|required|callback_sts_nomor');
-		$this->form_validation->set_rules('tgl','Tanggal','trim|required|callback_sts_tgl');
-
-		$data['id_sts']	   			    = "";
-		$data['alert_form']		   	    = "";
-	    $data['action']					= "add";
-		$data['nomor'] 					= $this->generate_nomor(date("Y-m-d H:i:s"));		
-
-		if($this->form_validation->run()== FALSE){
-			die($this->parser->parse("keuangan/sts/form_tambah_sts",$data));
-		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){
-				$id=$this->sts_model->add_sts();
-				die("OK | $id");
-		}else{
-			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
-			redirect(base_url()."keuangan/sts/add_sts");
-		}
-		die($this->parser->parse("keuangan/sts/form_tambah_sts",$data));
-	}
+	
 
 	function sts_tgl(){
 		if(!$this->sts_model->cek_sts_tgl()){
@@ -386,6 +364,76 @@ class Sts extends CI_Controller {
 				
 			}
 			redirect(base_url().'keuangan/sts/detail/'.$this->input->post('id_sts'));
+		}
+		
+	}
+	function add_sts(){
+		$this->authentication->verify('keuangan','add');
+
+	    $this->form_validation->set_rules('id_sts', 'ID STS', 'trim|required');
+		$this->form_validation->set_rules('nomor','Nomor','trim|required|callback_sts_nomor');
+		$this->form_validation->set_rules('tgl','Tanggal','trim|required|callback_sts_tgl');
+
+		$data['id_sts']	   			    = "";
+		$data['alert_form']		   	    = "";
+	    $data['action']					= "add";
+		$data['nomor'] 					= $this->generate_nomor(date("Y-m-d H:i:s"));		
+
+		if($this->form_validation->run()== FALSE){
+			die($this->parser->parse("keuangan/sts/form_tambah_sts",$data));
+		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){
+				$id=$this->sts_model->add_sts();
+				die("OK | $id");
+		}else{
+			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
+			redirect(base_url()."keuangan/sts/add_sts");
+		}
+		die($this->parser->parse("keuangan/sts/form_tambah_sts",$data));
+	}
+	function add_tutup_buku(){
+		$this->authentication->verify('keuangan','add');
+
+	    $this->form_validation->set_rules('id_sts', 'ID STS', 'trim|required');
+		$this->form_validation->set_rules('nomor','Nomor','trim|required|callback_sts_nomor');
+		$this->form_validation->set_rules('tgl','Tanggal','trim|required|callback_sts_tgl');
+
+		$data['id_sts']	   			    = "";
+		$data['alert_form']		   	    = "";
+	    $data['action']					= "add";
+		$data['nomor'] 					= $this->generate_nomor(date("Y-m-d H:i:s"));		
+
+		if($this->form_validation->run()== FALSE){
+			die($this->parser->parse("keuangan/sts/form_tutup_sts",$data));
+		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){
+				$id=$this->sts_model->add_sts();
+				die("OK | $id");
+		}else{
+			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
+			redirect(base_url()."keuangan/sts/add_sts");
+		}
+		die($this->parser->parse("keuangan/sts/form_tutup_sts",$data));
+	}
+	function update_ttd_baru($id=0){		
+		$this->authentication->verify('keuangan','edit');		
+
+		$this->form_validation->set_rules('ttd_pimpinan_nama', 'Nama Pimpinan', 'trim|required');
+		$this->form_validation->set_rules('ttd_penerima_nama', 'Nama Penerima', 'trim|required');
+		$this->form_validation->set_rules('ttd_penyetor_nama', 'Nama Penyetor', 'trim|required');
+		
+		$this->form_validation->set_rules('ttd_pimpinan_nip', 'NIP Pimpinan', 'trim|required');
+		$this->form_validation->set_rules('ttd_penerima_nip', 'NIP Penerima', 'trim|required');
+		$this->form_validation->set_rules('ttd_penyetor_nip', 'NIP Penyetor', 'trim|required');
+
+		if($this->form_validation->run()== FALSE){
+			$data['notif_content']	= validation_errors();
+			$data['notif_type']	= 'error';
+			die('error | '.json_encode($data));
+		}else{
+			$this->sts_model->update_ttd();
+				//$this->tutup_sts();
+				//$this->session->set_flashdata('notif_type', 'closed');
+			$data['notif_type'] = 'saved';
+			die('OK | '.json_encode($data));
 		}
 		
 	}
