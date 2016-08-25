@@ -78,7 +78,7 @@ class Jurnal_model extends CI_Model {
         foreach ($query->result() as $key) {
             $data[$i]['id_jurnalis']    =  $i;
             $data[$i]['id_transaksi']   =  $key->id_transaksi;
-            $data[$i]['tanggal']        =  $key->tanggal;
+            $data[$i]['tanggal']        =  date("d-m-Y",strtotime($key->tanggal));
             $data[$i]['uraian']         =  $key->uraian;
             $data[$i]['tipe_jurnal']    =  $key->tipe_jurnal;
             $data[$i]['status']         =  $key->status;
