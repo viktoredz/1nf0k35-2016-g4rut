@@ -213,8 +213,6 @@ function simapandatatutup() {
             success : function(response){
               a = response.split(" | ");
               if(a[0]=="OK"){
-                var obj = jQuery.parseJSON(a[1]);
-              	$("#showmssgsimpanttd").show();
               	tutupakun();
               }else{
               	var obj = jQuery.parseJSON(a[1]);

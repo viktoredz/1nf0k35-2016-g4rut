@@ -183,9 +183,10 @@
         data.append('isicheckbox',          $("[name='isicheckbox']").val());
         data.append('totaldebitkredit',     "<?php echo $totaldebit;?>");
         data.append('tanggal',              "<?php echo $tgl;?>");
-        data.append('id_akun_debit_uraian', "<?php echo $id_akun_debit_uraian;?>");
+        data.append('id_akun_debit',        "<?php echo $id_akun_debit;?>");
         data.append('akun_kredit',          "<?php echo $akun_kredit;?>");
         data.append('jmldata',              "<?php echo $jmldata;?>");
+        data.append('id_akun_kredit',       "<?php echo $id_akun_kredit;?>");
         <?php $i=1; foreach ($allkredit as $key) { ?>
         data.append("id_akun_kredit_uraian<?php echo $i;?>",    "<?php echo $key->kodeakun;?>");
         data.append("totalkredit<?php echo $i;?>",              "<?php echo $key->totalkredit;?>");
@@ -200,8 +201,8 @@
             success : function(response){
               a = response.split(" | ");
               if(a[0]=="OK"){
+                alert("Data Berhasil disimpan");
                 $("#popup_keuangan_sts_tutup").jqxWindow('close');
-                alert("Data STS berhasil disimpan.");
                 location.reload();
               }else{
                 $('#popup_keuangan_sts__tutup_content').html(response);

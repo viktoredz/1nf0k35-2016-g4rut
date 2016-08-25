@@ -27,9 +27,9 @@
                         }else{
                          $value = set_value('akun_penerimaan_sts');
                         }
-                        $select = $penerimaan->id_mst_akun == $value ? 'selected' : '' ;
+                        $select = $penerimaan['id_mst_akun'] == $value ? 'selected' : '' ;
                     ?>
-                     <option value="<?php echo $penerimaan->id_mst_akun ?>" <?php echo $select ?>><?php echo $penerimaan->kode?>-<?php echo $penerimaan->uraian ?></option>
+                     <option value="<?php echo $penerimaan['id_mst_akun'] ?>" <?php echo $select ?>><?php echo $penerimaan['kode']?>-<?php echo $penerimaan['uraian'] ?></option>
                       <?php endforeach ?>
                  </select>
                </div> 
@@ -52,9 +52,9 @@
                         }else{
                          $value = set_value('akun_penyetoran_sts');
                         }
-                        $select = $penyetoran->id_mst_akun == $value ? 'selected' : '' ;
+                        $select = $penyetoran['id_mst_akun'] == $value ? 'selected' : '' ;
                     ?>
-                     <option value="<?php echo $penyetoran->id_mst_akun ?>" <?php echo $select ?>><?php echo $penyetoran->kode?>-<?php echo $penyetoran->uraian ?></option>
+                     <option value="<?php echo $penyetoran['id_mst_akun'] ?>" <?php echo $select ?>><?php echo $penyetoran['kode']?>-<?php echo $penyetoran['uraian'] ?></option>
                       <?php endforeach ?>
                  </select>
                </div> 

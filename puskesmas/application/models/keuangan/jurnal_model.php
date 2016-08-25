@@ -43,4 +43,63 @@ class Jurnal_model extends CI_Model {
         }
         print_r($category_data);
     }
+
+    function getchildumum($parent=0){
+        $this->db->where("keu_jurnal.id_transaksi",$parent);
+        $this->db->select("keu_jurnal.*,mst_keu_akun.uraian");
+        $this->db->join('mst_keu_akun','keu_jurnal.id_mst_akun=mst_keu_akun.kode');
+        $query = $this->db->get("keu_jurnal");
+        $data=array();
+        foreach ($query->result() as $key) {
+            $data[]= array(
+                        'id_jurnal'     => $key->id_jurnal,
+                        'id_transaksi'  => $key->id_transaksi,
+                        'id_mst_akun'   => $key->id_mst_akun,
+                        'debet'         => $key->debet,
+                        'kredit'        => $key->kredit,
+                        'uraian'        => ' - '.$key->uraian,
+                    );
+            
+        }
+        return $data;
+    }
+    function getallkategori(){
+        return $this->db->get('mst_keu_kategori_transaksi')->result_array();
+    }
+    function get_datajurnalumum($type){
+        $puskes = 'P'.$this->session->userdata('puskesmas');
+        $this->db->where('code_cl_phc',$puskes);
+        $this->db->select("*");
+        $this->db->where("tipe_jurnal",$type);
+        $query = $this->db->get("keu_transaksi");
+        $i=0;
+        $data=array();
+        foreach ($query->result() as $key) {
+            $data[$i]['id_jurnalis']    =  $i;
+            $data[$i]['id_transaksi']   =  $key->id_transaksi;
+            $data[$i]['tanggal']        =  $key->tanggal;
+            $data[$i]['uraian']         =  $key->uraian;
+            $data[$i]['tipe_jurnal']    =  $key->tipe_jurnal;
+            $data[$i]['status']         =  $key->status;
+            $data[$i]['id_kategori_transaksi']  =  $key->id_kategori_transaksi;
+            $data[$i]['code_cl_phc']    =  $key->code_cl_phc;
+            $data[$i]['debet']          =  '';
+            $data[$i]['kredit']         =  '';
+            $data[$i]['edit']           =  '1';
+            $data[$i]['child']         = $this->getchildumum($key->id_transaksi);
+        $i++;
+        }
+        return $data;
+    }
+    function pilihan_enums($table , $field){
+     $row = $this->db->query("SHOW COLUMNS FROM ".$table." LIKE '$field'")->row()->Type;  
+     $regex = "/'(.*?)'/";
+            preg_match_all( $regex , $row, $enum_array );
+            $enum_fields = $enum_array[1];
+            foreach ($enum_fields as $key=>$value)
+            {
+                $enums[$value] = $value; 
+            }
+            return $enums;
+    }
 }

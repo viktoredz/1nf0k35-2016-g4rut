@@ -26,16 +26,18 @@
                     <label> Filter Transaksi</label>
                   </div>
                   <div class="col-md-4">
-                    <select class="form-control" id="filekategori" name="filekategori">
-                      <?php foreach ($filekategori as $key => $value) {?>
-                        <option value="<?php echo $key;?>"><?php echo $value?></option>
+                    <select class="form-control" id="filekategoriumum" name="filekategoriumum">
+                        <option value="all">Semua Kategori Transaksi</option>
+                      <?php foreach ($filekategori as $key) {?>
+                        <option value="<?php echo $key['id_mst_kategori_transaksi'];?>"><?php echo $key['nama']?></option>
                       <?php }?>
                     </select>
                   </div>
                   <div class="col-md-5">
-                    <select class="form-control" id="filetransaksi" name="filetransaksi"> 
+                    <select class="form-control" id="filetransaksiumum" name="filetransaksiumum"> 
+                        <option value="all">Semua Transaksi</option>
                       <?php foreach ($filetransaksi as $key => $value) {?>
-                        <option value="<?php echo $key;?>"><?php echo $value?></option>
+                        <option value="<?php echo $key;?>"><?php echo ucfirst($value);?></option>
                       <?php }?>
                     </select>
                   </div>
@@ -47,7 +49,7 @@
                     <label> Periode</label>
                   </div>
                   <div class="col-md-4">
-                    <select class="form-control" id="periodetahun" name="periodetahun">
+                    <select class="form-control" id="periodetahunumum" name="periodetahunumum">
                       <?php for($i=date("Y"); $i>=date("Y")-5; $i--){
                         $select = ($i==date('Y') ? 'selected' : '');
                       ?>
@@ -56,7 +58,7 @@
                     </select>
                   </div>
                   <div class="col-md-5">
-                    <select class="form-control" id="periodebulan" name="periodebulan"> 
+                    <select class="form-control" id="periodebulanumum" name="periodebulanumum"> 
                       <?php foreach ($bulan as $key => $value) { 
                         $select = ($key==date('n') ? 'selected' : '');
                       ?>  
@@ -126,11 +128,12 @@ $(document).ready(function () {
     {
         dataType: "json",
         dataFields: [
+            { name: 'id_transaksi', type: 'number' },
             { name: 'id_jurnal', type: 'number' },
             { name: 'tanggal', type: 'string' },
-            { name: 'transaksi', type: 'string' },
+            { name: 'uraian', type: 'string' },
             { name: 'status', type: 'string' },
-            { name: 'kodeakun', type: 'string' },
+            { name: 'id_mst_akun', type: 'string' },
             { name: 'debet', type: 'number' },
             { name: 'kredit', type: 'number' },
             { name: 'child', type: 'array' },
@@ -140,8 +143,8 @@ $(document).ready(function () {
         {
             root: 'child'
         },
-        id: 'id_jurnal',
-        url: "<?php echo site_url('keuangan/jurnal/json_jurnal_umum'); ?>",
+        id: 'id_transaksi',
+        url: "<?php echo site_url('keuangan/jurnal/json_jurnal_umum/jurnal_umum'); ?>",
     };
       var dataAdapter = new $.jqx.dataAdapter(source, {
           loadComplete: function () {
@@ -175,17 +178,24 @@ $(document).ready(function () {
               }
             },
           },
-          { text: 'Tanggal', dataField: 'tanggal', width: '15%' },
-          { text: 'Transaksi', dataField: 'transaksi', width: '25%' },
-          { text: 'Kode AKun', dataField: 'kodeakun', width: '10%' },
+          { text: 'Tanggal', dataField: 'tanggal', width: '10%',cellsAlign: "center" },
+          { text: 'Transaksi', dataField: 'uraian', width: '30%' },
+          { text: 'Kode AKun', dataField: 'id_mst_akun', width: '10%',cellsAlign: "center" },
           { text: 'Debet', dataField: 'debet', cellsFormat: 'd', width: '15%',cellsAlign: "right", 
                       aggregates: [{
                           'Total':
                             function (aggregatedValue, currentValue, column, record, aggregateLevel) {
+                                    if (aggregatedValue=='') {
+                                      aggregatedValue=0;
+                                    }
+                                    if (currentValue=='') {
+                                      currentValue=0;
+                                    }
                                     return aggregatedValue + currentValue;
                             }
                       }],
                       aggregatesRenderer: function (aggregatesText, column, element, aggregates, type) {
+                        if (aggregates!=null) {
                           if (type == "aggregates") {
                               var renderString = "<div style='margin: 4px; float: right;  height: 100%;'>";
                           }
@@ -195,6 +205,7 @@ $(document).ready(function () {
                           var totdeb = dataAdapter.formatNumber(aggregates.Total, "f2");
                           renderString += "<table><tr><td rowspan='2'><strong>Total: </strong></td><td align='right'>" + totdeb + "</td></table>";
                           return renderString;
+                        }
                       }
           },
 
@@ -202,10 +213,17 @@ $(document).ready(function () {
                       aggregates: [{
                           'Total':
                             function (aggregatedValue, currentValue, column, record, aggregateLevel) {
+                                    if (aggregatedValue=='') {
+                                      aggregatedValue=0;
+                                    }
+                                    if (currentValue=='') {
+                                      currentValue=0;
+                                    }
                                     return aggregatedValue + currentValue;
                             }
                       }],
                       aggregatesRenderer: function (aggregatesText, column, element, aggregates, type) {
+                        if (aggregates!=null) {
                           if (type == "aggregates") {
                               var renderString = "<div style='margin: 4px; float: right;  height: 100%;'>";
                           }
@@ -215,6 +233,7 @@ $(document).ready(function () {
                           var totkre = dataAdapter.formatNumber(aggregates.Total, "f2");
                           renderString += "<table><tr><td rowspan='2'><strong>Total: </strong></td><td align='right'>" + totkre + "</td></table>";
                           return renderString;
+                        }
                       }
           },
           { text: 'Status', dataField: 'status', width: '10%' },
@@ -275,4 +294,28 @@ function tambahtransaksi(id){
   });
   $("#popup_jurnal").jqxWindow('open');
 }
+
+
+$("#filekategoriumum").change(function(){
+
+  $.post("<?php echo base_url().'keuangan/jurnal/filterkategori' ?>", 'kategori='+$(this).val(),  function(){
+          $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
+    });
+});
+$("#filetransaksiumum").change(function(){
+
+  $.post("<?php echo base_url().'keuangan/jurnal/filtertransaksi' ?>", 'transaksi='+$(this).val(),  function(){
+          $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
+    });
+});
+$("#periodetahunumum").change(function(){
+    $.post("<?php echo base_url().'keuangan/jurnal/filtertahun' ?>", 'tahundata='+$(this).val(),  function(){
+          $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
+    });
+});
+$("#periodebulanumum").change(function(){
+  $.post("<?php echo base_url().'keuangan/jurnal/filterbulan' ?>", 'bulandata='+$(this).val(),  function(){
+          $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
+    });
+});
 </script>

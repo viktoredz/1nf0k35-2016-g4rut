@@ -142,15 +142,67 @@ class Keusts_model extends CI_Model {
     {
         return array();
     }
-
     function get_akun_sts(){
         $this->db->select('*');
         $this->db->from('mst_keu_akun');
         $this->db->order_by('kode','asc');
         $this->db->where('kode <> ""');
-        $query = $this->db->get();
-        return $query->result();
+        $this->db->where('aktif',"1");
+        return $this->db->get()->result_array();
     }
+    // function get_akun_sts($idparent=0,$i=0)
+    // {   
+        
+    //     $category_data = array();
+    //     //$category_query = $this->db->query("SELECT * FROM mst_peg_struktur_org WHERE tar_id_struktur_org_parent = '" . (int)$idparent . "'");
+    //     $this->db->select('*');
+    //     $this->db->from('mst_keu_akun');
+    //     $this->db->order_by('kode','asc');
+    //     $this->db->where('kode <> ""');
+    //     $this->db->where('aktif',"1");
+    //     $this->db->where("id_mst_akun_parent",(int)$idparent);
+    //     $category_query = $this->db->get();
+
+    //     $pisah='-';
+        
+    //     $i++;
+
+    //     foreach ($category_query->result() as $category) {
+    //         if ($i=='1') {
+    //             $pisah='';
+    //         }else if ($i=='2') {
+    //             $pisah='--';
+    //         }else if ($i=='3') {
+    //             $pisah='------';
+    //         }else if ($i=='4') {
+    //             $pisah='------------';
+    //         }else if ($i=='5') {
+    //             $pisah='------------------';
+    //         }else if ($i=='6') {
+    //             $pisah='------------------------';
+    //         }else if ($i=='7') {
+    //             $pisah='------------------------------';
+    //         }
+
+    //         $category_data[] = array(
+    //             'id_mst_akun'                   => $category->id_mst_akun,
+    //             'id_mst_akun_parent'            => $category->id_mst_akun_parent,
+    //             'uraian'                        => $idparent!=0 ? $pisah.' '.$category->uraian : $category->uraian,
+    //             'kode'                          => $category->kode,
+    //             'saldo_normal'                  => $category->saldo_normal
+    //         );
+
+    //     $children = $this->get_data_status($category->id_mst_akun,$i);
+
+    //         if ($children) {
+    //             $category_data = array_merge( $category_data,$children);
+    //         }
+            
+    //     }
+        
+        
+    //     return $category_data;
+    // }
 
     function get_setting(){
         $data = array();

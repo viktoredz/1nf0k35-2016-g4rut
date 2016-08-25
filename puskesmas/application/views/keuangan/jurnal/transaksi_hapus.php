@@ -26,7 +26,7 @@
                     <label> Periode</label>
                   </div>
                   <div class="col-md-4">
-                    <select class="form-control" id="periodetahun" name="periodetahun">
+                    <select class="form-control" id="periodetahunhapus" name="periodetahun">
                       <?php for($i=date("Y"); $i>=date("Y")-5; $i--){
                         $select = ($i==date('Y') ? 'selected' : '');
                       ?>
@@ -35,7 +35,7 @@
                     </select>
                   </div>
                   <div class="col-md-5">
-                    <select class="form-control" id="periodebulan" name="periodebulan"> 
+                    <select class="form-control" id="periodebulanhapus" name="periodebulan"> 
                       <?php foreach ($bulan as $key => $value) { 
                         $select = ($key==date('n') ? 'selected' : '');
                       ?>  
@@ -77,11 +77,12 @@ $(document).ready(function () {
         dataFields: [
             { name: 'id_jurnal', type: 'number' },
             { name: 'tanggal', type: 'string' },
-            { name: 'transaksi', type: 'string' },
+            { name: 'uraian', type: 'string' },
             { name: 'status', type: 'string' },
-            { name: 'kodeakun', type: 'string' },
-            { name: 'debet', type: 'string' },
-            { name: 'kredit', type: 'string' },
+            { name: 'id_mst_akun', type: 'string' },
+            { name: 'id_transaksi', type: 'string' },
+            { name: 'debet', type: 'number' },
+            { name: 'kredit', type: 'number' },
             { name: 'child', type: 'array' },
             { name: 'edit', type: 'string' },
         ],
@@ -89,7 +90,7 @@ $(document).ready(function () {
         {
             root: 'child'
         },
-        id: 'id_jurnal',
+        id: 'id_transaksi',
         url: "<?php echo site_url('keuangan/jurnal/json_jurnal_umum'); ?>",
     };
       var dataAdapter = new $.jqx.dataAdapter(source, {
@@ -122,8 +123,8 @@ $(document).ready(function () {
             },
           },
           { text: 'Tanggal', dataField: 'tanggal', width: '15%' },
-          { text: 'Transaksi', dataField: 'transaksi', width: '25%' },
-          { text: 'Kode AKun', dataField: 'kodeakun', cellsFormat: 'd', width: '10%' },
+          { text: 'Transaksi', dataField: 'uraian', width: '25%' },
+          { text: 'Kode AKun', dataField: 'id_mst_akun', width: '10%' },
           { text: 'Debet', dataField: 'debet', cellsFormat: 'd', width: '15%',cellsAlign: "right" },
           { text: 'Kredit', dataField: 'kredit', width: '15%',cellsAlign: "right" },
           { text: 'Status', dataField: 'status', width: '10%' },
@@ -149,5 +150,14 @@ function edit(id){
     $("#content1").html(data);
   });
 }
-
+$("#periodetahunhapus").change(function(){
+    $.post("<?php echo base_url().'keuangan/jurnal/filtertahun' ?>", 'tahundata='+$(this).val(),  function(){
+          $("#jqxgrid_jurnal_hapus").jqxTreeGrid('updateBoundData');
+    });
+});
+$("#periodebulanhapus").change(function(){
+  $.post("<?php echo base_url().'keuangan/jurnal/filterbulan' ?>", 'bulandata='+$(this).val(),  function(){
+          $("#jqxgrid_jurnal_hapus").jqxTreeGrid('updateBoundData');
+    });
+});
 </script>
