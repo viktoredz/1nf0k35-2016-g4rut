@@ -57,6 +57,17 @@ class Morganisasi extends CI_Controller {
 		if($this->session->userdata('level')=="sms"){
 			redirect(base_url()."sms/sms");
 		}
+		elseif($this->session->userdata('level')=="kepegawaian"){
+			redirect(base_url()."kepegawaian/dashboard");
+		}
+		elseif($this->session->userdata('level')=="inventory"){
+			redirect(base_url()."inventory/dashboard");
+		}
+		elseif($this->session->userdata('level')=="prokesga"){
+			redirect(base_url()."eform/dashboard");
+		}elseif($this->session->userdata('level')=="keuangan"){
+			redirect(base_url()."keuangan/dashboard");
+		}
 		$this->authentication->verify('morganisasi','show');
 		$data = array();
 		$data['title_group'] 	= "Dashboard";
