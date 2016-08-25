@@ -48,6 +48,7 @@ class Jurnal_model extends CI_Model {
         $this->db->where("keu_jurnal.id_transaksi",$parent);
         $this->db->select("keu_jurnal.*,mst_keu_akun.uraian");
         $this->db->join('mst_keu_akun','keu_jurnal.id_mst_akun=mst_keu_akun.kode');
+        $this->db->order_by("debet",'desc');
         $query = $this->db->get("keu_jurnal");
         $data=array();
         foreach ($query->result() as $key) {
@@ -57,7 +58,7 @@ class Jurnal_model extends CI_Model {
                         'id_mst_akun'   => $key->id_mst_akun,
                         'debet'         => $key->debet,
                         'kredit'        => $key->kredit,
-                        'uraian'        => ' - '.$key->uraian,
+                        'uraian'        => ($key->kredit!= '0' ? ' &nbsp '.$key->uraian : $key->uraian),
                     );
             
         }
