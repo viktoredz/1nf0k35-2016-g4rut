@@ -1,12 +1,13 @@
 <?php
 class Drh_model extends CI_Model {
 
-    var $tabel    = 'pegawai';
+    var $tabel       = 'pegawai';
     var $t_puskesmas = 'cl_phc';
-    var $t_alamat = 'pegawai_alamat';
-    var $t_diklat = 'pegawai_diklat';
-    var $t_dp3    = 'pegawai_dp3';
-	var $lang	  = '';
+    var $t_alamat    = 'pegawai_alamat';
+    var $t_diklat    = 'pegawai_diklat';
+    var $t_dp3       = 'pegawai_dp3';
+    var $t_berhenti  = 'pegawai_berhenti';
+	var $lang	     = '';
 
     function __construct() {
         parent::__construct();
@@ -88,7 +89,96 @@ class Drh_model extends CI_Model {
         return $query->result();
     }
 
-    
+    function get_data_berhenti($id=0,$start=0,$limit=999999,$options=array()){
+        $this->db->select("*");
+        $this->db->where('pegawai_berhenti.id_pegawai',$id);
+        $this->db->join('mst_peg_berhenti','pegawai_berhenti.id_berhenti=mst_peg_berhenti.id_berhenti','inner');
+        $this->db->order_by('mst_peg_berhenti.id_berhenti','asc');
+        $query = $this->db->get($this->t_berhenti,$limit,$start);
+        return $query->result();
+    }
+
+    function jenis_pemberhentian(){
+        $this->db->select('*');
+        $this->db->group_by('jenis');
+        $this->db->from("mst_peg_berhenti");
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    function get_kategori_pemberhentian($jenis){
+        $this->db->select('*');
+        $this->db->from("mst_peg_berhenti");
+        $this->db->where('jenis',$jenis);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    function insert_entry_berhenti($id){
+        $kodepuskesmas = $this->session->userdata('puskesmas');
+        
+        $data['id_pegawai']             = $id;
+        $data['id_berhenti']            = $this->input->post('id_berhenti');
+        $data['tmt']                    = date("Y-m-d",strtotime($this->input->post('tmt')));
+        $data['sk_tgl']                 = date("Y-m-d",strtotime($this->input->post('sk_tgl')));
+        $data['sk_nomor']               = $this->input->post('sk_nomor');
+        $data['sk_pejabat']             = $this->input->post('sk_pejabat');
+        $data['berhenti_tipe']          = $this->input->post('berhenti_tipe');
+        $data['code_cl_phc']            = 'P'.$kodepuskesmas;
+
+        $this->db->where('id_pegawai',$id);
+        $this->db->where('tmt',date("Y-m-d",strtotime($this->input->post('tmt'))));
+        $query = $this->db->get('pegawai_berhenti');
+        if ($query->num_rows() > 0) {
+            return 'false';
+        }else{
+            if($this->db->insert('pegawai_berhenti', $data)){
+                return 'true'; 
+            }else{
+                return mysql_error();
+            }    
+        }
+    }
+
+    function get_data_berhenti_edit($id,$tmt){
+        $data = array();
+
+        $this->db->select("*");
+        $this->db->where("id_pegawai",$id);
+        $this->db->where("tmt",$tmt);
+        $query = $this->db->get("pegawai_berhenti");
+        if($query->num_rows()>0){
+            $data = $query->row_array();
+        }
+
+        $query->free_result();
+        return $data;
+    }
+
+    function delete_entry_berhenti($id,$tmt){
+        $this->db->where('id_pegawai',$id);
+        $this->db->where('tmt',$tmt);
+
+        return $this->db->delete('pegawai_berhenti');
+    }
+
+    function update_entry_berhenti($id,$tmt){
+       
+        $data['tmt']                    = date("Y-m-d",strtotime($this->input->post('tmt')));
+        $data['id_berhenti']            = $this->input->post('id_berhenti');
+        $data['sk_tgl']                 = date("Y-m-d",strtotime($this->input->post('sk_tgl')));
+        $data['sk_nomor']               = $this->input->post('sk_nomor');
+        $data['sk_pejabat']             = $this->input->post('sk_pejabat');
+        $data['berhenti_tipe']          = $this->input->post('berhenti_tipe');
+
+        $this->db->where('id_pegawai',$id);
+        $this->db->where('tmt',$tmt);
+        if($this->db->update('pegawai_berhenti', $data)){
+            return true; 
+        }else{
+            return mysql_error();
+        }
+    }
 
     function get_data_alamat($start=0,$limit=999999,$options=array())
     {

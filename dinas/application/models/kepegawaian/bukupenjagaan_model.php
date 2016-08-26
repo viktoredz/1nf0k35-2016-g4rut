@@ -19,6 +19,7 @@ class Bukupenjagaan_model extends CI_Model {
         $this->db->join("(SELECT  id_pegawai, nip_nit, tmt,id_mst_peg_golruang, masa_krj_bln, masa_krj_thn, CONCAT(tmt, id_pegawai) AS pangkatterakhir FROM
         pegawai_pangkat WHERE CONCAT(tmt, id_pegawai) IN (SELECT  CONCAT(MAX(tmt), id_pegawai) FROM pegawai_pangkat GROUP BY id_pegawai)) pangkat",'pangkat.id_pegawai = pegawai.id_pegawai','left');
         $this->db->join("mst_peg_golruang",'mst_peg_golruang.id_golongan = pangkat.id_mst_peg_golruang','left');
+        $this->db->where("pegawai.id_pegawai NOT IN (SELECT id_pegawai FROM pegawai_berhenti)");
         $query = $this->db->get('pegawai',$limit,$start);
         return $query->result();
     }
@@ -29,6 +30,7 @@ class Bukupenjagaan_model extends CI_Model {
         $this->db->join("(SELECT  id_pegawai, nip_nit, tmt,id_mst_peg_golruang, masa_krj_bln, masa_krj_thn, CONCAT(tmt, id_pegawai) AS pangkatterakhir FROM
         pegawai_pangkat WHERE CONCAT(tmt, id_pegawai) IN (SELECT  CONCAT(MAX(tmt), id_pegawai) FROM pegawai_pangkat GROUP BY id_pegawai)) pangkat",'pangkat.id_pegawai = pegawai.id_pegawai','left');
         $this->db->join("mst_peg_golruang",'mst_peg_golruang.id_golongan = pangkat.id_mst_peg_golruang','left');
+        $this->db->where("pegawai.id_pegawai NOT IN (SELECT id_pegawai FROM pegawai_berhenti)");
         $query = $this->db->get('pegawai',$limit,$start);
         return $query->result();
     }

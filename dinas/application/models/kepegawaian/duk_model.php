@@ -36,7 +36,8 @@ class Duk_model extends CI_Model {
         $this->db->join("(SELECT  id_pegawai, CONCAT(ijazah_tgl, id_pegawai) AS pendidikanterakhir,sekolah_nama, ijazah_tgl, mst_peg_jurusan.nama_jurusan,
             mst_peg_tingkatpendidikan.deskripsi,mst_peg_jurusan.id_jurusan FROM pegawai_pendidikan LEFT JOIN mst_peg_jurusan ON (pegawai_pendidikan.id_mst_peg_jurusan = mst_peg_jurusan.id_jurusan) LEFT JOIN mst_peg_tingkatpendidikan ON (mst_peg_jurusan.id_mst_peg_tingkatpendidikan = mst_peg_tingkatpendidikan.id_tingkat) WHERE CONCAT(ijazah_tgl, id_pegawai) IN (SELECT  CONCAT(MAX(ijazah_tgl), id_pegawai) FROM
                 pegawai_pendidikan GROUP BY id_pegawai)) pendidikan","pendidikan.id_pegawai = pegawai.id_pegawai","left");
-		$this->db->order_by('pangkat.id_mst_peg_golruang ','desc');
+        $this->db->where("pegawai.id_pegawai NOT IN (SELECT id_pegawai FROM pegawai_berhenti)");
+        $this->db->order_by('pangkat.id_mst_peg_golruang ','desc');
         $this->db->order_by('pangkat.masa_krj_thn  ','desc');
         $this->db->order_by('pangkat.masa_krj_bln ','desc');
         $this->db->order_by('pendidikan.id_jurusan ','desc');
