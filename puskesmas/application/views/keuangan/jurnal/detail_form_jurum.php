@@ -76,7 +76,7 @@
         <div class="row" style="margin: 5px">
           <div class="col-md-4" style="padding: 5px">Nomor Transaksi</div>
           <div class="col-md-8">
-            {nomor_transaksi}
+            {id_transaksi}
           </div>
         </div>
         <div class="row" style="margin: 5px">
@@ -94,7 +94,7 @@
         <div class="row" style="margin: 5px">
           <div class="col-md-4" style="padding: 5px">Tanggal Transaksi</div>
           <div class="col-md-8">
-            {tgl_transaksi}
+            <?php echo date('d-m-Y',strtotime($tanggal))?>
           </div>
         </div>
         <div class="row" style="margin: 5px">
@@ -104,27 +104,38 @@
           </div>
         </div>
         <div class="row" style="margin: 5px">
-          <div class="col-md-4" style="padding: 5px">Debit</div>
-          <div class="col-md-8">
+          <div class="col-md-6" style="padding: 5px"><b>Debit</b></div>
+          <div class="col-md-6">
           </div>
         </div>
         <div class="row" style="margin: 5px">
-          <div class="col-md-4" style="padding: 5px">{id_akun_debit}</div>
-          <div class="col-md-8">
-            {jml_debit}
+          <div class="col-md-1"></div>
+          <div class="col-md-6" style="padding: 5px"><font color='blue'>{id_akun_debit}</font></div>
+          <div class="col-md-3">
+            <div style="float:right">
+              <?php echo number_format($jml_debit,2);?>
+            </div>
           </div>
+          <div class="col-md-2"></div>
         </div>
         <div class="row" style="margin: 5px">
-          <div class="col-md-4" style="padding: 5px">Kredit</div>
-          <div class="col-md-8">
+          <div class="col-md-6" style="padding: 5px"><b>Kredit</b></div>
+          <div class="col-md-6">
           </div>
         </div>
+        <?php foreach ($datajurnal as $key) { ?>
+        
         <div class="row" style="margin: 5px">
-          <div class="col-md-4" style="padding: 5px">{id_akun_kredit}</div>
-          <div class="col-md-8">
-            {jml_kredit}
+        <div class="col-md-1"></div>
+          <div class="col-md-6" style="padding: 5px"><font color='blue'><?php echo $key->id_mst_akun.' - '.$key->uraian;?></font></div>
+          <div class="col-md-3">
+            <div style="float:right">
+              <?php echo number_format($key->kredit,2);?>
+            </div>
           </div>
+          <div class="col-md-2"></div>
         </div>
+        <?php } ?>
         <div class="row" style="margin: 5px">
           <div class="col-md-4" style="padding: 5px">Lampiran</div>
           <div class="col-md-8">
@@ -140,13 +151,13 @@
         <div class="row" style="margin: 5px">
           <div class="col-md-4" style="padding: 5px">Jatuh Tempo</div>
           <div class="col-md-8">
-            {jth_tempo}
+            {jatuh_tempo}
           </div>
         </div>
         <div class="row" style="margin: 5px">
           <div class="col-md-4" style="padding: 5px">No Faktur</div>
           <div class="col-md-8">
-            {no_faktur}
+            {nomor_faktur}
           </div>
         </div>
         <div class="row" style="margin: 5px">

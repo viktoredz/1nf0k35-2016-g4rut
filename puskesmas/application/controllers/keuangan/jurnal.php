@@ -281,7 +281,8 @@ function detail_jurnal_umum($id=0){
 
 	if($this->form_validation->run()== FALSE){
 
-		$data 					= array('nomor_transaksi' =>'0112153','uraian'=>'Dibayar belaja Pengamanan Kantor','keterangan'=>'Biaya rutin untuk pengamanan kantor', 'tgl_transaksi' => '1 Desember 2016','kategori_transaksi' =>'Biaya','id_akun_debit'=>'3010 - Belanja Rutin','jml_debit'=>'41300000','id_akun_kredit'=>'1010 - Hutang Dagang','jml_kredit'=>'41300000','lampiran' =>'Download File','syarat' =>'n/EOM','jth_tempo'=>'1 Januari 2016','no_faktur'=>'13121414','instansi'=>'CV. Medika','kode_kegiatan'=>'2093001','sub_kegaitan'=>'01');
+		$data 					= $this->jurnal_model->get_detail_row($id);///array('nomor_transaksi' =>'0112153','uraian'=>'Dibayar belaja Pengamanan Kantor','keterangan'=>'Biaya rutin untuk pengamanan kantor', 'tgl_transaksi' => '1 Desember 2016','kategori_transaksi' =>'Biaya','id_akun_debit'=>'3010 - Belanja Rutin','jml_debit'=>'41300000','id_akun_kredit'=>'1010 - Hutang Dagang','jml_kredit'=>'41300000','lampiran' =>'Download File','syarat' =>'n/EOM','jth_tempo'=>'1 Januari 2016','no_faktur'=>'13121414','instansi'=>'CV. Medika','kode_kegiatan'=>'2093001','sub_kegaitan'=>'01');
+		$data['datajurnal']		= $this->jurnal_model->get_detail_jurnal($id);
 		$data['notice']			= validation_errors();
 		$data['id']				= $id;
 		$data['action']			= "detail";
