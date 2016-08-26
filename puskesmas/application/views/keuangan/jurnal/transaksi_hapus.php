@@ -91,7 +91,7 @@ $(document).ready(function () {
             root: 'child'
         },
         id: 'id_transaksi',
-        url: "<?php echo site_url('keuangan/jurnal/json_jurnal_umum'); ?>",
+        url: "<?php echo site_url('keuangan/jurnal/json_jurnal_hapus'); ?>",
     };
       var dataAdapter = new $.jqx.dataAdapter(source, {
           loadComplete: function () {

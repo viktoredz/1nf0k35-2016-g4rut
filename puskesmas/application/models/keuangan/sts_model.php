@@ -406,22 +406,22 @@ class Sts_model extends CI_Model {
         }
         return $kodpus.date("Y").date('m').$nourut;
     }
-    function idjurnal($kodpus=''){
-        $q = $this->db->query("select MAX(id_jurnal) as kd_max from keu_jurnal");
+    function idjurnal($id='0'){
+        $q = $this->db->query("select RIGHT(MAX(id_jurnal),2) as kd_max from keu_jurnal where id_transaksi="."'".$id."'"."");
         $nourut="";
         if($q->num_rows()>0)
         {
             foreach($q->result() as $k)
             {
                 $tmp = ((int)$k->kd_max)+1;
-                $nourut = sprintf("%04s", $tmp);
+                $nourut = sprintf("%02s", $tmp);
             }
         }
         else
         {
-            $nourut = "0001";
+            $nourut = "01";
         }
-        return $nourut;
+        return $id.$nourut;
     }
 	function tutup_sts(){
 
@@ -437,7 +437,7 @@ class Sts_model extends CI_Model {
 						);
 		$this->db->insert('keu_transaksi',$datakeu_transaksipen);
 		$datadebit = array(
-							'id_jurnal' 	=> $this->idjurnal(),
+							'id_jurnal' 	=> $this->idjurnal($datakeu_transaksipen['id_transaksi']),
 							'debet' 		=> $this->input->post("totaldebitkredit"),
 							'id_transaksi' 	=> $datakeu_transaksipen['id_transaksi'],
 							'id_mst_akun' 	=> $this->input->post("id_akun_debit"),
@@ -447,7 +447,7 @@ class Sts_model extends CI_Model {
 		$totalda=$this->input->post('jmldata');
 		for($i=1;$i<=$totalda;$i++){
 			$datakeu_jurnal = array(
-					'id_jurnal' 	=> $this->idjurnal(),
+					'id_jurnal' 	=> $this->idjurnal($datakeu_transaksipen['id_transaksi']),
 					'id_transaksi' 	=> $datakeu_transaksipen['id_transaksi'],
 					'id_mst_akun' 	=> $this->input->post("id_akun_kredit_uraian$i"),
 					'kredit' 		=> $this->input->post("totalkredit$i"),
@@ -468,7 +468,7 @@ class Sts_model extends CI_Model {
 						);
 			$this->db->insert('keu_transaksi',$datakeu_transaksiset);
 			$datakeu_jurnal = array(
-					'id_jurnal' 	=>$this->idjurnal(),
+					'id_jurnal' 	=>$this->idjurnal($datakeu_transaksiset['id_transaksi']),
 					'id_transaksi' 	=>$datakeu_transaksiset['id_transaksi'],
 					'id_mst_akun' 	=>$this->input->post("id_akun_kredit"),
 					'debet' 		=>$this->input->post("totaldebitkredit"),
@@ -476,7 +476,7 @@ class Sts_model extends CI_Model {
 				);
 			$this->db->insert('keu_jurnal',$datakeu_jurnal);
 			$datakeu_jurnal = array(
-					'id_jurnal' 	=> $this->idjurnal(),
+					'id_jurnal' 	=> $this->idjurnal($datakeu_transaksiset['id_transaksi']),
 					'id_transaksi' 	=> $datakeu_transaksiset['id_transaksi'],
 					'id_mst_akun' 	=> $this->input->post("id_akun_debit"),
 					'debet' 		=> '0',

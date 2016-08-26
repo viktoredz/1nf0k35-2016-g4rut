@@ -266,7 +266,7 @@ function penyusutaninventaris(id){
 }
 function close_popup(){
   $("#popup_jurnal").jqxWindow('close');
-  $("#jqxgrid_jurnal_umum").jqxGrid('updatebounddata');
+  $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
 }
 function tambahotomatis(id){
   $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");

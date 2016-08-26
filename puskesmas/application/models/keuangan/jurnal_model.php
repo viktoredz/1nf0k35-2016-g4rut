@@ -67,9 +67,14 @@ class Jurnal_model extends CI_Model {
     function getallkategori(){
         return $this->db->get('mst_keu_kategori_transaksi')->result_array();
     }
-    function get_datajurnalumum($type){
+    function get_datajurnalumum($type,$status='0'){
         $puskes = 'P'.$this->session->userdata('puskesmas');
         $this->db->where('code_cl_phc',$puskes);
+        if ($status!='0') {
+            $this->db->where('status', 'dihapus');
+        }else{
+            $this->db->where('status !=', 'dihapus');
+        }
         $this->db->select("*");
         $this->db->where("tipe_jurnal",$type);
         $query = $this->db->get("keu_transaksi");
@@ -123,5 +128,60 @@ class Jurnal_model extends CI_Model {
         $this->db->join('mst_keu_akun','mst_keu_akun.kode=keu_jurnal.id_mst_akun');
         $query =$this->db->get('keu_jurnal');
         return $query->result();
+    }
+    function getsyarat(){
+        $query = $this->db->get('mst_keu_syarat_pembayaran');
+        return $query->result();
+    }
+    function getdebitkredit($id=0){
+        $this->db->select("keu_jurnal.*");
+        $this->db->where('id_transaksi',$id);
+        $query =$this->db->get('keu_jurnal');
+        return $query->result();
+    }
+    function getdataakun(){
+        $query =$this->db->get('mst_keu_akun');
+        return $query->result();   
+    }
+    function add_kredit(){
+        $data = array(
+            'kredit'          => '0',
+            'id_jurnal'       => $this->idjurnal($this->input->post('id_transaksi')),
+            'id_transaksi'    => $this->input->post('id_transaksi'),
+            'debet'           => '0',
+            );
+        if ($this->db->insert('keu_jurnal',$data)) {
+            return "OK|$data[id_transaksi]|$data[id_jurnal]";
+        }else{
+            return mysql_error();
+        }
+    }
+     function idjurnal($id='0'){
+        $q = $this->db->query("select RIGHT(MAX(id_jurnal),2) as kd_max from keu_jurnal where id_transaksi="."'".$id."'"."");
+        $nourut="";
+        if($q->num_rows()>0)
+        {
+            foreach($q->result() as $k)
+            {
+                $tmp = ((int)$k->kd_max)+1;
+                $nourut = sprintf("%02s", $tmp);
+            }
+        }
+        else
+        {
+            $nourut = "01";
+        }
+        return $id.$nourut;
+    }
+    function delete_kredit(){
+        $data = array(
+            'id_jurnal'       => $this->input->post('id_jurnal'),
+            'id_transaksi'    => $this->input->post('id_transaksi'),
+            );
+        if ($this->db->delete('keu_jurnal',$data)) {
+            return "OK|$data[id_transaksi]|$data[id_jurnal]";
+        }else{
+            return mysql_error();
+        }
     }
 }

@@ -14,6 +14,10 @@
   <?php echo $this->session->flashdata('alert_form')?>
 </div>
 <?php } ?>
+<div id="popup_jurum_instansi" style="display:none">
+  <div id="popup_title">Tambah Instansi</div>
+  <div id="popup_content_jurum_instansi">&nbsp;</div>
+</div>
 <div class="box-body">
 <form action="<?php echo base_url()?>keuangan/jurnal/$action" method="post">
   <div class="box box-primary">
@@ -32,50 +36,63 @@
           <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Jenis Transaksi</div>
           <div class="col-md-9">
-            <input type="text" id="jenis_transaksi" name="jenis_transaksi" placeholder="Jenis Transaksi"  class="form-control" value="<?php 
-              if(set_value('jenis_transaksi')=="" && isset($jenis_transaksi)){
-                echo $jenis_transaksi;
+            <input type="text" id="status" name="status" placeholder="Jenis Transaksi"  class="form-control" value="<?php 
+              if(set_value('status')=="" && isset($status)){
+                echo $status;
               }else{
-                echo  set_value('jenis_transaksi');
+                echo  set_value('status');
               }
               ?>" />
           </div>
         </div>
+
         <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Kategori</div>
           <div class="col-md-9">
-            <input type="text" id="kategori" name="kategori" placeholder="Kategori"  class="form-control" value="<?php 
-              if(set_value('kategori')=="" && isset($kategori)){
-                echo $jenis_transaksi;
+            <input type="text" id="kategori_transaksi" name="kategori_transaksi" placeholder="Kategori"  class="form-control" value="<?php 
+              if(set_value('kategori_transaksi')=="" && isset($kategori_transaksi)){
+                echo $kategori_transaksi;
               }else{
-                echo  set_value('kategori');
+                echo  set_value('kategori_transaksi');
               }
               ?>" />
           </div>
         </div>
-        <div class="row" style="margin: 5px">
+        <!--<div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Alasan Perubahan</div>
           <div class="col-md-9">
             <textarea id="alasan_perubahan" name="alasan_perubahan" class="form-control"><?php 
-              if(set_value('alasan_perubahan')=="" && isset($alasan_perubahan)){
+             /* if(set_value('alasan_perubahan')=="" && isset($alasan_perubahan)){
                 echo $alasan_perubahan;
               }else{
                 echo  set_value('nomor_balasan_perubahanukti_kas');
-              }
+              }*/
               ?></textarea> 
           </div>
-        </div>
+        </div>-->
         <div class="row" style="margin: 5px">
           <div class="col-md-12" style="padding: 5px"><h3>Informasi Dasar</h3></div>
         </div>
         <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Nomor Transaksi</div>
           <div class="col-md-9">
-            <input type="text" id="nomor_transaksi" name="nomor_transaksi" placeholder="Nomor Transaksi"  class="form-control" value="<?php 
-              if(set_value('nomor_transaksi')=="" && isset($nomor_transaksi)){
-                echo $nomor_transaksi;
+            <input type="text" id="id_transaksi" name="id_transaksi" placeholder="Nomor Transaksi"  class="form-control" value="<?php 
+              if(set_value('id_transaksi')=="" && isset($id_transaksi)){
+                echo substr($id_transaksi, -10);
               }else{
-                echo  set_value('nomor_transaksi');
+                echo  set_value('id_transaksi');
+              }
+              ?>" />
+          </div>
+        </div>
+        <div class="row" style="margin: 5px">
+          <div class="col-md-3" style="padding: 5px">Uraian</div>
+          <div class="col-md-9">
+            <input type="text" id="uraian" name="uraian" placeholder="Uraian"  class="form-control" value="<?php 
+              if(set_value('uraian')=="" && isset($uraian)){
+                echo $uraian;
+              }else{
+                echo  set_value('uraian');
               }
               ?>" />
           </div>
@@ -83,19 +100,13 @@
         <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Tanggal Transaksi</div>
           <div class="col-md-9">
-            <!-- <div type="text" id="tgl_transaksi" name="tgl_transaksi" /></div> -->
-          </div>
-        </div>
-        <div class="row" style="margin: 5px">
-          <div class="col-md-3" style="padding: 5px">Uraian</div>
-          <div class="col-md-9">
-            <input type="text" id="uraian_transaksi" name="uraian_transaksi" placeholder="Uraian"  class="form-control" value="<?php 
-              if(set_value('uraian_transaksi')=="" && isset($uraian_transaksi)){
-                echo $uraian_transaksi;
+            <div type="text" id="tgl_transaksi" name="tgl_transaksi" value="<?php 
+            if(set_value('tgl_transaksi')=="" && isset($tanggal)){
+                echo $tanggal;
               }else{
-                echo  set_value('uraian_transaksi');
+                echo  set_value('tgl_transaksi');
               }
-              ?>" />
+            ?>"></div>
           </div>
         </div>
         <div class="row" style="margin: 5px">
@@ -123,76 +134,56 @@
                 </div>
               </div>
             </div>
-            <?php //foreach($jurnal_transaksi as $jt) { ?>
-            <div id="jt-<?php // echo $jt->group ?>">
+            <div id='jurnaltrasaksidata'>
+            <?php $i=1; foreach($getdebitkredit as $jt) { 
+            ?>
+            <div id="jurnaltrasaksi-<?php echo $jt->id_transaksi.$jt->id_jurnal; ?>" name="jurnaltrasaksi-<?php echo $jt->id_transaksi.$jt->id_jurnal; ?>">
               <div class="box-body">
                 <div class="row">
-                  <div class="col-md-1">
-                    <a class="glyphicon glyphicon-plus" id="create_jurnal_transaksi" name="create_jurnal_transaksi"></a>
+                  <div class="col-md-1" style="padding:5px">
+                    <?php if ($jt->kredit!='0') { ?>
+                    <a class="glyphicon glyphicon-plus" id="create_jurnal_transaksi" name="create_jurnal_transaksi" onclick='add_jurnaltransaksi("<?php echo $jt->id_transaksi;?>","<?php echo $jt->id_jurnal; ?>")'></a>
+                    <?php } ?>
+                    <?php if ($jt->kredit!='0') { ?>
+                    <a class="glyphicon glyphicon-trash" id="delete_jurnal_transaksi" name="delete_jurnal_transaksi" onclick='delete_jurnaltransaksi("<?php echo $jt->id_transaksi;?>","<?php echo $jt->id_jurnal; ?>")'></a>
+                    <?php } ?>
                   </div>
                   <div class="col-md-5">
-                    <div class="box-header">
-                      <select id="namaakun">
-                        <option></option>
+                      <select id="id_mst_akun" class="form-control" name="id_mst_akun">
+                        <?php foreach ($getdataakun as $dataakun) { 
+                          $select = ($dataakun->kode == $jt->id_mst_akun ? "selected" :'');
+                        ?>
+                          <option value="<?php echo $dataakun->kode?>" <?php echo $select;?>><?php echo $dataakun->uraian?></option>
+                        <?php } ?>
                       </select>
-                    </div>
                   </div>
                   <div class="col-md-3">
+                    <?php if ($jt->debet !='0') { ?>
+                    <input type="text" id="debit" name="debit" placeholder="Debit Akun"  class="form-control" value="<?php 
+                        if(set_value('debit')=="" && isset($jt->debet)){
+                          echo $jt->debet;
+                        }else{
+                          echo  set_value('debit');
+                        }
+                        ?>" />
+                    <?php } ?>
+                  </div>
+                  <div class="col-md-3">
+                    <?php if ($jt->kredit !='0') { ?>
                     <input type="text" id="debit_akun" name="debit_akun" placeholder="Debit Akun"  class="form-control" value="<?php 
-                        if(set_value('debit_akun')=="" && isset($debit_akun)){
-                          echo $debit_akun;
+                        if(set_value('debit_akun')=="" && isset($jt->kredit)){
+                          echo $jt->kredit;
                         }else{
                           echo  set_value('debit_akun');
                         }
                         ?>" />
-                  </div>
-                  <div class="col-md-3">
-                    <input type="text" id="debit_akun" name="debit_akun" placeholder="Debit Akun"  class="form-control" value="<?php 
-                        if(set_value('debit_akun')=="" && isset($debit_akun)){
-                          echo $debit_akun;
-                        }else{
-                          echo  set_value('debit_akun');
-                        }
-                        ?>" />
-                  </div>
-                </div>
-              </div>
-            <div id="detail-<?php  ?>">
-              <div class="box-body">
-                <div class="row">
-                  <div class="col-md-1">
-                    <a class="glyphicon glyphicon-plus" id="create_jurnal_transaksi" name="create_jurnal_transaksi"></a>
-                  </div>
-                  <div class="col-md-5">
-                    <div class="box-header">
-                      <select id="namaakun">
-                        <option></option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <input type="text" id="debit_akun" name="debit_akun" placeholder="Debit Akun"  class="form-control" value="<?php 
-                        if(set_value('debit_akun')=="" && isset($debit_akun)){
-                          echo $debit_akun;
-                        }else{
-                          echo  set_value('debit_akun');
-                        }
-                        ?>" />
-                  </div>
-                  <div class="col-md-3">
-                    <input type="text" id="debit_akun" name="debit_akun" placeholder="Debit Akun"  class="form-control" value="<?php 
-                        if(set_value('debit_akun')=="" && isset($debit_akun)){
-                          echo $debit_akun;
-                        }else{
-                          echo  set_value('debit_akun');
-                        }
-                        ?>" />
+                    <?php } ?>
                   </div>
                 </div>
               </div>
             </div>
+            <?php $i++; } ?>
             </div>
-            <?php //} ?>
           </div>
         </div>
         <!--End create -->
@@ -203,7 +194,9 @@
           <div class="col-md-3" style="padding: 5px">Syarat Pembayaran</div>
           <div class="col-md-9">
             <select type="text" id="syarat_pem" name="syarat_pem" class="form-control">
-              <option></option>
+              <?php foreach ($getsyarat as $key) { ?>
+                <option value="<?php echo $key->id_mst_syarat_pembayaran; ?>" ><?php echo $key->nama.' - '.$key->deskripsi; ?></option>
+              <?php } ?>
             </select>
           </div>
         </div>
@@ -211,16 +204,26 @@
           <div class="col-md-3" style="padding: 5px">Jatuh Tempo</div>
           <div class="col-md-9">
             <!-- <div type="text" id="tgl_transaksi" name="tgl_transaksi" placeholder="Tanggal Transaksi" /></div> -->
+            <div id='tgl_jatuhtempo' name="tgl_jatuhtempo" value="<?php
+                if(set_value('tgl_jatuhtempo')=="" && isset($jatuh_tempo)){
+                  $tgl_tempo = strtotime($jatuh_tempo);
+                }else{
+                  $tgl_tempo = strtotime(set_value('tgl_jatuhtempo'));
+                }
+                if($tgl_tempo=="") $tgl_tempo = time();
+                echo date("Y-m-d",$tgl_tempo);
+              ?>" >
+              </div>
           </div>
         </div>
         <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Nomor Faktur</div>
           <div class="col-md-9">
-            <input type="text" id="no_faktur" name="no_faktur" placeholder="Nomor Faktur"  class="form-control" value="<?php 
-              if(set_value('no_faktur')=="" && isset($no_faktur)){
-                echo $no_faktur;
+            <input type="text" id="nomor_faktur" name="nomor_faktur" placeholder="Nomor Faktur"  class="form-control" value="<?php 
+              if(set_value('nomor_faktur')=="" && isset($nomor_faktur)){
+                echo $nomor_faktur;
               }else{
-                echo  set_value('no_faktur');
+                echo  set_value('nomor_faktur');
               }
               ?>" />
           </div>
@@ -228,18 +231,18 @@
         <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Nomor Bukti Kas</div>
           <div class="col-md-9">
-            <input type="text" id="nomor_bukti_kas" name="nomor_bukti_kas" placeholder="Nomor Bukti Kas"  class="form-control" value="<?php 
-              if(set_value('nomor_bukti_kas')=="" && isset($uraian_transaksi)){
-                echo $nomor_bukti_kas;
+            <input type="text" id="bukti_kas" name="bukti_kas" placeholder="Nomor Bukti Kas"  class="form-control" value="<?php 
+              if(set_value('bukti_kas')=="" && isset($bukti_kas)){
+                echo $bukti_kas;
               }else{
-                echo  set_value('nomor_bukti_kas');
+                echo  set_value('bukti_kas');
               }
               ?>" />
           </div>
         </div>
         <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Instansi</div>
-          <div class="col-md-9">
+          <div class="col-md-7">
             <input type="text" id="instansi" name="instansi" placeholder="Instansi"  class="form-control" value="<?php 
               if(set_value('instansi')=="" && isset($instansi)){
                 echo $instansi;
@@ -248,6 +251,7 @@
               }
               ?>" />
           </div>
+          <div class="col-md-1"><button id="tambahinstansi" type="button" class="btn btn-default btn-success">Tambahkan</button></div>
         </div>
          <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Lampiran</div>
@@ -259,10 +263,10 @@
           <div class="col-md-3" style="padding: 5px">Keterangan</div>
           <div class="col-md-9">
             <textarea id="keterangan" name="keterangan" class="form-control"><?php 
-              if(set_value('nomor_bukti_kas')=="" && isset($uraian_transaksi)){
-                echo $nomor_bukti_kas;
+              if(set_value('keterangan')=="" && isset($keterangan)){
+                echo $keterangan;
               }else{
-                echo  set_value('nomor_bukti_kas');
+                echo  set_value('keterangan');
               }
               ?></textarea> 
           </div>
@@ -319,7 +323,123 @@ $(function(){
   });
 
  
-  // $("#tgl_transaksi").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
+  $("#tgl_transaksi").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
+  $("#tgl_jatuhtempo").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
+});
+$("#instansi").jqxInput(
+    {
+    width: '100%',
+    height: '30px',
+    minLength: 2,
+    source: function (query, response) {
+      var dataAdapter = new $.jqx.dataAdapter
+      (
+        {
+          datatype: "json",
+            datafields: [
+            { name: 'nama_instansi', type: 'string'}
+          ],
+          url: '<?php echo base_url().'keuangan/jurnal/autocomplite_instansi'; ?>'
+        },
+        {
+          autoBind: true,
+          formatData: function (data) {
+            data.query = query;
+            return data;
+          },
+          loadComplete: function (data) {
+            if (data.length > 0) {
+              response($.map(data, function (item) {
+                return item.nama_instansi;
+              }));
+            }
+          }
+        });
+    }
+});
+$("#tambahinstansi").click(function(){
+  $("#popup_jurum_instansi #popup_content_jurum_instansi").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+  $.get("<?php echo base_url().'keuangan/jurnal/add_instansi/'; ?>", function(data) {
+    $("#popup_content_jurum_instansi").html(data);
+  });
+  $("#popup_jurum_instansi").jqxWindow({
+    theme: theme, resizable: false,
+    width: 450,
+    height: 500,
+    isModal: true, autoOpen: false, modalOpacity: 0.2
+  });
+  $("#popup_jurum_instansi").jqxWindow('open');
 });
 
+function add_jurnaltransaksi(id_transaksi,id_jurnal){
+      var data = new FormData();
+      data.append('id_transaksi', id_transaksi);
+      data.append('id_jurnal',    id_jurnal);
+
+      $.ajax({
+       cache : false,
+       contentType : false,
+       processData : false,
+       type: 'POST',
+       url : '<?php echo base_url()."keuangan/jurnal/add_kredit/" ?>',
+       data : data,
+       success: function (response) {
+        a = response.split("|");
+          if(a[0]=="OK"){
+        var form_debit = '<div id="jurnaltrasaksi-'+a[1]+a[2]+'" name="jurnaltrasaksi-'+a[1]+a[2]+'">\
+              <div class="box-body">\
+                <div class="row">\
+                  <div class="col-md-1" style="padding:5px">\
+                    <a class="glyphicon glyphicon-plus" id="create_jurnal_transaksi" name="create_jurnal_transaksi" onclick="add_jurnaltransaksi(\''+a[1]+'\',\''+a[2]+'\')"></a>\
+                    <a class="glyphicon glyphicon-trash" id="delete_jurnal_transaksi" name="delete_jurnal_transaksi" onclick="delete_jurnaltransaksi(\''+a[1]+'\',\''+a[2]+'\')"></a>\
+                  </div>\
+                  <div class="col-md-5">\
+                      <select id="id_mst_akun" class="form-control" name="id_mst_akun">\
+                        <?php foreach ($getdataakun as $dataakun) { ?>\
+                          <option value="<?php echo $dataakun->kode?>" <?php echo $select;?>><?php echo $dataakun->uraian?></option>\
+                        <?php } ?>\
+                      </select>\
+                  </div>\
+                  <div class="col-md-3">\
+                  </div>\
+                  <div class="col-md-3">\
+                    <input type="text" id="debit_akun" name="debit_akun" placeholder="Debit Akun"  class="form-control" value="<?php 
+                        if(set_value('debit_akun')=="" && isset($jt->kredit)){
+                          echo $jt->kredit;
+                        }else{
+                          echo  set_value('debit_akun');
+                        }
+                        ?>" />\
+                  </div>\
+                </div>\
+              </div>\
+            </div>';
+
+            $('#jurnaltrasaksidata').append(form_debit);
+        }else{
+            alert("Failed.");
+        }
+       }
+    });
+}
+function delete_jurnaltransaksi(id_transaksi,id_jurnal) {
+  if (confirm("Anda yakin Akan menghapus Data Ini ?")) {
+      $.ajax({
+       type: 'POST',
+       url : '<?php echo base_url()."keuangan/jurnal/deletekredit" ?>',
+       data : 'id_transaksi='+id_transaksi+'&id_jurnal='+id_jurnal,
+       success: function (response) {
+        res = response.split("|");
+        if(res[0]=="OK"){
+            $("#jurnaltrasaksi-"+id_transaksi+id_jurnal).remove();
+        }else{
+          alert("Failed.");
+        };
+       }
+    });
+
+  } else{
+
+  };
+}
 </script>
