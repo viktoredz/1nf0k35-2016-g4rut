@@ -68,7 +68,7 @@ class Pegpenghargaan extends CI_Controller {
 	function index(){
 		$this->authentication->verify('mst','edit');
 		$data['title_group'] = "Parameter";
-		$data['title_form'] = "Master Data - Peg Penghargaab";
+		$data['title_form'] = "Master Data - Peg Penghargaan";
 		// $data= $this->pegpenghargaan_model->get_data();
 		// var_dump($data);
 		// exit();

@@ -13,6 +13,8 @@ class Drh extends CI_Controller {
 		$this->authentication->verify('kepegawaian','edit');
 		$data['title_group'] = "Kepegawaian";
 		$data['title_form'] = "Daftar Riwayat Hidup";
+		$data['jenis_pegawai']	= array('01'=>'PEGAWAI AKTIF', '02'=>'PEGAWAI NON AKTIF','03'=>'PEGAWAI KESELURUHAN',);
+
 		$kodepuskesmas = $this->session->userdata('puskesmas');
 		if(strlen($kodepuskesmas) == 4){
 			$this->db->like('code','P'.substr($kodepuskesmas, 0,4));
@@ -32,6 +34,15 @@ class Drh extends CI_Controller {
 			}
 		}
 	}
+	
+	function filter_jenis_pegawai(){
+		if($_POST) {
+			if($this->input->post('jenis_pegawai') != '') {
+				$this->session->set_userdata('filter_jenis_pegawai',$this->input->post('jenis_pegawai'));
+			}
+		}
+	}
+
 	function json(){
 		$this->authentication->verify('kepegawaian','show');
 
@@ -56,6 +67,21 @@ class Drh extends CI_Controller {
 			}
 		}
 
+		if($this->session->userdata('filter_jenis_pegawai')!=''){
+			if($this->session->userdata('filter_jenis_pegawai')==01){
+				$this->db->where('pegawai.id_pegawai NOT IN (SELECT id_pegawai FROM pegawai_berhenti)');
+
+			}elseif ($this->session->userdata('filter_jenis_pegawai')==02) {
+				$this->db->where('pegawai.id_pegawai IN (SELECT id_pegawai FROM pegawai_berhenti)');
+
+			}else{
+				$this->db->where('code_cl_phc','P'.$this->session->userdata('puskesmas'));
+			}
+		}else{
+		 	    $this->db->where('code_cl_phc','P'.$this->session->userdata('puskesmas'));
+
+		}
+
 		if ($this->session->userdata('puskesmas')!='') {
 			$this->db->where('code_cl_phc','P'.$this->session->userdata('puskesmas'));
 		}
@@ -75,13 +101,28 @@ class Drh extends CI_Controller {
 				}else{
 					$this->db->like($field,$value);
 				}
-
 			}
 
 			if(!empty($ord)) {
 				$this->db->order_by($ord, $this->input->post('sortorder'));
 			}
 		}
+
+		if($this->session->userdata('filter_jenis_pegawai')!=''){
+			if($this->session->userdata('filter_jenis_pegawai')==01){
+				$this->db->where('pegawai.id_pegawai NOT IN (SELECT id_pegawai FROM pegawai_berhenti)');
+
+			}elseif ($this->session->userdata('filter_jenis_pegawai')==02) {
+				$this->db->where('pegawai.id_pegawai IN (SELECT id_pegawai FROM pegawai_berhenti)');
+
+			}else{
+				$this->db->where('code_cl_phc','P'.$this->session->userdata('puskesmas'));
+			}
+		}else{
+		 	    $this->db->where('code_cl_phc','P'.$this->session->userdata('puskesmas'));
+
+		}
+
 		if ($this->session->userdata('puskesmas')!='') {
 			$this->db->where('code_cl_phc','P'.$this->session->userdata('puskesmas'));
 		}
@@ -103,8 +144,8 @@ class Drh extends CI_Controller {
 				'usia'			=> $act->usia,
 				'goldar'		=> $act->goldar,
 				'code_cl_phc'	=> $act->code_cl_phc,
-				'edit'		=> 1,
-				'delete'	=> 1
+				'edit'		    => 1,
+				'delete'	    => 1
 			);
 		}
 

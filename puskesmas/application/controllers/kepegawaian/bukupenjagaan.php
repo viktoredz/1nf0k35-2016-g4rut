@@ -89,7 +89,9 @@ class Bukupenjagaan extends CI_Controller {
 		}
 		if ($this->session->userdata('puskesmas')!='') {
 			$this->db->where('code_cl_phc','P'.$this->session->userdata('puskesmas'));
+			$this->db->where('pegawai.id_pegawai NOT IN (SELECT id_pegawai FROM pegawai_berhenti)');
 		}
+
 		$rows_all = $this->bukupenjagaan_model->get_datagaji();
 
 		if($_POST) {
@@ -114,6 +116,7 @@ class Bukupenjagaan extends CI_Controller {
 		}
 		if ($this->session->userdata('puskesmas')!='') {
 			$this->db->where('code_cl_phc','P'.$this->session->userdata('puskesmas'));
+			$this->db->where('pegawai.id_pegawai NOT IN (SELECT id_pegawai FROM pegawai_berhenti)');
 		}
 			
 		$rows = $this->bukupenjagaan_model->get_datagaji($this->input->post('recordstartindex'), $this->input->post('pagesize'));
@@ -176,7 +179,9 @@ class Bukupenjagaan extends CI_Controller {
 		}
 		if ($this->session->userdata('puskesmas')!='') {
 			$this->db->where('code_cl_phc','P'.$this->session->userdata('puskesmas'));
+			$this->db->where('pegawai.id_pegawai NOT IN (SELECT id_pegawai FROM pegawai_berhenti)');
 		}
+
 		$rows_all = $this->bukupenjagaan_model->get_data();
 
 		if($_POST) {
@@ -201,6 +206,7 @@ class Bukupenjagaan extends CI_Controller {
 		}
 		if ($this->session->userdata('puskesmas')!='') {
 			$this->db->where('code_cl_phc','P'.$this->session->userdata('puskesmas'));
+			$this->db->where('pegawai.id_pegawai NOT IN (SELECT id_pegawai FROM pegawai_berhenti)');
 		}
 			
 		$rows = $this->bukupenjagaan_model->get_data($this->input->post('recordstartindex'), $this->input->post('pagesize'));

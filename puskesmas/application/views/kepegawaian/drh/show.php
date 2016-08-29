@@ -18,7 +18,7 @@
 	    </div>
 
 	      <div class="box-footer">
-	      	<div class="col-md-8">
+	      	<div class="col-md-5">
 			 	<button type="button" class="btn btn-primary" onclick="document.location.href='<?php echo base_url()?>kepegawaian/drh/add'"><i class='fa fa-plus-square-o'></i> &nbsp; Tambah</button>
 			 	<button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
 			 </div>
@@ -34,7 +34,20 @@
 				     </div>	
 		     	</div>
 			  </div>
-	     </div>
+
+			  <div class="col-md-3">
+			     	<div class="row">
+				     	<div class="col-md-12">
+				     	    <select name="jenis_pegawai" id="jenis_pegawai" class="form-control">
+	                            <?php foreach ($jenis_pegawai as $val=>$key ) { ;?>
+	                            <?php $select = $val ? 'selected=selected' : '' ?>
+	                                <option value="<?php echo $val; ?>" <?php echo $select ?>><?php echo $key; ?></option>
+	                            <?php   } ;?>
+	                        </select>
+					     </div>	
+			     	</div>
+				  </div>
+		     </div>
         <div class="box-body">
 		    <div class="div-grid">
 		        <div id="jqxgrid"></div>
@@ -161,6 +174,13 @@
 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 		});
     });
+
+    $("#jenis_pegawai").change(function(){
+		$.post("<?php echo base_url().'kepegawaian/drh/filter_jenis_pegawai' ?>", 'jenis_pegawai='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+    
 </script>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >

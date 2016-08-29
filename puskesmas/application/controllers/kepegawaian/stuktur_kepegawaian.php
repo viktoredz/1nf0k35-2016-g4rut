@@ -184,6 +184,7 @@ class stuktur_kepegawaian extends CI_Controller {
 		}
 		if ($this->session->userdata('puskesmas')!='') {
 			$this->db->where('pegawai.code_cl_phc','P'.$this->session->userdata('puskesmas'));
+			$this->db->where('pegawai.id_pegawai NOT IN (SELECT id_pegawai FROM pegawai_berhenti)');
 		}
 
 		$rows_all = $this->stuktur_kepegawaian_model->get_data();
@@ -214,7 +215,9 @@ class stuktur_kepegawaian extends CI_Controller {
 	
 		if ($this->session->userdata('puskesmas')!='') {
 			$this->db->where('pegawai.code_cl_phc','P'.$this->session->userdata('puskesmas'));
+			$this->db->where('pegawai.id_pegawai NOT IN (SELECT id_pegawai FROM pegawai_berhenti)');
 		}
+
 		$rows = $this->stuktur_kepegawaian_model->get_data($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 		$no=1;
