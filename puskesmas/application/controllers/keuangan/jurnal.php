@@ -372,7 +372,7 @@ function edit_junal_umum($id='0'){
 
 	}else{
 
-		$config['upload_path']          = './public/';
+		$config['upload_path']          = './public/files/datafile/';
         // $config['max_size']             = 100;
         // $config['max_width']            = 1024;
         // $config['max_height']           = 768;
