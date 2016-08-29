@@ -12,7 +12,7 @@
  
     </div>
     <div class="col-sm-12" style="text-align: right">
-      <button type="button" name="btn_keuangan_add_sts" class="btn btn-warning"><i class='fa fa-save'></i> &nbsp; Tambah STS</button>
+      <button type="button" name="btn_keuangan_add_stsdata" class="btn btn-warning"><i class='fa fa-save'></i> &nbsp; Tambah STS</button>
       <button type="button" name="btn_keuangan_close" class="btn btn-primary"><i class='fa fa-close'></i> &nbsp; Batal</button>
     </div>
   </div>
@@ -79,7 +79,7 @@
         $("#popup_keuangan_sts").jqxWindow('close');
     });
    
-    $("[name='btn_keuangan_add_sts']").click(function(){
+    $("[name='btn_keuangan_add_stsdata']").click(function(){
         var data = new FormData();
         $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
         $('#biodata_notice').show();

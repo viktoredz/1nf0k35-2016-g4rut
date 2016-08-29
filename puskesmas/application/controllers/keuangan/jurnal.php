@@ -364,7 +364,7 @@ function edit_junal_umum($id='0'){
 		$data['getkredit']		= $this->jurnal_model->getkredit($id);
 		$data['getsyarat']		= $this->jurnal_model->getsyarat();
 		$data['getdataakun']	= $this->jurnal_model->getdataakun();
-		if (!empty(validation_errors())) {
+		if (!empty($data['alert_form'])) {
 			$datas['err_msg'] = validation_errors();
 			die('Err|'.json_encode($datas));
 		};

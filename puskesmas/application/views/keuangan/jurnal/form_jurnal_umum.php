@@ -14,18 +14,18 @@ if($alert_form!=""){ ?>
 </div>
 <?php } ?>
 
-
+<div class="box-body">
 <div id="error_mssg">
   <button aria-hidden="true"  id="btncls" class="close" type="button">×</button>
   <h4>  <i class="icon fa fa-check"></i> Information!</h4>
   <div id="mssgerr"></div>
 </div>
-<div class="box-body">
+</div>
 <div id="popup_jurum_instansi" style="display:none">
   <div id="popup_title">Tambah Instansi</div>
   <div id="popup_content_jurum_instansi">&nbsp;</div>
 </div>
-</div>
+
 <div class="box-body">
 <form action="<?php echo base_url()?>keuangan/jurnal/$action" method="post" enctype="multipart/form-data">
   <div class="box box-primary">
