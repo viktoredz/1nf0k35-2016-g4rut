@@ -77,20 +77,23 @@ class Jurnal extends CI_Controller {
 				break;
 		}
 	}
-	function autocomplite_instansi(){
+	function autocomplite_instansi($obat=0){
 		$search = explode("&",$this->input->server('QUERY_STRING'));
-		$search = str_replace("query=","",$search[0]);
+		$search = str_replace("term=","",$search[0]);
 		$search = str_replace("+"," ",$search);
 
 		$this->db->where("nama like '%".$search."%'");
 		$this->db->limit(10,0);
 		$query= $this->db->get("mst_keu_instansi")->result();
 		foreach ($query as $q) {
-			$nama[] = array('nama_instansi' 	=> $q->nama);
+			$inst[] = array(
+				'key' 		=> $q->id_mst_instansi, 
+				'value' 	=> $q->nama.' - '.$q->deskripsi,
+				'alamat' 	=> $q->alamat,
+			);
 		}
-		echo json_encode($nama);
+		echo json_encode($inst);
 	}
-
 	function json_jurnal_umum($type='jurnal_umum'){
 		$this->authentication->verify('keuangan','show');
 		if ($this->session->userdata('filter_kategori')!='') {
@@ -333,40 +336,86 @@ function pilihversi($id='0'){
 		echo json_encode($data);
 	}
 }
+
 function edit_junal_umum($id='0'){
 	$this->authentication->verify('keuangan','edit');
 
-    $this->form_validation->set_rules('jumlahdistribusi', 'Jumlah Distribusi', 'trim|required');
-    $this->form_validation->set_rules('uraian', 'Nama Barang', 'trim');
-    $this->form_validation->set_rules('jumlah', 'Jumlah', 'trim');
+    $this->form_validation->set_rules('uraian', 'Uraian', 'trim|required');
+    $this->form_validation->set_rules('keterangan', 'Keterangan', 'trim|required');
+    $this->form_validation->set_rules('status', 'Status', 'trim|required');
+    $this->form_validation->set_rules('bukti_kas', 'Bukti Kas', 'trim|required');
+    $this->form_validation->set_rules('nomor_faktur', 'Nomor Faktur', 'trim|required');
+    $this->form_validation->set_rules('id_mst_syarat_pembayaran', 'Syarat Pembayaran', 'trim|required');
+    $this->form_validation->set_rules('id_instansi', 'Instansi', 'trim|required');
+    $this->form_validation->set_rules('id_kategori_transaksi', 'Kategori Transaksi', 'trim|required');
+    $this->form_validation->set_rules('status', 'Status', 'trim|required');
 
 	if($this->form_validation->run()== FALSE){
 
 		$data 					= $this->jurnal_model->get_detail_row($id);
-		$data['notice']			= validation_errors();
+		$data['alert_form']		= validation_errors();
 		$data['id']				= $id;
 		$data['action']			= "edit";
 		$data['title']			= "Jurnal Umum";
 		$data['sub_title']		= "Ubah Transaksi";
-		$data['getdebitkredit']	= $this->jurnal_model->getdebitkredit($id);
+		$data['filetransaksi'] 	= $this->jurnal_model->pilihan_enums('keu_transaksi','status');
+		$data['filterkategori_transaksi'] =$this->jurnal_model->filterkategori_transaksi();
+		$data['getdebit']		= $this->jurnal_model->getdebit($id);
+		$data['getkredit']		= $this->jurnal_model->getkredit($id);
 		$data['getsyarat']		= $this->jurnal_model->getsyarat();
 		$data['getdataakun']	= $this->jurnal_model->getdataakun();
-
+		if (!empty(validation_errors())) {
+			$datas['err_msg'] = validation_errors();
+			die('Err|'.json_encode($datas));
+		};
 		die($this->parser->parse('keuangan/jurnal/form_jurnal_umum',$data));
 
 	}else{
-		
-		$values = array(
-			'id_inv_inventaris_habispakai_distribusi'=>$id_distribusi,
-			'id_mst_inv_barang_habispakai'=> $kode,
-			'batch' => $batch,
-			'jml' => $this->input->post('jumlahdistribusi'),
-		);
-		$simpan=$this->db->insert('inv_inventaris_habispakai_distribusi_item', $values);
-		if($simpan==true){
-			die("OK|Data Tersimpan");
-		}else{
-			 die("Error|Proses data gagal");
+
+		$config['upload_path']          = './public/';
+        // $config['max_size']             = 100;
+        // $config['max_width']            = 1024;
+        // $config['max_height']           = 768;
+        $config['allowed_types'] 		= 'avi|png|jpeg|pdf|jpg|xlx|xlxs|doc|docx';
+        $config['file_name']      		= 'file-'.trim(str_replace(" ","",date('dmYHis')));
+
+        $this->load->library('upload', $config);
+        $this->upload->initialize($config);
+
+        if ( ! $this->upload->do_upload('lampiran'))
+        {
+                $error = array('err_msg' => $this->upload->display_errors());
+                die('Error|'.json_encode($error));
+        }
+        else
+        {	
+        	$this->upload->data();
+        	$this->db->where('id_transaksi',$this->input->post('id_transaksi'));
+        	$t=explode("-", $this->input->post('tanggal'));
+        	$tgl = $t[2].'-'.$t[1].'-'.$t[0];
+        	$ttempo=explode("-", $this->input->post('jatuh_tempo'));
+        	$tgltempo = $ttempo[2].'-'.$ttempo[1].'-'.$ttempo[0];
+			$values = array(
+				'tanggal'			=> $tgl,
+				'uraian'			=> $this->input->post('uraian'),
+				'keterangan' 		=> $this->input->post('keterangan'),
+				'status' 			=> $this->input->post('status'),
+				'bukti_kas' 		=> $this->input->post('bukti_kas'),
+				'lampiran' 			=> $config['file_name'],
+				'jatuh_tempo' 		=> $tgltempo,
+				'nomor_faktur' 		=> $this->input->post('nomor_faktur'),
+				'id_mst_syarat_pembayaran' 	=> $this->input->post('id_mst_syarat_pembayaran'),
+				'id_instansi' 			=> $this->input->post('id_instansi'),
+				'id_kategori_transaksi' => $this->input->post('id_kategori_transaksi'),
+			);
+			$simpan=$this->db->update('keu_transaksi', $values);
+			if($simpan==true){
+				$data['err_msg'] ='Data Tersimpan';
+				die("OK|".json_encode($data));
+			}else{
+				$data['err_msg'] ="Proses data gagal";
+				 die("Error|".json_encode($data));
+			}
 		}
 		
 	}
@@ -529,14 +578,24 @@ function hapusdetailjurum($id='0'){
 		return mysql_error();
 	}
 }
-function add_kredit(){
+function add_kredit_debit($tipe='kredit'){
 	$this->authentication->verify('keuangan','add');
-	echo $this->jurnal_model->add_kredit();
+	echo $this->jurnal_model->add_kredit_debit($tipe);
 	die();
 }
-function deletekredit(){
+function delete_kreditdebet($tipe='kredit'){
+	// $this->authentication->verify('keuangan','delete');
+	echo $this->jurnal_model->delete_kreditdebet($tipe);
+	die();
+}
+function selectnamaakun($id_jurnal='0',$tipe='kredit'){
 	$this->authentication->verify('keuangan','add');
-	echo $this->jurnal_model->delete_kredit();
+	echo $this->jurnal_model->selectnamaakun($id_jurnal,$tipe);
+	die();
+}
+function inputvalueakun($id_jurnal='0',$tipe='kredit'){
+	// $this->authentication->verify('keuangan','add');
+	$this->jurnal_model->inputvalueakun($id_jurnal,$tipe);
 	die();
 }
 }

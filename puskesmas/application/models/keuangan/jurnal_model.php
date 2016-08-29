@@ -67,6 +67,9 @@ class Jurnal_model extends CI_Model {
     function getallkategori(){
         return $this->db->get('mst_keu_kategori_transaksi')->result_array();
     }
+    function filterkategori_transaksi(){
+        return $this->db->get('mst_keu_kategori_transaksi')->result();
+    }
     function get_datajurnalumum($type,$status='0'){
         $puskes = 'P'.$this->session->userdata('puskesmas');
         $this->db->where('code_cl_phc',$puskes);
@@ -109,7 +112,7 @@ class Jurnal_model extends CI_Model {
             return $enums;
     }
     function get_detail_row($id=0){
-        $this->db->select("keu_transaksi.*,mst_keu_kategori_transaksi.nama as kategori_transaksi,(select debet from keu_jurnal where debet!=0 and id_transaksi=keu_transaksi.id_transaksi) as jml_debit,(select concat(keu_jurnal.id_mst_akun,' - ',mst_keu_akun.uraian) from keu_jurnal join mst_keu_akun on keu_jurnal.id_mst_akun=mst_keu_akun.kode where debet!=0 and id_transaksi=keu_transaksi.id_transaksi) as id_akun_debit,mst_keu_syarat_pembayaran.deskripsi as syarat,mst_keu_instansi.nama as instansi ",false);
+        $this->db->select("keu_transaksi.*,mst_keu_kategori_transaksi.nama as kategori_transaksi,mst_keu_syarat_pembayaran.deskripsi as syarat,mst_keu_instansi.nama as instansi ",false);
         $this->db->where('id_transaksi',$id);
         $this->db->join('mst_keu_kategori_transaksi','mst_keu_kategori_transaksi.id_mst_kategori_transaksi=keu_transaksi.id_kategori_transaksi');
         $this->db->join('mst_keu_syarat_pembayaran','mst_keu_syarat_pembayaran.id_mst_syarat_pembayaran=keu_transaksi.id_mst_syarat_pembayaran','left');
@@ -133,25 +136,41 @@ class Jurnal_model extends CI_Model {
         $query = $this->db->get('mst_keu_syarat_pembayaran');
         return $query->result();
     }
-    function getdebitkredit($id=0){
+    function getdebit($id=0){
         $this->db->select("keu_jurnal.*");
         $this->db->where('id_transaksi',$id);
+        $this->db->where('status','debet');
+        $this->db->order_by('debet','desc');
+        $this->db->order_by('id_jurnal','asc');
+        $query =$this->db->get('keu_jurnal');
+        return $query->result();
+    }
+    function getkredit($id=0){
+        $this->db->select("keu_jurnal.*");
+        $this->db->where('id_transaksi',$id);
+        $this->db->where('status','kredit');
+        $this->db->order_by('kredit','desc');
+        $this->db->order_by('id_jurnal','asc');
         $query =$this->db->get('keu_jurnal');
         return $query->result();
     }
     function getdataakun(){
+        $this->db->where('mst_keu_akun.kode !=""');
         $query =$this->db->get('mst_keu_akun');
         return $query->result();   
     }
-    function add_kredit(){
+    function add_kredit_debit($tipe){
         $data = array(
             'kredit'          => '0',
             'id_jurnal'       => $this->idjurnal($this->input->post('id_transaksi')),
             'id_transaksi'    => $this->input->post('id_transaksi'),
             'debet'           => '0',
+            'status'          => $tipe,
             );
         if ($this->db->insert('keu_jurnal',$data)) {
-            return "OK|$data[id_transaksi]|$data[id_jurnal]";
+            $this->db->where('id_transaksi',$this->input->post('id_transaksi'));
+            $jmldata=$this->db->get('keu_jurnal')->num_rows();
+            return "OK|$data[id_transaksi]|$data[id_jurnal]|$jmldata";
         }else{
             return mysql_error();
         }
@@ -173,15 +192,31 @@ class Jurnal_model extends CI_Model {
         }
         return $id.$nourut;
     }
-    function delete_kredit(){
+    function delete_kreditdebet($tipe){
         $data = array(
             'id_jurnal'       => $this->input->post('id_jurnal'),
             'id_transaksi'    => $this->input->post('id_transaksi'),
             );
         if ($this->db->delete('keu_jurnal',$data)) {
-            return "OK|$data[id_transaksi]|$data[id_jurnal]";
+            $this->db->where('id_transaksi',$this->input->post('id_transaksi'));
+            $jmldata=$this->db->get('keu_jurnal')->num_rows();
+            return "OK|$data[id_transaksi]|$data[id_jurnal]|$jmldata";
         }else{
             return mysql_error();
         }
+    }
+    function selectnamaakun($id_jurnal,$tipe){
+        $this->db->where('id_jurnal',$id_jurnal);
+        $this->db->set('id_mst_akun',$this->input->post('valuesdata'));
+        return $this->db->update('keu_jurnal');
+    }
+    function inputvalueakun($id_jurnal,$tipe){
+        $this->db->where('id_jurnal',$id_jurnal);
+        if ($tipe=='kredit') {
+            $this->db->set('kredit',$this->input->post('valueinput'));
+        }else{
+            $this->db->set('debet',$this->input->post('valueinput'));
+        }
+        return $this->db->update('keu_jurnal');
     }
 }

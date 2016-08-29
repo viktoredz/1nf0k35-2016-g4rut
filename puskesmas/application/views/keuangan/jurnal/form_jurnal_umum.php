@@ -1,25 +1,33 @@
-
-<?php if(validation_errors()!=""){ ?>
+<script type="text/javascript">
+  $("[name='create_jurnal_transaksi_debet']").show();
+  $("[name='delete_jurnal_transaksi_debet']").show();
+  $("[name='create_jurnal_transaksi_kredit']").show();
+  $("[name='delete_jurnal_transaksi_kredit']").show();
+</script>
+<?php 
+if($alert_form!=""){ ?>
 <div class="alert alert-warning alert-dismissable">
   <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
   <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo validation_errors()?>
+  <div id="showmessgt"></div>
+  <?php echo $alert_form;?>
 </div>
 <?php } ?>
 
-<?php if($this->session->flashdata('alert_form')!=""){ ?>
-<div class="alert alert-success alert-dismissable">
-  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+
+<div id="error_mssg">
+  <button aria-hidden="true"  id="btncls" class="close" type="button">×</button>
   <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo $this->session->flashdata('alert_form')?>
+  <div id="mssgerr"></div>
 </div>
-<?php } ?>
+<div class="box-body">
 <div id="popup_jurum_instansi" style="display:none">
   <div id="popup_title">Tambah Instansi</div>
   <div id="popup_content_jurum_instansi">&nbsp;</div>
 </div>
+</div>
 <div class="box-body">
-<form action="<?php echo base_url()?>keuangan/jurnal/$action" method="post">
+<form action="<?php echo base_url()?>keuangan/jurnal/$action" method="post" enctype="multipart/form-data">
   <div class="box box-primary">
     <div class="box-body">
       <div class="row pull-right">
@@ -36,26 +44,26 @@
           <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Jenis Transaksi</div>
           <div class="col-md-9">
-            <input type="text" id="status" name="status" placeholder="Jenis Transaksi"  class="form-control" value="<?php 
-              if(set_value('status')=="" && isset($status)){
-                echo $status;
-              }else{
-                echo  set_value('status');
-              }
-              ?>" />
+              <select id="status" name="status"  class="form-control">
+                <?php foreach ($filetransaksi as $key => $value) { 
+                  $select = $status==$key ? 'selected' :'';
+                ?>
+                  <option value="<?php echo $key;?>" <?php echo $select;?>><?php echo $value;?></option>
+                <?php } ?>
+              </select>
           </div>
         </div>
 
         <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Kategori</div>
           <div class="col-md-9">
-            <input type="text" id="kategori_transaksi" name="kategori_transaksi" placeholder="Kategori"  class="form-control" value="<?php 
-              if(set_value('kategori_transaksi')=="" && isset($kategori_transaksi)){
-                echo $kategori_transaksi;
-              }else{
-                echo  set_value('kategori_transaksi');
-              }
-              ?>" />
+              <select id="kategori_transaksi" name="kategori_transaksi"  class="form-control">
+                <?php foreach ($filterkategori_transaksi as $key) { 
+                  $select = $key->id_mst_kategori_transaksi==$id_kategori_transaksi ? 'selected' :'';
+                ?>
+                  <option value="<?php echo $key->id_mst_kategori_transaksi;?>" <?php echo $select;?>><?php echo $key->nama;?></option>
+                <?php } ?>
+              </select>
           </div>
         </div>
         <!--<div class="row" style="margin: 5px">
@@ -134,55 +142,97 @@
                 </div>
               </div>
             </div>
-            <div id='jurnaltrasaksidata'>
-            <?php $i=1; foreach($getdebitkredit as $jt) { 
-            ?>
-            <div id="jurnaltrasaksi-<?php echo $jt->id_transaksi.$jt->id_jurnal; ?>" name="jurnaltrasaksi-<?php echo $jt->id_transaksi.$jt->id_jurnal; ?>">
-              <div class="box-body">
-                <div class="row">
-                  <div class="col-md-1" style="padding:5px">
-                    <?php if ($jt->kredit!='0') { ?>
-                    <a class="glyphicon glyphicon-plus" id="create_jurnal_transaksi" name="create_jurnal_transaksi" onclick='add_jurnaltransaksi("<?php echo $jt->id_transaksi;?>","<?php echo $jt->id_jurnal; ?>")'></a>
-                    <?php } ?>
-                    <?php if ($jt->kredit!='0') { ?>
-                    <a class="glyphicon glyphicon-trash" id="delete_jurnal_transaksi" name="delete_jurnal_transaksi" onclick='delete_jurnaltransaksi("<?php echo $jt->id_transaksi;?>","<?php echo $jt->id_jurnal; ?>")'></a>
-                    <?php } ?>
-                  </div>
-                  <div class="col-md-5">
-                      <select id="id_mst_akun" class="form-control" name="id_mst_akun">
-                        <?php foreach ($getdataakun as $dataakun) { 
-                          $select = ($dataakun->kode == $jt->id_mst_akun ? "selected" :'');
-                        ?>
-                          <option value="<?php echo $dataakun->kode?>" <?php echo $select;?>><?php echo $dataakun->uraian?></option>
+            <div id='jurnaltrasaksidata_debet'>
+              <?php foreach ($getdebit as $keydebet) { ?>
+                <div id="jurnaltrasaksi_debet-<?php echo $keydebet->id_jurnal; ?>" name="jurnaltrasaksi_debet-<?php echo $keydebet->id_transaksi; ?>">
+                  <div class="box-body">
+                    <div class="row">
+                      <div class="col-md-1" style="padding:5px">
+                        <?php if (count($getkredit) >='2') { ?>
+                          <script type="text/javascript">
+                            $("#create_jurnal_transaksi_debet<?php echo $keydebet->id_jurnal;?>").hide();
+                            $("#delete_jurnal_transaksi_debet<?php echo $keydebet->id_jurnal;?>").hide();
+                          </script>
                         <?php } ?>
-                      </select>
-                  </div>
-                  <div class="col-md-3">
-                    <?php if ($jt->debet !='0') { ?>
-                    <input type="text" id="debit" name="debit" placeholder="Debit Akun"  class="form-control" value="<?php 
-                        if(set_value('debit')=="" && isset($jt->debet)){
-                          echo $jt->debet;
-                        }else{
-                          echo  set_value('debit');
-                        }
-                        ?>" />
-                    <?php } ?>
-                  </div>
-                  <div class="col-md-3">
-                    <?php if ($jt->kredit !='0') { ?>
-                    <input type="text" id="debit_akun" name="debit_akun" placeholder="Debit Akun"  class="form-control" value="<?php 
-                        if(set_value('debit_akun')=="" && isset($jt->kredit)){
-                          echo $jt->kredit;
-                        }else{
-                          echo  set_value('debit_akun');
-                        }
-                        ?>" />
-                    <?php } ?>
+                        <?php if (count($getdebit) =='1') { ?>
+                          <script type="text/javascript">
+                            $("#delete_jurnal_transaksi_debet<?php echo $keydebet->id_jurnal;?>").hide();
+                          </script>
+                        <?php } ?>
+                        <a class="glyphicon glyphicon-plus" id="create_jurnal_transaksi_debet<?php echo $keydebet->id_jurnal;?>" name="create_jurnal_transaksi_debet" onclick='add_jurnaltransaksi("<?php echo $keydebet->id_transaksi;?>","<?php echo $keydebet->id_jurnal; ?>","debet")'></a>
+                        <a class="glyphicon glyphicon-trash" id="delete_jurnal_transaksi_debet<?php echo $keydebet->id_jurnal;?>" name="delete_jurnal_transaksi_debet" onclick='delete_jurnaltransaksi("<?php echo $keydebet->id_transaksi;?>","<?php echo $keydebet->id_jurnal; ?>","debet")'></a>
+                      </div>
+                      <div class="col-md-5">
+                          <select onchange='selectnamaakun("<?php echo $keydebet->id_jurnal;?>","debet")' id="id_mst_akun_debet<?php echo $keydebet->id_jurnal;?>" class="form-control" name="id_mst_akun_debet">
+                            <?php foreach ($getdataakun as $dataakun) { 
+                              $select = ($dataakun->kode == $keydebet->id_mst_akun ? "selected" :'');
+                            ?>
+                              <option value="<?php echo $dataakun->kode?>" <?php echo $select;?>><?php echo $dataakun->uraian?></option>
+                            <?php } ?>
+                          </select>
+                      </div>
+                      <div class="col-md-3">
+                        <input  onchange='inputvalueakunas("<?php echo $keydebet->id_jurnal;?>","debet")' type="text" id="debit_debet<?php echo $keydebet->id_jurnal;?>" name="debit_debet" placeholder="Debit Akun"  class="form-control" value="<?php 
+                            if(set_value('debit_debet')=="" && isset($keydebet->debet)){
+                              echo $keydebet->debet;
+                            }else{
+                              echo  set_value('debit_debet');
+                            }
+                            ?>" />
+                      </div>
+                      <div class="col-md-3">
+                        
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              <?php } ?>
             </div>
-            <?php $i++; } ?>
+            <div id='jurnaltrasaksidata_kredit'>
+              <?php foreach ($getkredit as $keykredit) { ?>
+                <div id="jurnaltrasaksi_kredit-<?php echo $keykredit->id_jurnal; ?>" name="jurnaltrasaksi_kredit-<?php echo $keykredit->id_transaksi; ?>">
+                  <div class="box-body">
+                    <div class="row">
+                      <div class="col-md-1" style="padding:5px">
+                        <?php if (count($getdebit) >='2' ) { ?>
+                          <script type="text/javascript">
+                            $("#create_jurnal_transaksi_kredit<?php echo $keykredit->id_jurnal;?>").hide();  
+                            $("#delete_jurnal_transaksi_kredit<?php echo $keykredit->id_jurnal;?>").hide();
+                          </script>
+                        <?php } ?>
+                        <?php if (count($getkredit) =='1') { ?>
+                          <script type="text/javascript">
+                            $("#delete_jurnal_transaksi_kredit<?php echo $keykredit->id_jurnal;?>").hide();
+                          </script>
+                        <?php } ?>  
+                        <a class="glyphicon glyphicon-plus" id="create_jurnal_transaksi_kredit<?php echo $keykredit->id_jurnal;?>" name="create_jurnal_transaksi_kredit" onclick='add_jurnaltransaksi("<?php echo $keykredit->id_transaksi;?>","<?php echo $keykredit->id_jurnal; ?>","kredit")'></a>
+                        <a class="glyphicon glyphicon-trash" id="delete_jurnal_transaksi_kredit<?php echo $keykredit->id_jurnal;?>" name="delete_jurnal_transaksi_kredit" onclick='delete_jurnaltransaksi("<?php echo $keykredit->id_transaksi;?>","<?php echo $keykredit->id_jurnal; ?>","kredit")'></a>
+                      </div>
+                      <div class="col-md-5">
+                          <select onchange='selectnamaakun("<?php echo $keykredit->id_jurnal;?>","kredit")' id="id_mst_akun_kredit<?php echo $keykredit->id_jurnal;?>" class="form-control" name="id_mst_akun_kredit">
+                            <?php foreach ($getdataakun as $dataakun) { 
+                              $select = ($dataakun->kode == $keykredit->id_mst_akun ? "selected" :'');
+                            ?>
+                              <option value="<?php echo $dataakun->kode?>" <?php echo $select;?>><?php echo $dataakun->uraian?></option>
+                            <?php } ?>
+                          </select>
+                      </div>
+                      <div class="col-md-3">
+                        
+                      </div>
+                      <div class="col-md-3">
+                        <input onchange='inputvalueakunas("<?php echo $keykredit->id_jurnal;?>","kredit")' type="text" id="debit_akun_kredit<?php echo $keykredit->id_jurnal;?>" name="debit_akun_kredit" placeholder="Debit Akun"  class="form-control" value="<?php 
+                            if(set_value('debit_akun_kredit')=="" && isset($keykredit->kredit)){
+                              echo $keykredit->kredit;
+                            }else{
+                              echo  set_value('debit_akun_kredit');
+                            }
+                            ?>" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <?php } ?>
             </div>
           </div>
         </div>
@@ -248,6 +298,13 @@
                 echo $instansi;
               }else{
                 echo  set_value('instansi');
+              }
+              ?>" />
+              <input type="hidden" id="id_instansi" name="id_instansi" placeholder="Instansi"  class="form-control" value="<?php 
+              if(set_value('id_instansi')=="" && isset($id_instansi)){
+                echo $id_instansi;
+              }else{
+                echo  set_value('id_instansi');
               }
               ?>" />
           </div>
@@ -321,42 +378,39 @@ $(function(){
   $('#btn-close_jurum').click(function(){
       window.location.href="<?php echo base_url()?>keuangan/jurnal";
   });
-
+  $("#error_mssg").hide();
  
   $("#tgl_transaksi").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
   $("#tgl_jatuhtempo").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
 });
-$("#instansi").jqxInput(
-    {
-    width: '100%',
-    height: '30px',
-    minLength: 2,
-    source: function (query, response) {
-      var dataAdapter = new $.jqx.dataAdapter
-      (
-        {
-          datatype: "json",
-            datafields: [
-            { name: 'nama_instansi', type: 'string'}
-          ],
-          url: '<?php echo base_url().'keuangan/jurnal/autocomplite_instansi'; ?>'
-        },
-        {
-          autoBind: true,
-          formatData: function (data) {
-            data.query = query;
-            return data;
-          },
-          loadComplete: function (data) {
-            if (data.length > 0) {
-              response($.map(data, function (item) {
-                return item.nama_instansi;
-              }));
-            }
-          }
-        });
-    }
+$("#btncls").click(function(){
+  $("#error_mssg").hide();
 });
+$("#instansi").autocomplete({
+  minLength: 0,
+  source:"<?php echo base_url().'keuangan/jurnal/autocomplite_instansi' ?>",
+  focus: function( event, ui ) {
+    $("#instansi" ).val(ui.item.value);
+    return false;
+  },
+  open: function(event, ui) {
+                  $(".ui-autocomplete").css("position: absolute");
+                  $(".ui-autocomplete").css("top: 0");
+                  $(".ui-autocomplete").css("left: 0");
+                  $(".ui-autocomplete").css("cursor: default");
+                  $(".ui-autocomplete").css("z-index","999999");
+                  $(".ui-autocomplete").css("font-weight : bold");
+              },
+  select: function( event, ui ) {
+    $("#instansi").val( ui.item.value );
+    $("#id_instansi").val(ui.item.key);
+    return false;
+  }
+}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+  return $( "<li>" )
+    .append( "<a><b><font size=2>" + item.label + "</font></b><br><font size=1>" + item.alamat + "</font></a>" )
+    .appendTo( ul );
+};
 $("#tambahinstansi").click(function(){
   $("#popup_jurum_instansi #popup_content_jurum_instansi").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
   $.get("<?php echo base_url().'keuangan/jurnal/add_instansi/'; ?>", function(data) {
@@ -371,7 +425,7 @@ $("#tambahinstansi").click(function(){
   $("#popup_jurum_instansi").jqxWindow('open');
 });
 
-function add_jurnaltransaksi(id_transaksi,id_jurnal){
+function add_jurnaltransaksi(id_transaksi,id_jurnal,tipe){
       var data = new FormData();
       data.append('id_transaksi', id_transaksi);
       data.append('id_jurnal',    id_jurnal);
@@ -381,57 +435,101 @@ function add_jurnaltransaksi(id_transaksi,id_jurnal){
        contentType : false,
        processData : false,
        type: 'POST',
-       url : '<?php echo base_url()."keuangan/jurnal/add_kredit/" ?>',
+       url : '<?php echo base_url()."keuangan/jurnal/add_kredit_debit/" ?>'+tipe,
        data : data,
        success: function (response) {
         a = response.split("|");
           if(a[0]=="OK"){
-        var form_debit = '<div id="jurnaltrasaksi-'+a[1]+a[2]+'" name="jurnaltrasaksi-'+a[1]+a[2]+'">\
-              <div class="box-body">\
-                <div class="row">\
-                  <div class="col-md-1" style="padding:5px">\
-                    <a class="glyphicon glyphicon-plus" id="create_jurnal_transaksi" name="create_jurnal_transaksi" onclick="add_jurnaltransaksi(\''+a[1]+'\',\''+a[2]+'\')"></a>\
-                    <a class="glyphicon glyphicon-trash" id="delete_jurnal_transaksi" name="delete_jurnal_transaksi" onclick="delete_jurnaltransaksi(\''+a[1]+'\',\''+a[2]+'\')"></a>\
+            if (tipe=='kredit') {
+                var form_kredit = '<div id="jurnaltrasaksi_kredit-'+a[2]+'" name="jurnaltrasaksi_kredit-'+a[1]+'">\
+                  <div class="box-body">\
+                    <div class="row">\
+                      <div class="col-md-1" style="padding:5px">\
+                        <a class="glyphicon glyphicon-plus" id="create_jurnal_transaksi_kredit'+a[2]+'" name="create_jurnal_transaksi_kredit" onclick="add_jurnaltransaksi(\''+a[1]+'\',\''+a[2]+'\',\'kredit\')"></a>\
+                        <a class="glyphicon glyphicon-trash" id="delete_jurnal_transaksi_kredit'+a[2]+'" name="delete_jurnal_transaksi_kredit" onclick="delete_jurnaltransaksi(\''+a[1]+'\',\''+a[2]+'\',\'kredit\')"></a>\
+                      </div>\
+                      <div class="col-md-5">\
+                          <select onchange="selectnamaakun(\''+a[2]+'\',\'kredit\')" id="id_mst_akun_kredit'+a[2]+'" class="form-control" name="id_mst_akun_kredit">\
+                            <?php foreach ($getdataakun as $dataakun) { ?>\
+                              <option value="<?php echo $dataakun->kode?>" <?php echo $select;?>><?php echo $dataakun->uraian?></option>\
+                            <?php } ?>\
+                          </select>\
+                      </div>\
+                      <div class="col-md-3">\
+                      </div>\
+                      <div class="col-md-3">\
+                        <input type="text" onchange="inputvalueakunas(\''+a[2]+'\',\'kredit\')" id="debit_akun_kredit'+a[2]+'" name="debit_akun_kredit" placeholder="Debit Akun"  class="form-control" value="0" />\
+                      </div>\
+                    </div>\
                   </div>\
-                  <div class="col-md-5">\
-                      <select id="id_mst_akun" class="form-control" name="id_mst_akun">\
-                        <?php foreach ($getdataakun as $dataakun) { ?>\
-                          <option value="<?php echo $dataakun->kode?>" <?php echo $select;?>><?php echo $dataakun->uraian?></option>\
-                        <?php } ?>\
-                      </select>\
-                  </div>\
-                  <div class="col-md-3">\
-                  </div>\
-                  <div class="col-md-3">\
-                    <input type="text" id="debit_akun" name="debit_akun" placeholder="Debit Akun"  class="form-control" value="<?php 
-                        if(set_value('debit_akun')=="" && isset($jt->kredit)){
-                          echo $jt->kredit;
-                        }else{
-                          echo  set_value('debit_akun');
-                        }
-                        ?>" />\
-                  </div>\
-                </div>\
-              </div>\
-            </div>';
+                </div>';
 
-            $('#jurnaltrasaksidata').append(form_debit);
-        }else{
-            alert("Failed.");
-        }
+                $('#jurnaltrasaksidata_kredit').append(form_kredit);
+                if (a[3] >=2 ) {
+                  $("[name='create_jurnal_transaksi_kredit']").show();
+                  $("[name='delete_jurnal_transaksi_kredit']").show();
+                  $("[name='delete_jurnal_transaksi_debet']").hide();
+                  $("[name='create_jurnal_transaksi_debet']").hide();
+                }
+            }else{
+                var form_debit = '<div id="jurnaltrasaksi_debet-'+a[2]+'" name="jurnaltrasaksi_debet-'+a[1]+'">\
+                  <div class="box-body">\
+                    <div class="row">\
+                      <div class="col-md-1" style="padding:5px">\
+                        <a class="glyphicon glyphicon-plus" id="create_jurnal_transaksi_debet'+a[2]+'" name="create_jurnal_transaksi_debet" onclick="add_jurnaltransaksi(\''+a[1]+'\',\''+a[2]+'\',\'debet\')"></a>\
+                        <a class="glyphicon glyphicon-trash" id="delete_jurnal_transaksi_debet'+a[2]+'" name="delete_jurnal_transaksi_debet" onclick="delete_jurnaltransaksi(\''+a[1]+'\',\''+a[2]+'\',\'debet\')"></a>\
+                      </div>\
+                      <div class="col-md-5">\
+                          <select onchange="selectnamaakun(\''+a[2]+'\',\'debet\')" id="id_mst_akun_debet'+a[2]+'" class="form-control" name="id_mst_akun_debet">\
+                            <?php foreach ($getdataakun as $dataakun) { ?>\
+                              <option value="<?php echo $dataakun->kode?>" <?php echo $select;?>><?php echo $dataakun->uraian?></option>\
+                            <?php } ?>\
+                          </select>\
+                      </div>\
+                      <div class="col-md-3">\
+                        <input onchange="inputvalueakunas(\''+a[2]+'\',\'debet\')" type="text" id="debit_debet'+a[2]+'" name="debit_debet" placeholder="Debit Akun"  class="form-control" value="0" />\
+                      </div>\
+                      <div class="col-md-3">\
+                      </div>\
+                    </div>\
+                  </div>\
+                </div>';
+
+                $('#jurnaltrasaksidata_debet').append(form_debit);
+                if (a[3] >=2 ) {
+                  $("[name='create_jurnal_transaksi_debet']").show();
+                  $("[name='delete_jurnal_transaksi_debet']").show();
+                  $("[name='delete_jurnal_transaksi_kredit']").hide();
+                  $("[name='create_jurnal_transaksi_kredit']").hide();
+                }
+            }
+          }else{
+              alert("Failed.");
+          }
        }
     });
 }
-function delete_jurnaltransaksi(id_transaksi,id_jurnal) {
+function delete_jurnaltransaksi(id_transaksi,id_jurnal,tipe) {
   if (confirm("Anda yakin Akan menghapus Data Ini ?")) {
       $.ajax({
        type: 'POST',
-       url : '<?php echo base_url()."keuangan/jurnal/deletekredit" ?>',
+       url : '<?php echo base_url()."keuangan/jurnal/delete_kreditdebet/" ?>'+tipe,
        data : 'id_transaksi='+id_transaksi+'&id_jurnal='+id_jurnal,
        success: function (response) {
         res = response.split("|");
         if(res[0]=="OK"){
-            $("#jurnaltrasaksi-"+id_transaksi+id_jurnal).remove();
+            if (tipe=='kredit') {
+              $("#jurnaltrasaksi_kredit-"+id_jurnal).remove();
+            }else{
+              $("#jurnaltrasaksi_debet-"+id_jurnal).remove();
+            }
+            
+            if (res[3] <=2 ) {
+              $("[name='delete_jurnal_transaksi_debet']").hide();
+              $("[name='delete_jurnal_transaksi_kredit']").hide();
+              $("[name='create_jurnal_transaksi_kredit']").show();
+              $("[name='create_jurnal_transaksi_debet']").show();
+            }
         }else{
           alert("Failed.");
         };
@@ -442,4 +540,79 @@ function delete_jurnaltransaksi(id_transaksi,id_jurnal) {
 
   };
 }
+function selectnamaakun(id_jurnal,tipe){
+  if (tipe=='kredit') {
+    valuesdata = $("#id_mst_akun_kredit"+id_jurnal).val();
+  }else{
+    valuesdata = $("#id_mst_akun_debet"+id_jurnal).val();
+  }
+  $.ajax({
+       type: 'POST',
+       url : '<?php echo base_url()."keuangan/jurnal/selectnamaakun/" ?>'+id_jurnal+'/'+tipe,
+       data : 'valuesdata='+valuesdata,
+       success: function (response) {
+       }
+  });
+}
+
+function inputvalueakunas(id_jurnal,tipe){
+  if (tipe=='kredit') {
+    values = parseInt($("#debit_akun_kredit"+id_jurnal).val(),10);
+  }else{
+    values = parseInt($("#debit_debet"+id_jurnal).val(),10);
+  }
+  $.ajax({
+       type: 'POST',
+       url : '<?php echo base_url()."keuangan/jurnal/inputvalueakun/" ?>'+id_jurnal+'/'+tipe,
+       data : 'valueinput='+values,
+       success: function (response) {
+       }
+  });
+}
+$("#btn-simpan_jurum").click(function(){
+  var data = new FormData();
+  $('#notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
+  $('#notice').show();
+  data.append('id_transaksi', "<?php echo $id;?>");
+  data.append('tanggal', $('#tgl_transaksi').val());
+  data.append('uraian', $('#uraian').val());
+  data.append('keterangan', $('#keterangan').val());
+  // data.append('lampiran', $('#lampiran').val());
+  data.append('status', $('#status').val());
+  data.append('bukti_kas', $('#bukti_kas').val());
+  data.append('jatuh_tempo', $('#tgl_jatuhtempo').val());
+  data.append('nomor_faktur', $('#nomor_faktur').val());
+  data.append('id_mst_syarat_pembayaran', $('#syarat_pem').val());
+  data.append('id_instansi', $('#id_instansi').val());
+  data.append('id_kategori_transaksi', $('#kategori_transaksi').val());
+  data.append('lampiran', $('input[type=file]')[0].files[0]); 
+
+  $.ajax({
+      cache : false,
+      contentType : false,
+      processData : false,
+      type : 'POST',
+      url : '<?php echo base_url()."keuangan/jurnal/edit_junal_umum/$id" ?>',
+      data : data,
+      success : function(response){
+        var res  = response.split("|");
+        if(res[0]=="OK"){
+          var obj = jQuery.parseJSON(res[1]);
+          $("#error_mssg").addClass("alert alert-success alert-dismissable").show();
+          $("#mssgerr").html('Data berhasil diubah');
+        }
+        else if(res[0]=="Error"){
+           var obj = jQuery.parseJSON(res[1]);
+            $("#error_mssg").addClass("alert alert-danger alert-dismissable").show();
+            $("#mssgerr").html(obj.err_msg);
+        }
+        else{
+            var obj = jQuery.parseJSON(res[1]);
+            $("#error_mssg").addClass("alert alert-warning alert-dismissable").show();
+            $("#mssgerr").html(obj.err_msg);
+        }
+    }
+  });
+  return false;
+});
 </script>
