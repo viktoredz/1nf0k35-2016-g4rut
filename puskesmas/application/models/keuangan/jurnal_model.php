@@ -162,7 +162,7 @@ class Jurnal_model extends CI_Model {
     function add_kredit_debit($tipe){
         $data = array(
             'kredit'          => '0',
-            'id_jurnal'       => $this->idjurnal($this->input->post('id_transaksi')),
+            'id_jurnal'       => $this->idjurnal(),
             'id_transaksi'    => $this->input->post('id_transaksi'),
             'debet'           => '0',
             'status'          => $tipe,
@@ -176,21 +176,22 @@ class Jurnal_model extends CI_Model {
         }
     }
      function idjurnal($id='0'){
-        $q = $this->db->query("select RIGHT(MAX(id_jurnal),2) as kd_max from keu_jurnal where id_transaksi="."'".$id."'"."");
+        $q = $this->db->query("select RIGHT(MAX(id_jurnal),4) as kd_max from keu_jurnal");
         $nourut="";
         if($q->num_rows()>0)
         {
             foreach($q->result() as $k)
             {
                 $tmp = ((int)$k->kd_max)+1;
-                $nourut = sprintf("%02s", $tmp);
+                $nourut = sprintf("%04s", $tmp);
             }
         }
         else
         {
-            $nourut = "01";
+            $nourut = "0001";
         }
-        return $id.$nourut;
+        $kodpus='P'.$this->session->userdata('puskesmas');
+        return $kodpus.date("Y").date('m').$nourut;
     }
     function delete_kreditdebet($tipe){
         $data = array(

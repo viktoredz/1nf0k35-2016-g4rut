@@ -425,7 +425,7 @@ $("#tambahinstansi").click(function(){
   $("#popup_jurum_instansi").jqxWindow('open');
 });
 
-function add_jurnaltransaksi(id_transaksi,id_jurnal,tipe){
+function add_jurnaltransaksi(id_transaksi,id_jurnal,tipe,$code){
       var data = new FormData();
       data.append('id_transaksi', id_transaksi);
       data.append('id_jurnal',    id_jurnal);

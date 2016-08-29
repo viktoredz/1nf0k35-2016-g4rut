@@ -67,6 +67,7 @@ class Sts_model extends CI_Model {
 							  LEFT JOIN `mst_keu_anggaran` ON `mst_keu_anggaran`.`id_mst_anggaran_versi` = `mst_keu_versi_status`.`id_mst_anggaran_versi` 
 							  WHERE `cl_phc_code` =".'"'.$kodepuskesmas.'"'.")");
             return $data['id_sts'];
+            die();
         }else{
             return mysql_error();
         }
@@ -407,21 +408,22 @@ class Sts_model extends CI_Model {
         return $kodpus.date("Y").date('m').$nourut;
     }
     function idjurnal($id='0'){
-        $q = $this->db->query("select RIGHT(MAX(id_jurnal),2) as kd_max from keu_jurnal where id_transaksi="."'".$id."'"."");
+        $q = $this->db->query("select RIGHT(MAX(id_jurnal),4) as kd_max from keu_jurnal");
         $nourut="";
         if($q->num_rows()>0)
         {
             foreach($q->result() as $k)
             {
                 $tmp = ((int)$k->kd_max)+1;
-                $nourut = sprintf("%02s", $tmp);
+                $nourut = sprintf("%04s", $tmp);
             }
         }
         else
         {
-            $nourut = "01";
+            $nourut = "0001";
         }
-        return $id.$nourut;
+        $kodpus ="P".$this->session->userdata('puskesmas');
+        return $kodpus.date("Y").date('m').$nourut;
     }
 	function tutup_sts(){
 

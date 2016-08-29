@@ -12,7 +12,7 @@
  
     </div>
     <div class="col-sm-12" style="text-align: right">
-      <button type="button" name="btn_keuangan_add_stsdata" class="btn btn-warning"><i class='fa fa-save'></i> &nbsp; Tambah STS</button>
+      <button type="button" name="btn_keuangan_add_stsdata" id="btn_keuangan_add_stsdata" class="btn btn-warning"><i class='fa fa-save'></i> &nbsp; Tambah STS</button>
       <button type="button" name="btn_keuangan_close" class="btn btn-primary"><i class='fa fa-close'></i> &nbsp; Batal</button>
     </div>
   </div>
@@ -79,7 +79,8 @@
         $("#popup_keuangan_sts").jqxWindow('close');
     });
    
-    $("[name='btn_keuangan_add_stsdata']").click(function(){
+    $("[id='btn_keuangan_add_stsdata']").click(function(){
+      alert('data');
         var data = new FormData();
         $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
         $('#biodata_notice').show();
@@ -93,11 +94,13 @@
             contentType : false,
             processData : false,
             type : 'POST',
-            url : '<?php echo base_url()."keuangan/sts/add_sts"   ?>',
+            url : '<?php echo base_url()."keuangan/sts/add_sts"?>',
             data : data ,
             success : function(response){
+              alert(response);
               a = response.split(" | ");
               if(a[0]=="OK"){
+                alert('');
                 $("#popup_keuangan_sts").jqxWindow('close');
                 alert("Data STS berhasil disimpan.");
                 $("#jqxgrid").jqxGrid('updatebounddata', 'cells');
