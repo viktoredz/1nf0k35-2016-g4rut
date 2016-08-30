@@ -16,22 +16,39 @@
     <div class="box-body">
       <div class="row">
         <div class="col-md-12 pull-left">
-            <div class="col-md-9 pull-left">
+            <div class="col-md-6 pull-left">
               <button id="doExpand_anggaran" class="btn btn-warning " ><i class="icon fa fa-plus-square-o"></i> &nbsp;Expand</button>  
               <button id="doCollapse_anggaran" class="btn btn-warning " ><i class="icon fa fa-minus-square-o"></i> &nbsp;Collapse</button> 
               <button id="doRefresh_anggaran" class="btn btn-primary" ><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
             </div>
-            <div class="col-md-3 pull-right">
+            <div class="col-md-6 pull-right">
               <div class="row">
-                <div class="col-md-4" style="padding-top:5px;"><label> Periode </label> </div>
-                  <div class="col-md-8">
-                    <select name="tahunanggaran" id="tahunanggaran" class="form-control">
-                      <?php for ($i=date("Y");$i>=date("Y")-10;$i--) { ;?>
-                      <?php $select = $i == date("Y") ? 'selected=selected' : '' ?>
-                     <option value="<?php echo $i; ?>" <?php echo $select ?>><?php echo $i; ?></option>
-                      <?php   } ;?>
-                    </select>
-                  </div> 
+                <div class="col-md-5">
+                  <div class="row">
+                    <div class="col-md-4" style="padding-top:5px;"><label> Periode </label> </div>
+                    <div class="col-md-8">
+                      <select name="tahunanggaran" id="tahunanggaran" class="form-control">
+                        <?php for ($i=date("Y");$i>=date("Y")-10;$i--) { ;?>
+                        <?php $select = $i == date("Y") ? 'selected=selected' : '' ?>
+                       <option value="<?php echo $i; ?>" <?php echo $select ?>><?php echo $i; ?></option>
+                        <?php   } ;?>
+                      </select>
+                    </div> 
+                  </div>
+                </div>
+                <div class="col-md-7">
+                  <div class="row">
+                    <div class="col-md-4" style="padding-top:5px;"><label> Puskesmas </label> </div>
+                    <div class="col-md-8">
+                      <select name="filterpuskesmas" id="filterpuskesmas" class="form-control">
+                        <?php foreach ($datapuskesmas as $datapuskes){ ?>
+                        <?php $select = $datapuskes->code == 'P'.$this->session->userdata('puskesmas') ? 'selected=selected' : '' ?>
+                       <option value="<?php echo $datapuskes->code; ?>" <?php echo $select ?>><?php echo $datapuskes->value; ?></option>
+                        <?php   } ;?>
+                      </select>
+                    </div> 
+                  </div>
+                </div>
               </div>
             </div>
         </div>
@@ -65,6 +82,12 @@
         $("#treeGrid_anggaran_akun").jqxTreeGrid('updateBoundData','filter');
         });
     });
+    $("#filterpuskesmas").change(function(){
+      $.post("<?php echo base_url().'mst/keuangan_akun/filter_puskesmas' ?>", 'filterpus='+$(this).val(),  function(){
+        $("#treeGrid_anggaran_akun").jqxTreeGrid('updateBoundData','filter');
+        });
+    });
+    
       
       var newRowID = null;
 

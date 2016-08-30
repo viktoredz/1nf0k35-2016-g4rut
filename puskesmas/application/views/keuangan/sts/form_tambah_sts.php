@@ -80,7 +80,6 @@
     });
    
     $("[id='btn_keuangan_add_stsdata']").click(function(){
-      alert('data');
         var data = new FormData();
         $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
         $('#biodata_notice').show();
@@ -97,10 +96,8 @@
             url : '<?php echo base_url()."keuangan/sts/add_sts"?>',
             data : data ,
             success : function(response){
-              alert(response);
               a = response.split(" | ");
               if(a[0]=="OK"){
-                alert('');
                 $("#popup_keuangan_sts").jqxWindow('close');
                 alert("Data STS berhasil disimpan.");
                 $("#jqxgrid").jqxGrid('updatebounddata', 'cells');
