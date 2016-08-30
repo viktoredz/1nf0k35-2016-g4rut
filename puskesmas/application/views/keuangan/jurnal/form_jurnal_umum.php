@@ -36,7 +36,7 @@ if($alert_form!=""){ ?>
           <button type="button" id="btn-simpan_jurum" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-saved"></i> Simpan</button>
           <button type="button" id="btn-draf_jurum" class="btn btn-info"><i class="glyphicon glyphicon-floppy-save"></i> Simpan Sebagai Draf</button>
           <button type="button" id="btn-delete_jurum" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> Hapus</button>
-          <button type="button" id="btn-close_jurum" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
+          <button type="button" id="btn-close_jurum" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Kembali</button>
         </div>
       </div>
         <div class="box-body">
@@ -379,9 +379,12 @@ $(function(){
       window.location.href="<?php echo base_url()?>keuangan/jurnal";
   });
   $('#btn-delete_jurum').click(function(){
-      $.get("<?php echo base_url().'keuangan/jurnal/delete_junal_umum/'.$id; ?>", function(data) {
-        $("#content1").html(data);
-      });
+      var con = confirm("Anda yakin akan menghapus data ini?");
+      if (con == true) {
+        $.get("<?php echo base_url().'keuangan/jurnal/delete_junal_umum/'.$id; ?>", function(data) {
+          $("#content1").html(data);
+        });
+      }
   });
   
   $("#error_mssg").hide();

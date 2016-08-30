@@ -375,14 +375,14 @@ function idtrasaksi(){
 function edit_junal_umum($id='0'){
 	$this->authentication->verify('keuangan','edit');
 
-    $this->form_validation->set_rules('uraian', 'Uraian', 'trim|required');
-    $this->form_validation->set_rules('keterangan', 'Keterangan', 'trim|required');
-    $this->form_validation->set_rules('jenistransaksi', 'jenistransaksi', 'trim|required');
-    $this->form_validation->set_rules('bukti_kas', 'Bukti Kas', 'trim|required');
-    $this->form_validation->set_rules('nomor_faktur', 'Nomor Faktur', 'trim|required');
-    $this->form_validation->set_rules('id_mst_syarat_pembayaran', 'Syarat Pembayaran', 'trim|required');
-    $this->form_validation->set_rules('id_instansi', 'Instansi', 'trim|required');
-    $this->form_validation->set_rules('id_kategori_transaksi', 'Kategori Transaksi', 'trim|required');
+    $this->form_validation->set_rules('uraian', 'Uraian', 'trim');
+    $this->form_validation->set_rules('keterangan', 'Keterangan', 'trim');
+    $this->form_validation->set_rules('jenistransaksi', 'jenistransaksi', 'trim');
+    $this->form_validation->set_rules('bukti_kas', 'Bukti Kas', 'trim');
+    $this->form_validation->set_rules('nomor_faktur', 'Nomor Faktur', 'trim');
+    $this->form_validation->set_rules('id_mst_syarat_pembayaran', 'Syarat Pembayaran', 'trim');
+    $this->form_validation->set_rules('id_instansi', 'Instansi', 'trim');
+    $this->form_validation->set_rules('id_kategori_transaksi', 'Kategori Transaksi', 'trim');
 
 	if($this->form_validation->run()== FALSE){
 
@@ -398,10 +398,10 @@ function edit_junal_umum($id='0'){
 		$data['getkredit']		= $this->jurnal_model->getkredit($id);
 		$data['getsyarat']		= $this->jurnal_model->getsyarat();
 		$data['getdataakun']	= $this->jurnal_model->getdataakun();
-		if (!empty($data['alert_form'])) {
-			$datas['err_msg'] = validation_errors();
-			die('Err|'.json_encode($datas));
-		};
+		// if (!empty($data['alert_form'])) {
+		// 	$datas['err_msg'] = validation_errors();
+		// 	die('Err|'.json_encode($datas));
+		// };
 		die($this->parser->parse('keuangan/jurnal/form_jurnal_umum',$data));
 
 	}else{
@@ -416,13 +416,14 @@ function edit_junal_umum($id='0'){
         $this->load->library('upload', $config);
         $this->upload->initialize($config);
 
-        if ( ! $this->upload->do_upload('lampiran'))
-        {
-                $error = array('err_msg' => $this->upload->display_errors());
-                die('Error|'.json_encode($error));
-        }
-        else
-        {	
+        // if ( ! $this->upload->do_upload('lampiran'))
+        // {
+        //         $error = array('err_msg' => $this->upload->display_errors());
+        //         die('Error|'.json_encode($error));
+        // }
+        // else
+        // {
+        	$this->upload->do_upload('lampiran');
         	$this->upload->data();
         	$this->db->where('id_transaksi',$this->input->post('id_transaksi'));
         	$t=explode("-", $this->input->post('tanggal'));
@@ -450,7 +451,7 @@ function edit_junal_umum($id='0'){
 				$data['err_msg'] ="Proses data gagal";
 				 die("Error|".json_encode($data));
 			}
-		}
+		// }
 		
 	}
 }
