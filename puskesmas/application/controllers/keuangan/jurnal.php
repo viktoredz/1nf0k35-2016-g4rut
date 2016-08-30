@@ -25,6 +25,7 @@ class Jurnal extends CI_Controller {
 		$this->session->set_userdata('filter_bulan','');
 		$this->session->set_userdata('filter_tahun','');
 		$this->session->set_userdata('filter_transaksi','');
+		$this->session->set_userdata('filter_puskesmas','');
 		$data = array();
 
 		switch ($pageIndex) {
@@ -36,6 +37,9 @@ class Jurnal extends CI_Controller {
 				$data['filetransaksi'] =$this->jurnal_model->pilihan_enums('keu_transaksi','status');
 				$data['tambahtransaksi'] =array('pendapatanumum'=>"Pendapatan Umum","pendapatanbpjs" => 'Pendapatan BPJS Kapasitas',"pembelian" => 'Pembelian Persediaan');
 				$data['tambahtransaksiotomatis'] =array('transaksiotomatis'=>"Transaksi Otomatis");
+				$this->db->where('code','P'.$this->session->userdata('puskesmas'));
+				$data['datapuskes'] 	= $this->jurnal_model->getallpuskesmas();
+
 				die($this->parser->parse("keuangan/jurnal/jurnal_umum",$data));
 
 				break;
@@ -58,6 +62,8 @@ class Jurnal extends CI_Controller {
 				$data['tambahtransaksi'] =array('pendapatanumum'=>"Pendapatan Umum","pendapatanbpjs" => 'Pendapatan BPJS Kapasitas',"pembelian" => 'Pembelian Persediaan');
 				$data['tambahtransaksiotomatis'] =array('transaksiotomatis'=>"Transaksi Otomatis");
 				
+				$this->db->where('code','P'.$this->session->userdata('puskesmas'));
+				$data['datapuskespe'] 	= $this->jurnal_model->getallpuskesmas();
 				die($this->parser->parse("keuangan/jurnal/jurnal_penutup",$data));
 
 				break;
@@ -71,7 +77,8 @@ class Jurnal extends CI_Controller {
 				$data['filetransaksi'] =$this->jurnal_model->pilihan_enums('keu_transaksi','status');
 				$data['tambahtransaksi'] =array('pendapatanumum'=>"Pendapatan Umum","pendapatanbpjs" => 'Pendapatan BPJS Kapasitas',"pembelian" => 'Pembelian Persediaan');
 				$data['tambahtransaksiotomatis'] =array('transaksiotomatis'=>"Transaksi Otomatis");
-				
+				$this->db->where('code','P'.$this->session->userdata('puskesmas'));
+				$data['datapuskeshapus'] 	= $this->jurnal_model->getallpuskesmas();
 				die($this->parser->parse("keuangan/jurnal/transaksi_hapus",$data));
 
 				break;
@@ -118,8 +125,13 @@ class Jurnal extends CI_Controller {
 				$this->db->where('status',$this->session->userdata('filter_transaksi'));
 			}
 		}
+		if ($this->session->userdata('filter_puskesmas')!='') {
+			$this->db->where('keu_transaksi.code_cl_phc',$this->session->userdata('filter_puskesmas'));
+		}else{
+			$this->db->where('keu_transaksi.code_cl_phc','P'.$this->session->userdata('puskesmas'));
+		}
 		$data = $this->jurnal_model->get_datajurnalumum($type);
-		
+
 		echo json_encode($data);
 	}
 	function json_jurnal_hapus($type='jurnal_umum'){
@@ -579,6 +591,13 @@ function filterbulan(){
 	if($_POST) {
 		if($this->input->post('bulandata') != '') {
 			$this->session->set_userdata('filter_bulan',$this->input->post('bulandata'));
+		}
+	}
+}
+function filterpuskesmas(){
+	if($_POST) {
+		if($this->input->post('puskes') != '') {
+			$this->session->set_userdata('filter_puskesmas',$this->input->post('puskes'));
 		}
 	}
 }

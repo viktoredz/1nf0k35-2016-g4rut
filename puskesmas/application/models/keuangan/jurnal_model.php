@@ -72,8 +72,6 @@ class Jurnal_model extends CI_Model {
         return $this->db->get('mst_keu_kategori_transaksi')->result();
     }
     function get_datajurnalumum($type,$status='0'){
-        $puskes = 'P'.$this->session->userdata('puskesmas');
-        $this->db->where('code_cl_phc',$puskes);
         if ($status!='0') {
             $this->db->where('status', 'dihapus');
         }else{
@@ -305,6 +303,9 @@ class Jurnal_model extends CI_Model {
             }
         }
         return $datakeu_transaksipen['id_transaksi'];
+    }
+    function getallpuskesmas(){
+        return $this->db->get('cl_phc')->result();
     }
    
 }

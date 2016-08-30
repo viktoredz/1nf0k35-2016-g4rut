@@ -45,7 +45,7 @@
               </div>
               <div class="col-md-4">
                 <div class="row">
-                  <div class="col-md-3">
+                  <div class="col-md-3" style="padding:5px">
                     <label> Periode</label>
                   </div>
                   <div class="col-md-4">
@@ -86,7 +86,7 @@
                     </ul> -->
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <div class="dropdown">
                     <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="glyphicon glyphicon-plus-sign"></i> Tambah Transaksi Otomatis
                     <span class="caret"></span></button>
@@ -96,6 +96,22 @@
                       <?php }?>
                     </ul>
                   </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-5" style="padding:5px;">
+                  <div class="pull-right"><b>Puskesmas</b></div>
+                </div>
+                <div class="col-md-7">
+                    <select class="form-control" id="filterpuskesmas" name="filterpuskesmas"> 
+                    <?php foreach ($datapuskes as $datpus) { 
+                      $select = ($datpus->code=='P'.$this->session->userdata('puskesmas') ? 'selected' : '');
+                    ?>  
+                      <option value="<?php echo $datpus->code;?>" <?php echo $select?>><?php echo $datpus->value;?></option>
+                    <?php } ?>
+                  </select>
                 </div>
               </div>
             </div>
@@ -301,6 +317,11 @@ $("#periodetahunumum").change(function(){
 });
 $("#periodebulanumum").change(function(){
   $.post("<?php echo base_url().'keuangan/jurnal/filterbulan' ?>", 'bulandata='+$(this).val(),  function(){
+          $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
+    });
+});
+$("#filterpuskesmas").change(function(){
+  $.post("<?php echo base_url().'keuangan/jurnal/filterpuskesmas' ?>", 'puskes='+$(this).val(),  function(){
           $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
     });
 });

@@ -18,14 +18,30 @@
         <div class="box-body">
           <div class="col-md-12">
             <div class="row">
-              <div class="col-md-8">
-              </div>
               <div class="col-md-4">
+              </div>
+              <div class="col-md-8">
                 <div class="row">
-                  <div class="col-md-3">
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="col-md-5" style="padding:5px;">
+                        <div class="pull-right"><b>Puskesmas</b></div>
+                      </div>
+                      <div class="col-md-7">
+                          <select class="form-control" id="filterpuskesmasjurhap" name="filterpuskesmasjurhap"> 
+                          <?php foreach ($datapuskeshapus as $datpus) { 
+                            $select = ($datpus->code=='P'.$this->session->userdata('puskesmas') ? 'selected' : '');
+                          ?>  
+                            <option value="<?php echo $datpus->code;?>" <?php echo $select?>><?php echo $datpus->value;?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-1">
                     <label> Periode</label>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-2">
                     <select class="form-control" id="periodetahunhapus" name="periodetahun">
                       <?php for($i=date("Y"); $i>=date("Y")-5; $i--){
                         $select = ($i==date('Y') ? 'selected' : '');
@@ -34,7 +50,7 @@
                       <?php }?>
                     </select>
                   </div>
-                  <div class="col-md-5">
+                  <div class="col-md-3">
                     <select class="form-control" id="periodebulanhapus" name="periodebulan"> 
                       <?php foreach ($bulan as $key => $value) { 
                         $select = ($key==date('n') ? 'selected' : '');
@@ -158,6 +174,11 @@ $("#periodetahunhapus").change(function(){
 $("#periodebulanhapus").change(function(){
   $.post("<?php echo base_url().'keuangan/jurnal/filterbulan' ?>", 'bulandata='+$(this).val(),  function(){
           $("#jqxgrid_jurnal_hapus").jqxTreeGrid('updateBoundData');
+    });
+});
+$("#filterpuskesmasjurpen").change(function(){
+  $.post("<?php echo base_url().'keuangan/jurnal/filterpuskesmas' ?>", 'puskes='+$(this).val(),  function(){
+          $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
     });
 });
 </script>
