@@ -66,6 +66,13 @@ class Sts extends CI_Controller {
 			}
 		}
 	}
+	function filter_puskesmas(){
+		if($_POST) {
+			if($this->input->post('puskes') != '') {
+				$this->session->set_userdata('filter_puskesmas',$this->input->post('puskes'));
+			}
+		}
+	}
 
 	function json_sts($id=0){
 		$this->authentication->verify('keuangan','show');
@@ -111,6 +118,11 @@ class Sts extends CI_Controller {
 		}else{
 			$this->db->where("YEAR(tgl)",date("Y"));
 		}
+		if($this->session->userdata('filter_puskesmas')!=''){
+			$this->db->where("keu_sts.code_cl_phc",$this->session->userdata('filter_puskesmas'));
+		}else{
+			$this->db->where("keu_sts.code_cl_phc",'P'.$this->session->userdata('puskesmas'));
+		}
 	
 		$rows_all = $this->sts_model->get_data();
 
@@ -135,7 +147,11 @@ class Sts extends CI_Controller {
 				$this->db->order_by($ord, $this->input->post('sortorder'));
 			}
 		}
-		
+		if($this->session->userdata('filter_puskesmas')!=''){
+			$this->db->where("keu_sts.code_cl_phc",$this->session->userdata('filter_puskesmas'));
+		}else{
+			$this->db->where("keu_sts.code_cl_phc",'P'.$this->session->userdata('puskesmas'));
+		}
 		if($this->session->userdata('filter_bulan')!=''){
 			if($this->session->userdata('filter_bulan')=="all"){
 

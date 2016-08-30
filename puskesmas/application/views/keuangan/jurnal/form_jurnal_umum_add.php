@@ -45,7 +45,13 @@ if($alert_form!=""){ ?>
           <div class="col-md-3" style="padding: 5px">Jenis Transaksi</div>
           <div class="col-md-9">
               <select id="jenistransaksi" name="jenistransaksi"  class="form-control">
-                <?php foreach ($filetransaksi as $datjentrans) { 
+                <?php 
+                if (isset($id_mst_keu_transaksi)) {
+                  $id_mst_keu_transaksi = $id_mst_keu_transaksi;
+                }else{
+                  $id_mst_keu_transaksi = $id_mst_transaksi;
+                }
+                foreach ($filetransaksi as $datjentrans) { 
                   $select = $datjentrans->id_mst_transaksi==$id_mst_keu_transaksi ? 'selected' :'';
                 ?>
                   <option value="<?php echo $datjentrans->id_mst_transaksi;?>" <?php echo $select;?>><?php echo $datjentrans->nama;?></option>
@@ -592,7 +598,7 @@ $("#btn-simpan_jurum").click(function(){
       contentType : false,
       processData : false,
       type : 'POST',
-      url : '<?php echo base_url()."keuangan/jurnal/edit_junal_umum/$id" ?>',
+      url : '<?php echo base_url()."keuangan/jurnal/{action}_junal_umum/$id" ?>',
       data : data,
       success : function(response){
         var res  = response.split("|");

@@ -124,6 +124,16 @@ class Jurnal_model extends CI_Model {
         // $data = $query->free_result();
         return $data;
     }
+    function get_detail_row_add($id=0){
+        $this->db->select("mst_keu_transaksi.*",false);
+        $this->db->where('id_mst_transaksi',$id);
+        $query =$this->db->get('mst_keu_transaksi');
+        if ($query->num_rows() > 0) {
+            $data = $query->row_array();
+        }
+        return $data;
+    }
+    
     function get_detail_jurnal($id){
         $this->db->select("keu_jurnal.*,mst_keu_akun.uraian");
         $this->db->where('id_transaksi',$id);
@@ -152,6 +162,22 @@ class Jurnal_model extends CI_Model {
         $this->db->order_by('kredit','desc');
         $this->db->order_by('id_jurnal','asc');
         $query =$this->db->get('keu_jurnal');
+        return $query->result();
+    }
+    function getdebitadd($id=0){
+        $this->db->select("mst_keu_transaksi_item.*");
+        $this->db->where('id_mst_transaksi',$id);
+        $this->db->where('type','debet');
+        $this->db->order_by('id_mst_transaksi_item','asc');
+        $query =$this->db->get('mst_keu_transaksi_item');
+        return $query->result();
+    }
+    function getkreditadd($id=0){
+        $this->db->select("mst_keu_transaksi_item.*");
+        $this->db->where('id_mst_transaksi',$id);
+        $this->db->where('type','kredit');
+        $this->db->order_by('id_mst_transaksi_item','asc');
+        $query =$this->db->get('mst_keu_transaksi_item');
         return $query->result();
     }
     function getdataakun(){
@@ -219,5 +245,14 @@ class Jurnal_model extends CI_Model {
             $this->db->set('debet',$this->input->post('valueinput'));
         }
         return $this->db->update('keu_jurnal');
+    }
+    function pilihan_jenis(){
+        return $this->db->get('mst_keu_transaksi')->result();
+    }
+    function get_data_tipetransaksi($start=0,$limit=999999,$options=array()){
+        $this->db->select("mst_keu_transaksi.*,mst_keu_kategori_transaksi.nama as namakategori");
+        $this->db->join('mst_keu_kategori_transaksi','mst_keu_kategori_transaksi.id_mst_kategori_transaksi = mst_keu_transaksi.id_mst_kategori_transaksi','left');
+        $query =$this->db->get('mst_keu_transaksi',$limit,$start);
+        return $query->result();
     }
 }

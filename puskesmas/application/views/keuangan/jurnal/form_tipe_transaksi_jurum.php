@@ -52,21 +52,14 @@ var source = {
       datatype: "json",
       type  : "POST",
       datafields: [
-      { name: 'id_inv_hasbispakai_pembelian', type: 'string' },
-      { name: 'id_mst_inv_barang_habispakai', type: 'number' },
-      { name: 'uraian', type: 'string' },
-      { name: 'jml', type: 'number' },
-      { name: 'tgl_opname', type: 'string' },
-      { name: 'batch', type: 'string' },
-      { name: 'harga', type: 'string' },
-      { name: 'jumlah', type: 'string' },
-      { name: 'subtotal', type: 'string' },
-      { name: 'harga', type: 'double' },
-      { name: 'tgl_update', type: 'date' },
-      { name: 'edit', type: 'number'},
-      { name: 'delete', type: 'number'}
+      { name: 'id_mst_transaksi', type: 'string' },
+      { name: 'nama', type: 'string' },
+      { name: 'namakategori', type: 'string' },
+      { name: 'untuk_jurnal', type: 'string' },
+      { name: 'deskripsi', type: 'string' },
+      { name: 'detail', type: 'number' },
         ],
-    url: "<?php echo site_url('inventory/bhp_distribusi/barang/'); ?>",
+    url: "<?php echo site_url('keuangan/jurnal/json_transaksi/'); ?>",
     cache: false,
     updateRow: function (rowID, rowData, commit) {
             commit(true);
@@ -103,8 +96,17 @@ var source = {
       },
 
       columns: [
-        { text: 'Kategori', editable: false,datafield: 'uraian', columntype: 'textbox', filtertype: 'textbox', width: '50%'},
-        { text: 'Transaksi',datafield: 'batch' ,align: 'center', editable: false, columntype: 'textbox', filtertype: 'textbox', width: '50%'},
+        { text: 'Add', align: 'center', filtertype: 'none', sortable: false, width: '10%', cellsrenderer: function (row) {
+            var dataRecord = $("#jqxgridpilihtipe").jqxGrid('getrowdata', row);
+            if(dataRecord.detail==1){
+            return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='editdatajurum(\""+dataRecord.id_mst_transaksi+"\");'></a></div>";
+          }else{
+            return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lockdo.gif'></a></div>";
+          }
+                 }
+        },
+        { text: 'Kategori', editable: false,datafield: 'namakategori', columntype: 'textbox', filtertype: 'textbox', width: '45%'},
+        { text: 'Transaksi',datafield: 'nama' ,align: 'center', editable: false, columntype: 'textbox', filtertype: 'textbox', width: '45%'},
            
       ]
     });
@@ -113,7 +115,12 @@ var source = {
     $('#refreshdatabutton').click(function () {
       $("#jqxgridpilihtipe").jqxGrid('updatebounddata', 'cells');
     });
-
+    function editdatajurum(id){
+      close_popup();
+      $.get("<?php echo base_url().'keuangan/jurnal/add_junal_umum/'; ?>"+id, function(data) {
+        $("#content1").html(data);
+      });
+    }
 
 </script>
 
@@ -131,21 +138,6 @@ var source = {
     <div class="box-body">
         <div class="row" style="margin: 5px">
           <div class="col-md-12" style="padding: 5px"><h3>{title}</h3></div>
-        </div>
-        <div class="row" style="margin: 5px">
-          <div class="col-md-12" style="padding: 5px"><h4>Favorit</h4></div>
-        </div>
-        <div class="row" style="margin: 5px">
-          <div class="col-md-6">
-              <div class="alert alert-success" role="alert">
-                ...
-              </div>
-          </div>
-          <div class="col-md-6">
-            <div class="alert alert-info" role="alert">
-              ...
-            </div>
-          </div>
         </div>
     </div>
     <div class="box-body">

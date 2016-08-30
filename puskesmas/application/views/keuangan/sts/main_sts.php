@@ -16,7 +16,7 @@
           <div class="box-footer">
             <button type="button" class="btn btn-primary" onclick='add_sts()'><i class='fa fa-plus-square'></i> &nbsp;Tambah STS</button> 
             <button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp;Refresh</button> 
-                 <div class="col-md-3 pull-right">
+                 <div class="col-md-2 pull-right">
                     <div class="row">
                         <div class="col-md-4" style="padding-top:5px;"><label> Tahun </label> </div>
                         <div class="col-md-8">
@@ -31,8 +31,8 @@
                   </div>
                  <div class="col-md-3 pull-right">
                     <div class="row">
-                        <div class="col-md-4" style="padding-top:5px;"><label> Bulan </label> </div>
-                        <div class="col-md-8">
+                        <div class="col-md-3" style="padding-top:5px;"><label> Bulan </label> </div>
+                        <div class="col-md-9">
                             <select name="bulan" id="bulan" class="form-control">
                                 <?php foreach ($bulan as $val=>$key ) { ;?>
                                 <?php $select = $val == date("m") ? 'selected=selected' : '' ?>
@@ -41,7 +41,20 @@
                             </select>
                          </div> 
                     </div>
-                </div>    
+                </div>  
+                <div class="col-md-3 pull-right">
+                    <div class="row">
+                        <div class="col-md-4" style="padding-top:5px;"><label> Puskesmas </label> </div>
+                        <div class="col-md-8">
+                            <select name="filterpuskesmas" id="filterpuskesmas" class="form-control">
+                                <?php foreach ($data_puskesmas as $datpus) { ;?>
+                                <?php $select = $datpus->code == 'P'.$this->session->userdata('puskesmas') ? 'selected=selected' : '' ?>
+                                    <option value="<?php echo $datpus->code; ?>" <?php echo $select ?>><?php echo $datpus->value; ?></option>
+                                <?php   } ;?>
+                            </select>
+                         </div> 
+                    </div>
+                </div>  
            </div>
       <div class="box-body">
             <div class="div-grid">
@@ -73,6 +86,12 @@
 
         $("select[name='tahun']").change(function(){
             $.post("<?php echo base_url().'keuangan/sts/filter_tahun' ?>", 'tahun='+$(this).val(),  function(){
+                $("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+
+            });
+        });
+        $("#filterpuskesmas").change(function(){
+            $.post("<?php echo base_url().'keuangan/sts/filter_puskesmas' ?>", 'puskes='+$(this).val(),  function(){
                 $("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 
             });

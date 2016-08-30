@@ -78,13 +78,12 @@
              <div class="row">
                 <div class="col-md-4">
                   <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="glyphicon glyphicon-plus"></i> Tambah Transaksi
-                    <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                      <?php foreach ($tambahtransaksi as $key => $value) {?>
+                    <button class="btn btn-primary dropdown-toggle" id="add_jurnal_umum" type="button" data-toggle="dropdown"><i class="glyphicon glyphicon-plus"></i> Tambah Transaksi</button>
+                    <!-- <ul class="dropdown-menu">
+                      <?php /* foreach ($tambahtransaksi as $key => $value) {?>
                         <li><a onclick='tambahtransaksi("<?php echo $key;?>")'><?php echo $value;?></a></li>
-                      <?php }?>
-                    </ul>
+                      <?php }*/?>
+                    </ul> -->
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -281,20 +280,6 @@ function tambahotomatis(id){
   });
   $("#popup_jurnal").jqxWindow('open');
 }
-function tambahtransaksi(id){
-  $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-  $.get("<?php echo base_url().'keuangan/jurnal/pilih_tipe_transaksijurum/'; ?>"+id, function(data) {
-    $("#popup_content").html(data);
-  });
-  $("#popup_jurnal").jqxWindow({
-    theme: theme, resizable: false,
-    width: 500,
-    height: 800,
-    isModal: true, autoOpen: false, modalOpacity: 0.2
-  });
-  $("#popup_jurnal").jqxWindow('open');
-}
-
 
 $("#filekategoriumum").change(function(){
 
@@ -317,5 +302,18 @@ $("#periodebulanumum").change(function(){
   $.post("<?php echo base_url().'keuangan/jurnal/filterbulan' ?>", 'bulandata='+$(this).val(),  function(){
           $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
     });
+});
+$("#add_jurnal_umum").click(function(){
+  $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+  $.get("<?php echo base_url().'keuangan/jurnal/pilih_tipe_transaksijurum/'; ?>", function(data) {
+    $("#popup_content").html(data);
+  });
+  $("#popup_jurnal").jqxWindow({
+    theme: theme, resizable: false,
+    width: 500,
+    height: 800,
+    isModal: true, autoOpen: false, modalOpacity: 0.2
+  });
+  $("#popup_jurnal").jqxWindow('open');
 });
 </script>

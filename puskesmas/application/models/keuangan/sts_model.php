@@ -211,7 +211,7 @@ class Sts_model extends CI_Model {
 		}
 		
 		$query = $this->db->get('cl_phc');
-		return $query->result_array();
+		return $query->result();
 	}
 
 	function get_data_nama($id){
