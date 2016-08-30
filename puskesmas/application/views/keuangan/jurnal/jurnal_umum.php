@@ -132,6 +132,7 @@ $(document).ready(function () {
             { name: 'tanggal', type: 'string' },
             { name: 'uraian', type: 'string' },
             { name: 'status', type: 'string' },
+            { name: 'kodeakun', type: 'string' },
             { name: 'id_mst_akun', type: 'string' },
             { name: 'debet', type: 'number' },
             { name: 'kredit', type: 'number' },
@@ -179,7 +180,7 @@ $(document).ready(function () {
           },
           { text: 'Tanggal', dataField: 'tanggal', width: '10%',cellsAlign: "center" },
           { text: 'Transaksi', dataField: 'uraian', width: '30%' },
-          { text: 'Kode AKun', dataField: 'id_mst_akun', width: '10%',cellsAlign: "center" },
+          { text: 'Kode AKun', dataField: 'kodeakun', width: '10%',cellsAlign: "center" },
           { text: 'Debet', dataField: 'debet', cellsFormat: 'd', width: '15%',cellsAlign: "right", 
                       aggregates: [{
                           'Total':

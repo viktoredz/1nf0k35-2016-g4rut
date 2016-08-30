@@ -338,87 +338,8 @@ function pilihversi($id='0'){
 }
 function add_junal_umum($id='0'){
 	$this->authentication->verify('keuangan','edit');
-
-    $this->form_validation->set_rules('uraian', 'Uraian', 'trim|required');
-    $this->form_validation->set_rules('keterangan', 'Keterangan', 'trim|required');
-    $this->form_validation->set_rules('jenistransaksi', 'jenistransaksi', 'trim|required');
-    $this->form_validation->set_rules('bukti_kas', 'Bukti Kas', 'trim|required');
-    $this->form_validation->set_rules('nomor_faktur', 'Nomor Faktur', 'trim|required');
-    $this->form_validation->set_rules('id_mst_syarat_pembayaran', 'Syarat Pembayaran', 'trim|required');
-    $this->form_validation->set_rules('id_instansi', 'Instansi', 'trim|required');
-    $this->form_validation->set_rules('id_kategori_transaksi', 'Kategori Transaksi', 'trim|required');
-
-	if($this->form_validation->run()== FALSE){
-
-		$data 					= $this->jurnal_model->get_detail_row_add($id);
-		$data['alert_form']		= validation_errors();
-		$data['id']				= $id;
-		$data['action']			= "add";
-		$data['title']			= "Jurnal Umum";
-		$data['sub_title']		= "Ubah Transaksi";
-		$data['filetransaksi'] 	= $this->jurnal_model->pilihan_jenis();
-		$data['filterkategori_transaksi'] =$this->jurnal_model->filterkategori_transaksi();
-		$data['getdebit']		= $this->jurnal_model->getdebitadd($id);
-		$data['getkredit']		= $this->jurnal_model->getkreditadd($id);
-		$data['getsyarat']		= $this->jurnal_model->getsyarat();
-		$data['getdataakun']	= $this->jurnal_model->getdataakun();
-		if (!empty($data['alert_form'])) {
-			$datas['err_msg'] = validation_errors();
-			die('Err|'.json_encode($datas));
-		};
-		die($this->parser->parse('keuangan/jurnal/form_jurnal_umum_add',$data));
-
-	}else{
-
-		$config['upload_path']          = './public/files/datafile/';
-        $config['allowed_types'] 		= 'avi|png|jpeg|pdf|jpg|xlx|xlxs|doc|docx';
-        $config['file_name']      		= 'file-'.trim(str_replace(" ","",date('dmYHis')));
-
-        $this->load->library('upload', $config);
-        $this->upload->initialize($config);
-
-        if ( ! $this->upload->do_upload('lampiran'))
-        {
-                $error = array('err_msg' => $this->upload->display_errors());
-                die('Error|'.json_encode($error));
-        }
-        else
-        {	
-        	$this->upload->data();
-        	$this->db->where('id_transaksi',$this->input->post('id_transaksi'));
-        	$t=explode("-", $this->input->post('tanggal'));
-        	$tgl = $t[2].'-'.$t[1].'-'.$t[0];
-        	$ttempo=explode("-", $this->input->post('jatuh_tempo'));
-        	$tgltempo = $ttempo[2].'-'.$ttempo[1].'-'.$ttempo[0];
-			$values = array(
-				'id_transaksi'		=> $this->idtrasaksi(),
-				'tanggal'			=> $tgl,
-				'uraian'			=> $this->input->post('uraian'),
-				'keterangan' 		=> $this->input->post('keterangan'),
-				'id_mst_keu_transaksi' => $this->input->post('jenistransaksi'),
-				'bukti_kas' 		=> $this->input->post('bukti_kas'),
-				'lampiran' 			=> $config['file_name'],
-				'jatuh_tempo' 		=> $tgltempo,
-				'tipe_jurnal'		=> 'jurnal_umum',
-				'status'			=> 'ditutup',
-				'nomor_faktur' 		=> $this->input->post('nomor_faktur'),
-				'id_mst_syarat_pembayaran' 	=> $this->input->post('id_mst_syarat_pembayaran'),
-				'id_instansi' 			=> $this->input->post('id_instansi'),
-				'id_kategori_transaksi' => $this->input->post('id_kategori_transaksi'),
-				'id_mst_keu_transaksi' 	=> $this->input->post('jenistransaksi'),
-				'code_cl_phc' 			=> 'P'.$this->session->userdata('puskesmas'),
-			);
-			$simpan=$this->db->insert('keu_transaksi', $values);
-			if($simpan==true){
-				$data['err_msg'] ='Data Tersimpan';
-				die("OK|".json_encode($data));
-			}else{
-				$data['err_msg'] ="Proses data gagal";
-				 die("Error|".json_encode($data));
-			}
-		}
-		
-	}
+	$id = $this->jurnal_model->addjurnal($id);
+    $this->edit_junal_umum($id);
 }
 function idtrasaksi(){
 		$kodpus = 'P'.$this->session->userdata('puskesmas');
@@ -772,6 +693,14 @@ function json_transaksi(){
 		);
 
 		echo json_encode(array($json));
+}
+function delete_junal_umum($id=0){
+	$this->db->where('id_transaksi',$id);
+	$this->db->delete('keu_jurnal');
+
+	$this->db->where('id_transaksi',$id);
+	$this->db->delete('keu_transaksi');
+	$this->tab('1');
 }
 }
 

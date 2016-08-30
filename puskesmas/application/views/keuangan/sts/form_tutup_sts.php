@@ -188,7 +188,7 @@
         data.append('jmldata',              "<?php echo $jmldata;?>");
         data.append('id_akun_kredit',       "<?php echo $id_akun_kredit;?>");
         <?php $i=1; foreach ($allkredit as $key) { ?>
-        data.append("id_akun_kredit_uraian<?php echo $i;?>",    "<?php echo $key->kodeakun;?>");
+        data.append("id_akun_kredit_uraian<?php echo $i;?>",    "<?php echo $key->id_mst_akun;?>");
         data.append("totalkredit<?php echo $i;?>",              "<?php echo $key->totalkredit;?>");
         <?php $i++;} ?>
         $.ajax({

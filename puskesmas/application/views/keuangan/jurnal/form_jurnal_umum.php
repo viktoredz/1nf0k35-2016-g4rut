@@ -165,9 +165,9 @@ if($alert_form!=""){ ?>
                       <div class="col-md-5">
                           <select onchange='selectnamaakun("<?php echo $keydebet->id_jurnal;?>","debet")' id="id_mst_akun_debet<?php echo $keydebet->id_jurnal;?>" class="form-control" name="id_mst_akun_debet">
                             <?php foreach ($getdataakun as $dataakun) { 
-                              $select = ($dataakun->kode == $keydebet->id_mst_akun ? "selected" :'');
+                              $select = ($dataakun->id_mst_akun == $keydebet->id_mst_akun ? "selected" :'');
                             ?>
-                              <option value="<?php echo $dataakun->kode?>" <?php echo $select;?>><?php echo $dataakun->uraian?></option>
+                              <option value="<?php echo $dataakun->id_mst_akun?>" <?php echo $select;?>><?php echo $dataakun->uraian?></option>
                             <?php } ?>
                           </select>
                       </div>
@@ -211,9 +211,9 @@ if($alert_form!=""){ ?>
                       <div class="col-md-5">
                           <select onchange='selectnamaakun("<?php echo $keykredit->id_jurnal;?>","kredit")' id="id_mst_akun_kredit<?php echo $keykredit->id_jurnal;?>" class="form-control" name="id_mst_akun_kredit">
                             <?php foreach ($getdataakun as $dataakun) { 
-                              $select = ($dataakun->kode == $keykredit->id_mst_akun ? "selected" :'');
+                              $select = ($dataakun->id_mst_akun == $keykredit->id_mst_akun ? "selected" :'');
                             ?>
-                              <option value="<?php echo $dataakun->kode?>" <?php echo $select;?>><?php echo $dataakun->uraian?></option>
+                              <option value="<?php echo $dataakun->id_mst_akun?>" <?php echo $select;?>><?php echo $dataakun->uraian?></option>
                             <?php } ?>
                           </select>
                       </div>
@@ -378,6 +378,12 @@ $(function(){
   $('#btn-close_jurum').click(function(){
       window.location.href="<?php echo base_url()?>keuangan/jurnal";
   });
+  $('#btn-delete_jurum').click(function(){
+      $.get("<?php echo base_url().'keuangan/jurnal/delete_junal_umum/'.$id; ?>", function(data) {
+        $("#content1").html(data);
+      });
+  });
+  
   $("#error_mssg").hide();
  
   $("#tgl_transaksi").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});

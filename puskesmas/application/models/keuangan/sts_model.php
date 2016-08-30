@@ -444,6 +444,7 @@ class Sts_model extends CI_Model {
 							'id_transaksi' 	=> $datakeu_transaksipen['id_transaksi'],
 							'id_mst_akun' 	=> $this->input->post("id_akun_debit"),
 							'kredit' 		=> '0',
+							'status' 		=> 'debet',
 							);
 		$this->db->insert('keu_jurnal',$datadebit);
 		$totalda=$this->input->post('jmldata');
@@ -454,6 +455,7 @@ class Sts_model extends CI_Model {
 					'id_mst_akun' 	=> $this->input->post("id_akun_kredit_uraian$i"),
 					'kredit' 		=> $this->input->post("totalkredit$i"),
 					'debet' 		=> '0',
+					'status' 		=> 'kredit',
 				);
 			$this->db->insert('keu_jurnal',$datakeu_jurnal);
 		}
@@ -475,6 +477,7 @@ class Sts_model extends CI_Model {
 					'id_mst_akun' 	=>$this->input->post("id_akun_kredit"),
 					'debet' 		=>$this->input->post("totaldebitkredit"),
 					'kredit' 		=>'0',
+					'status' 		=> 'debet',
 				);
 			$this->db->insert('keu_jurnal',$datakeu_jurnal);
 			$datakeu_jurnal = array(
@@ -483,6 +486,7 @@ class Sts_model extends CI_Model {
 					'id_mst_akun' 	=> $this->input->post("id_akun_debit"),
 					'debet' 		=> '0',
 					'kredit' 		=> $this->input->post("totaldebitkredit"),
+					'status' 		=> 'kredit',
 				);
 			$this->db->insert('keu_jurnal',$datakeu_jurnal);
 		}
@@ -588,7 +592,7 @@ class Sts_model extends CI_Model {
         return $query->result();
     }
     function get_detailsts($id=''){
-    	$this->db->select("*,(SELECT SUM(jumlah) FROM keu_sts_hasil WHERE id_sts =keu_sts.id_sts) AS totaldebit,(SELECT CONCAT(mst_keu_akun.kode,' - ',mst_keu_akun.uraian) FROM keu_setting JOIN mst_keu_akun ON mst_keu_akun.id_mst_akun = keu_setting.value WHERE keu_setting.key='akun_penerimaan_sts') AS id_akun_debit_uraian,(SELECT mst_keu_akun.kode FROM keu_setting JOIN mst_keu_akun ON mst_keu_akun.id_mst_akun = keu_setting.value WHERE keu_setting.key='akun_penerimaan_sts') AS id_akun_debit,(SELECT CONCAT(mst_keu_akun.kode,' - ',mst_keu_akun.uraian) FROM keu_setting JOIN mst_keu_akun ON mst_keu_akun.id_mst_akun = keu_setting.value WHERE keu_setting.key='akun_penyetoran_sts') AS akun_kredit,(SELECT mst_keu_akun.kode FROM keu_setting JOIN mst_keu_akun ON mst_keu_akun.id_mst_akun = keu_setting.value WHERE keu_setting.key='akun_penyetoran_sts') AS id_akun_kredit",false);
+    	$this->db->select("*,(SELECT SUM(jumlah) FROM keu_sts_hasil WHERE id_sts =keu_sts.id_sts) AS totaldebit,(SELECT CONCAT(mst_keu_akun.kode,' - ',mst_keu_akun.uraian) FROM keu_setting JOIN mst_keu_akun ON mst_keu_akun.id_mst_akun = keu_setting.value WHERE keu_setting.key='akun_penerimaan_sts') AS id_akun_debit_uraian,(SELECT mst_keu_akun.id_mst_akun FROM keu_setting JOIN mst_keu_akun ON mst_keu_akun.id_mst_akun = keu_setting.value WHERE keu_setting.key='akun_penerimaan_sts') AS id_akun_debit,(SELECT CONCAT(mst_keu_akun.kode,' - ',mst_keu_akun.uraian) FROM keu_setting JOIN mst_keu_akun ON mst_keu_akun.id_mst_akun = keu_setting.value WHERE keu_setting.key='akun_penyetoran_sts') AS akun_kredit,(SELECT mst_keu_akun.id_mst_akun FROM keu_setting JOIN mst_keu_akun ON mst_keu_akun.id_mst_akun = keu_setting.value WHERE keu_setting.key='akun_penyetoran_sts') AS id_akun_kredit",false);
     	$this->db->where('id_sts',$id);
     	$query = $this->db->get('keu_sts');
     	return $query->row_array();
