@@ -714,11 +714,9 @@ function json_transaksi(){
 		echo json_encode(array($json));
 }
 function delete_junal_umum($id=0){
+	$this->db->set('status','dihapus');
 	$this->db->where('id_transaksi',$id);
-	$this->db->delete('keu_jurnal');
-
-	$this->db->where('id_transaksi',$id);
-	$this->db->delete('keu_transaksi');
+	$this->db->update('keu_transaksi');
 	$this->tab('1');
 }
 }

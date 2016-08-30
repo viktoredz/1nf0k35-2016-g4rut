@@ -38,7 +38,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-1">
+                  <div class="col-md-1" style="padding:5px;">
                     <label> Periode</label>
                   </div>
                   <div class="col-md-2">
@@ -91,12 +91,13 @@ $(document).ready(function () {
     {
         dataType: "json",
         dataFields: [
+            { name: 'id_transaksi', type: 'number' },
             { name: 'id_jurnal', type: 'number' },
             { name: 'tanggal', type: 'string' },
             { name: 'uraian', type: 'string' },
             { name: 'status', type: 'string' },
+            { name: 'kodeakun', type: 'string' },
             { name: 'id_mst_akun', type: 'string' },
-            { name: 'id_transaksi', type: 'string' },
             { name: 'debet', type: 'number' },
             { name: 'kredit', type: 'number' },
             { name: 'child', type: 'array' },
@@ -130,9 +131,9 @@ $(document).ready(function () {
         pagerButtonsCount: 8,
         toolbarHeight: 40,
         columns: [
-          { text: 'Action', dataField: 'id_jurnal', width: '10%', cellsrenderer: function (row, dataField, cellText, rowData) {
+          { text: 'Action', dataField: 'id_transaksi', width: '10%', cellsrenderer: function (row, dataField, cellText, rowData) {
               if(rowData.edit==1){
-                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail("+rowData.id_jurnal+");'>   <a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit("+rowData.id_jurnal+");'></div>";
+                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detailhapus(\""+rowData.id_transaksi+"\");'>   <a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_del.gif' onclick='deletehapus(\""+rowData.id_transaksi+"\");'></div>";
               }else{
                 return "";
               }
@@ -148,7 +149,7 @@ $(document).ready(function () {
     });
 
 });
-function detail(id){   
+function detailhapus(id){   
   $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
   $.get("<?php echo base_url().'keuangan/jurnal/detail_jurnal_umum/'; ?>"+id, function(data) {
     $("#popup_content").html(data);
@@ -176,9 +177,12 @@ $("#periodebulanhapus").change(function(){
           $("#jqxgrid_jurnal_hapus").jqxTreeGrid('updateBoundData');
     });
 });
-$("#filterpuskesmasjurpen").change(function(){
+$("#filterpuskesmasjurhap").change(function(){
   $.post("<?php echo base_url().'keuangan/jurnal/filterpuskesmas' ?>", 'puskes='+$(this).val(),  function(){
           $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
     });
 });
+function deletehapus(id){
+
+}
 </script>
