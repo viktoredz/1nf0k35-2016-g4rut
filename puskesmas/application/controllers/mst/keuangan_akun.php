@@ -14,6 +14,8 @@ class Keuangan_akun extends CI_Controller {
 		$this->authentication->verify('mst','edit');
 		$data['title_group']   = "Keuangan";
 		$data['title_form']    = "Master Data Keuangan";
+		$this->session->set_userdata('filter_tahunanggaran','');
+		$this->session->set_userdata('filter_pilihpuskesmas','');
 		$data['ambildata'] 	   = $this->keuakun_model->get_data();
 		$data['content']       = $this->parser->parse("mst/keuakun/show",$data,true);		
 		
@@ -21,6 +23,8 @@ class Keuangan_akun extends CI_Controller {
 	}
 
 	function keu_akun($pageIndex){
+		$this->session->set_userdata('filter_tahunanggaran','');
+		$this->session->set_userdata('filter_pilihpuskesmas','');
 		$data = array();
 
 		switch ($pageIndex) {
@@ -49,7 +53,7 @@ class Keuangan_akun extends CI_Controller {
 				$data['ambildata']     = $this->keuakun_model->get_data();
 
 				$this->db->where('code','P'.$this->session->userdata('puskesmas'));
-				$data['datapuskesmas']  = $this->keuakun_model->get_datapuskesmas();
+				$data['datapuskesmastarget']  = $this->keuakun_model->get_datapuskesmas();
 				die($this->parser->parse("mst/keuakun/target_penerimaan",$data));
 
 				break;
@@ -87,7 +91,7 @@ class Keuangan_akun extends CI_Controller {
 		}else{
 			$filtertahun = date("Y");
 		}
-		$data['ambildata'] = $this->keuakun_model->get_data_akun_target($pilih);
+		$data['ambildata'] = $this->keuakun_model->get_data_akun_target($pilih,$filtertahun,$filterpus);
 		foreach($data['ambildata'] as $d){
 			$txt = $d["id_mst_akun_target"]." \t ".$d["id_mst_akun_parent_target"]."\t".$d["kode_target"]." \t ".$d["uraian_target"]." \t ".ucwords($d["saldo_normal_target"])." \t ".$d["saldo_awal_target"]." \t ".$d["id_akun_anggaran_target"]." \t ".$d["jumlah_target"]." \t ".$d["tipe_target"]." \t ".$d["periode_target"]." \t ".$d["code_cl_phc_target"]." \t ".$d["statusdata"]." \n";				
 			echo $txt;

@@ -23,7 +23,7 @@
             </div>
             <div class="col-md-6 pull-right">
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-5">
                   <div class="row">
                     <div class="col-md-4" style="padding-top:5px;"><label> Periode </label> </div>
                     <div class="col-md-8">
@@ -36,14 +36,14 @@
                     </div> 
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-7">
                   <div class="row">
                     <div class="col-md-4" style="padding-top:5px;"><label> Periode </label> </div>
                     <div class="col-md-8">
                       <select name="filterpuskesmastarget" id="filterpuskesmastarget" class="form-control">
-                        <?php foreach ($datapuskesmas as $datapuskes){ ?>
-                        <?php $select = $datapuskes->code == 'P'.$this->session->userdata('puskesmas') ? 'selected=selected' : '' ?>
-                       <option value="<?php echo $datapuskes->code; ?>" <?php echo $select ?>><?php echo $datapuskes->value; ?></option>
+                        <?php foreach ($datapuskesmastarget as $datapuskestar){ ?>
+                        <?php $select = $datapuskestar->code == 'P'.$this->session->userdata('puskesmas') ? 'selected=selected' : '' ?>
+                       <option value="<?php echo $datapuskestar->code; ?>" <?php echo $select ?>><?php echo $datapuskestar->value; ?></option>
                         <?php   } ;?>
                       </select>
                     </div> 
@@ -78,11 +78,13 @@
           $("#treeGrid_target_penerimaan").jqxTreeGrid('updateBoundData');
       });
 
+
     $("select[name='tahuntarget']").change(function(){
-      $.post("<?php echo base_url().'mst/keuangan_akun/filter_tahuntarget' ?>", 'tahuntarget='+$(this).val(),  function(){
+      $.post("<?php echo base_url().'mst/keuangan_akun/filter_tahunanggaran' ?>", 'tahunanggaran='+$(this).val(),  function(){
         $("#treeGrid_target_penerimaan").jqxTreeGrid('updateBoundData','filter');
         });
     });
+
       
     $("#filterpuskesmastarget").change(function(){
       $.post("<?php echo base_url().'mst/keuangan_akun/filter_puskesmas' ?>", 'filterpus='+$(this).val(),  function(){

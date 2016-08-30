@@ -246,9 +246,8 @@
                 pageSize:999,
                 editable: false,                
                 altRows: true,
-                ready: function()
-                {
-                // called when the DatatreeGrid is loaded.         
+                ready: function(){
+                   //$("#treeGrid").jqxTreeGrid('expandAll');            
                 },
                 pagerButtonsCount: 8,                
               columns: [

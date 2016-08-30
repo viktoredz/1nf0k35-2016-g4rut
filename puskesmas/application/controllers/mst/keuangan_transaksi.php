@@ -852,7 +852,6 @@ class Keuangan_transaksi extends CI_Controller {
 			$this->session->set_flashdata('alert_form', 'Save data successful...');
 			redirect(base_url()."mst/keuangan_transaksi/transaksi_edit/".$id);
 		}
-
 		$this->template->show($data,"home");
 	}
 

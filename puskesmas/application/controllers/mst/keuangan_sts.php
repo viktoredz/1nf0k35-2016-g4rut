@@ -52,6 +52,7 @@ class Keuangan_sts extends CI_Controller {
 	}
 
 	function json_puskesmas(){
+
 		$rows = $this->keusts_model->json_puskesmas();
 
 		echo json_encode($rows);
