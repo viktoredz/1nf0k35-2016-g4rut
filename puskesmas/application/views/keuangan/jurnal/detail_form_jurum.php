@@ -124,16 +124,18 @@ $("#ubahdetailjurum").click(function(){
           <div class="col-md-6" style="padding: 6px">
           </div>
         </div>
+        <?php foreach ($datajurnaldebit as $key) { ?>
         <div class="row" style="margin: 5px">
           <div class="col-md-1" style="padding: 5px"></div>
-          <div class="col-md-6" style="padding: 5px"><font color='blue'><?php echo (isset($id_akun_debit) && $id_akun_debit!='' ? $id_akun_debit :'-');?></font></div>
+          <div class="col-md-6" style="padding: 5px"><font color='blue'><?php echo $key->id_mst_akun.' - '.$key->uraian;?></font></div>
           <div class="col-md-3" style="padding: 6px">
             <div style="float:right">
-              <?php echo (isset($jml_debit) && $jml_debit!='' ? number_format($jml_debit,2) :'-');?>
+               <?php echo number_format($key->debet,2);?>
             </div>
           </div>
           <div class="col-md-2"></div>
         </div>
+        <?php } ?>
         <div class="row" style="margin: 5px">
           <div class="col-md-6" style="padding: 5px"><b>Kredit</b></div>
           <div class="col-md-6" style="padding: 6px">

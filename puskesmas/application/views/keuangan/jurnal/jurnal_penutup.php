@@ -340,7 +340,7 @@ $("#periodebulantutup").change(function(){
 });
 $("#filterpuskesmasjurpen").change(function(){
   $.post("<?php echo base_url().'keuangan/jurnal/filterpuskesmas' ?>", 'puskes='+$(this).val(),  function(){
-          $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
+          $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');
     });
 });
 </script>

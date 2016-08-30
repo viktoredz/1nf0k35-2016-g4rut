@@ -245,6 +245,7 @@ class Jurnal extends CI_Controller {
 
 		$data 					= $this->jurnal_model->get_detail_row($id);///array('nomor_transaksi' =>'0112153','uraian'=>'Dibayar belaja Pengamanan Kantor','keterangan'=>'Biaya rutin untuk pengamanan kantor', 'tgl_transaksi' => '1 Desember 2016','kategori_transaksi' =>'Biaya','id_akun_debit'=>'3010 - Belanja Rutin','jml_debit'=>'41300000','id_akun_kredit'=>'1010 - Hutang Dagang','jml_kredit'=>'41300000','lampiran' =>'Download File','syarat' =>'n/EOM','jth_tempo'=>'1 Januari 2016','no_faktur'=>'13121414','instansi'=>'CV. Medika','kode_kegiatan'=>'2093001','sub_kegaitan'=>'01');
 		$data['datajurnal']		= $this->jurnal_model->get_detail_jurnal($id);
+		$data['datajurnaldebit']		= $this->jurnal_model->get_detail_jurnaldebit($id);
 		$data['notice']			= validation_errors();
 		$data['id']				= $id;
 		$data['action']			= "detail";
@@ -718,6 +719,13 @@ function delete_junal_umum($id=0){
 	$this->db->where('id_transaksi',$id);
 	$this->db->update('keu_transaksi');
 	$this->tab('1');
+}
+function dodelselamanya($id=0){
+	$this->db->where('id_transaksi',$id);
+	$this->db->delete('keu_jurnal');
+	
+	$this->db->where('id_transaksi',$id);
+	$this->db->delete('keu_transaksi');
 }
 }
 

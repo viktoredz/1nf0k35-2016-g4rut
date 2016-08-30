@@ -179,10 +179,15 @@ $("#periodebulanhapus").change(function(){
 });
 $("#filterpuskesmasjurhap").change(function(){
   $.post("<?php echo base_url().'keuangan/jurnal/filterpuskesmas' ?>", 'puskes='+$(this).val(),  function(){
-          $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
+          $("#jqxgrid_jurnal_hapus").jqxTreeGrid('updateBoundData');
     });
 });
 function deletehapus(id){
-
+  var confirms = confirm("Anda yakin akan menghapus data ini ?");
+  if(confirms == true){
+    $.post("<?php echo base_url().'keuangan/jurnal/dodelselamanya' ?>/"+id,  function(){
+      $("#jqxgrid_jurnal_hapus").jqxTreeGrid('updateBoundData');
+    });
+  }
 }
 </script>

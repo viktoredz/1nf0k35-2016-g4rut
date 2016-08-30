@@ -136,7 +136,15 @@ class Jurnal_model extends CI_Model {
     function get_detail_jurnal($id){
         $this->db->select("keu_jurnal.*,mst_keu_akun.uraian");
         $this->db->where('id_transaksi',$id);
-        $this->db->where("kredit !=",'0');
+        $this->db->where("status",'kredit');
+        $this->db->join('mst_keu_akun','mst_keu_akun.id_mst_akun=keu_jurnal.id_mst_akun');
+        $query =$this->db->get('keu_jurnal');
+        return $query->result();
+    }
+    function get_detail_jurnaldebit($id){
+        $this->db->select("keu_jurnal.*,mst_keu_akun.uraian");
+        $this->db->where('id_transaksi',$id);
+        $this->db->where("status",'debet');
         $this->db->join('mst_keu_akun','mst_keu_akun.id_mst_akun=keu_jurnal.id_mst_akun');
         $query =$this->db->get('keu_jurnal');
         return $query->result();
