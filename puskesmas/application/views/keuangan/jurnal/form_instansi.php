@@ -1,6 +1,4 @@
-
 <script type="text/javascript">
-
   $(function(){
    
     $('#btn-close-instansi').click(function(){
@@ -46,7 +44,7 @@
     });
 </script>
 
-<div style="padding:15px">
+<div style="padding:5px">
   <div id="notice" class="alert alert-success alert-dismissable" <?php if ($notice==""){ echo 'style="display:none"';} ?> >
     <button class="close" type="button" data-dismiss="alert" aria-hidden="true">×</button>
     <h4>
@@ -55,11 +53,10 @@
     </h4>
     <div id="notice-content">{notice}</div>
   </div>
-	<div class="row">
     <?php echo form_open(current_url(), 'id="form-ss-jurnal_umum-instansi"') ?>
     <div class="box-body">
-        <div class="row" style="margin: 5px">
-          <div class="col-md-12" style="padding: 5px"><h3>{title_form}</h3></div>
+        <div class="row" >
+          <div class="col-md-12"><h4>{title_form}</h4></div>
         </div>
         <div class="row" style="margin: 5px">
           <div class="col-md-4" style="padding: 5px">Nama</div>
@@ -74,20 +71,15 @@
           </div>
         </div>
         <div class="row" style="margin: 5px">
-          <div class="col-md-4" style="padding: 5px">Kategori</div>
+          <div class="col-md-4" style="padding: 5px">Telepon</div>
           <div class="col-md-8">
-            <select id="deskripsi_instansi" name="deskripsi_instansi" class="form-control">
-            <?php foreach ($datakateg as $datkat => $valkat) { ?>
-              <option value="<?php echo $datkat; ?>"><?php echo $valkat; ?></option>
-            <?php } ?>
-            </select>
-            <!-- <textarea class="form-control" id="deskripsi_instansi" name="deskripsi_instansi"><?php 
-                /*if(set_value('deskripsi_instansi')=="" && isset($deskripsi)){
-                  echo $deskripsi;
+            <input type="text" name="telepon_instansi" id="telepon_instansi" class="form-control" value="<?php 
+                if(set_value('telepon_instansi')=="" && isset($telepon)){
+                  echo $telepon;
                 }else{
-                  echo  set_value('deskripsi_instansi');
-                }*/
-                ?></textarea> -->
+                  echo  set_value('telepon_instansi');
+                }
+                ?>">
           </div>
         </div>
         <div class="row" style="margin: 5px">
@@ -103,24 +95,21 @@
           </div>
         </div>
         <div class="row" style="margin: 5px">
-          <div class="col-md-4" style="padding: 5px">Telepon</div>
+          <div class="col-md-4" style="padding: 5px">Kategori</div>
           <div class="col-md-8">
-            <input type="text" name="telepon_instansi" id="telepon_instansi" class="form-control" value="<?php 
-                if(set_value('telepon_instansi')=="" && isset($telepon)){
-                  echo $telepon;
-                }else{
-                  echo  set_value('telepon_instansi');
-                }
-                ?>">
+            <select id="deskripsi_instansi" name="deskripsi_instansi" class="form-control">
+            <?php foreach ($datakateg as $datkat => $valkat) { ?>
+              <option value="<?php echo $datkat; ?>"><?php echo ucwords($valkat); ?></option>
+            <?php } ?>
+            </select>
           </div>
-        </div>
+        </div>        
     </div>
         <div class="box-footer pull-right">
               <button type="button" id="btn-close-instansi" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
               <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-floppy-saved"></i> Simpan</button>
             </div>
         </div>
-    </div>
 </form>
 </div>
 <div id="popup_masterbarang" style="display:none">

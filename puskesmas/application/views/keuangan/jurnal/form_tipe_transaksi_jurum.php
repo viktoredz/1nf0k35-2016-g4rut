@@ -1,6 +1,4 @@
-
 <script type="text/javascript">
-
   $(function(){
    
     $('#btn-close').click(function(){
@@ -99,7 +97,7 @@ var source = {
         { text: 'Add', align: 'center', filtertype: 'none', sortable: false, width: '10%', cellsrenderer: function (row) {
             var dataRecord = $("#jqxgridpilihtipe").jqxGrid('getrowdata', row);
             if(dataRecord.detail==1){
-            return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='editdatajurum(\""+dataRecord.id_mst_transaksi+"\");'></a></div>";
+            return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_add.gif' onclick='pilihjurnal(\""+dataRecord.id_mst_transaksi+"\");'></a></div>";
           }else{
             return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lockdo.gif'></a></div>";
           }
@@ -115,37 +113,22 @@ var source = {
     $('#refreshdatabutton').click(function () {
       $("#jqxgridpilihtipe").jqxGrid('updatebounddata', 'cells');
     });
-    function editdatajurum(id){
-      close_popup();
-      $.get("<?php echo base_url().'keuangan/jurnal/add_junal_umum/'; ?>"+id, function(data) {
-        $("#content1").html(data);
-      });
+    function pilihjurnal(id){
+      if(confirm("Anda yakin akan membuat jurnal ini?")){
+        close_popup();
+        $.get("<?php echo base_url().'keuangan/jurnal/add_junal_umum/'; ?>"+id, function(data) {
+          $("#content1").html(data);
+        });
+      }
     }
-
 </script>
 
 <div class="box-body">
-  <div id="notice" class="alert alert-success alert-dismissable" <?php if ($notice==""){ echo 'style="display:none"';} ?> >
-    <button class="close" type="button" data-dismiss="alert" aria-hidden="true">×</button>
-    <h4>
-    <i class="icon fa fa-check"></i>
-    Information!
-    </h4>
-    <div id="notice-content">{notice}</div>
-  </div>
-	<div class="row">
-    <?php echo form_open(current_url(), 'id="form-ss-jurnal_umum"') ?>
-    <div class="box-body">
-        <div class="row" style="margin: 5px">
-          <div class="col-md-12" style="padding: 5px"><h3>{title}</h3></div>
-        </div>
-    </div>
+    <div class="box-body" style="margin: 0px"><h4>{title}</h4></div>
     <div class="box-body">
       <div id="jqxgridpilihtipe"></div>
     </div>
     <div class="box-footer pull-right">
-          <button type="button" id="btn-close" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
+        <button type="button" id="btn-close" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
     </div>
-    </form>
-  </div>
 </div>

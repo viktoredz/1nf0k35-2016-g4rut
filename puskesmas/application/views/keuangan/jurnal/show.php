@@ -1,6 +1,6 @@
 <script>
   $(function() {
-    $('#jqxTabs').jqxTabs({ width: '100%', height: '1000'});
+    $('#jqxTabs').jqxTabs({ width: '100%', height: '1300'});
 
      var loadPage = function (url, tabIndex) {
         $.get(url, function (data) {

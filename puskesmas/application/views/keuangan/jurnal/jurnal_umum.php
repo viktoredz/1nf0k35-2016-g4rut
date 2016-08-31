@@ -7,14 +7,11 @@
   <div class="row">
     <div class="col-md-12">
       <div class="box box-primary">
-        <div class="box-header pull-left">
-          <h3 class="box-title">{title_form}</h3>
-        </div>
         <div class="box-footer pull-right">
+         <button type="button" class="btn btn-danger" id="btnexpandall"><i class='icon fa fa-plus-square-o'></i> &nbsp; Expand All</button> 
+         <button type="button" class="btn btn-warning" id="btncollapseall"><i class='icon fa fa-minus-square-o'></i> &nbsp; Collapse All</button>
          <button type="button" class="btn btn-primary" id="jqxgrid_jurnal_umum_refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button> 
          <button type="button" class="btn btn-success" onclick='export(1)'><i class='glyphicon glyphicon-floppy-disk'></i> &nbsp; Export</button> 
-         <button type="button" class="btn btn-danger" id="btnexpandall"><i class='glyphicon glyphicon-save-file'></i> &nbsp; Expand All</button> 
-         <button type="button" class="btn btn-warning" id="btncollapseall"><i class='glyphicon glyphicon-open-file'></i> &nbsp; Collapse All</button>
         </div>
         <div class="row">
         <div class="box-body">
@@ -27,15 +24,15 @@
                   </div>
                   <div class="col-md-4">
                     <select class="form-control" id="filekategoriumum" name="filekategoriumum">
-                        <option value="all">Semua Kategori Transaksi</option>
+                        <option value="all">Semua Kategori </option>
                       <?php foreach ($filekategori as $key) {?>
                         <option value="<?php echo $key['id_mst_kategori_transaksi'];?>"><?php echo $key['nama']?></option>
                       <?php }?>
                     </select>
                   </div>
-                  <div class="col-md-5">
+                  <div class="col-md-4">
                     <select class="form-control" id="filetransaksiumum" name="filetransaksiumum"> 
-                        <option value="all">Semua Transaksi</option>
+                        <option value="all">Semua Status</option>
                       <?php foreach ($filetransaksi as $key => $value) {?>
                         <option value="<?php echo $key;?>"><?php echo ucfirst($value);?></option>
                       <?php }?>
@@ -48,15 +45,6 @@
                   <div class="col-md-3" style="padding:5px">
                     <label> Periode</label>
                   </div>
-                  <div class="col-md-4">
-                    <select class="form-control" id="periodetahunumum" name="periodetahunumum">
-                      <?php for($i=date("Y"); $i>=date("Y")-5; $i--){
-                        $select = ($i==date('Y') ? 'selected' : '');
-                      ?>
-                        <option value="<?php echo $i?>" <?php echo $select?>><?php echo $i?></option>
-                      <?php }?>
-                    </select>
-                  </div>
                   <div class="col-md-5">
                     <select class="form-control" id="periodebulanumum" name="periodebulanumum"> 
                       <?php foreach ($bulan as $key => $value) { 
@@ -64,6 +52,15 @@
                       ?>  
                         <option value="<?php echo $key?>" <?php echo $select?>><?php echo $value?></option>
                       <?php } ?>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <select class="form-control" id="periodetahunumum" name="periodetahunumum">
+                      <?php for($i=date("Y"); $i>=date("Y")-5; $i--){
+                        $select = ($i==date('Y') ? 'selected' : '');
+                      ?>
+                        <option value="<?php echo $i?>" <?php echo $select?>><?php echo $i?></option>
+                      <?php }?>
                     </select>
                   </div>
                 </div>
@@ -186,18 +183,18 @@ $(document).ready(function () {
         pagerButtonsCount: 8,
         toolbarHeight: 40,
         columns: [
-          { text: 'Action', dataField: 'id_jurnal', width: '10%', cellsrenderer: function (row, dataField, cellText, rowData) {
+          { text: 'Action', dataField: 'id_jurnal', align:'center', width: '7%', cellsrenderer: function (row, dataField, cellText, rowData) {
               if(rowData.edit==1){
-                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+rowData.id_transaksi+"\");'>   <a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit(\""+rowData.id_transaksi+"\");'></div>";
+                return "<div style='width:100%;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+rowData.id_transaksi+"\");'> <a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit(\""+rowData.id_transaksi+"\");'></div>";
               }else{
                 return "";
               }
             },
           },
-          { text: 'Tanggal', dataField: 'tanggal', width: '10%',cellsAlign: "center" },
-          { text: 'Transaksi', dataField: 'uraian', width: '30%' },
-          { text: 'Kode AKun', dataField: 'kodeakun', width: '10%',cellsAlign: "center" },
-          { text: 'Debet', dataField: 'debet', cellsFormat: 'd', width: '15%',cellsAlign: "right", 
+          { text: 'Tanggal', align:'center', dataField: 'tanggal', width: '9%',cellsAlign: "center" },
+          { text: 'Transaksi', align:'center', dataField: 'uraian', width: '34%' },
+          { text: 'Kode AKun', align:'center', dataField: 'kodeakun', width: '10%',cellsAlign: "center" },
+          { text: 'Debet', align:'center', dataField: 'debet', cellsFormat: 'd', width: '15%',cellsAlign: "right", 
                       aggregates: [{
                           'Total':
                             function (aggregatedValue, currentValue, column, record, aggregateLevel) {
@@ -225,7 +222,7 @@ $(document).ready(function () {
                       }
           },
 
-          { text: 'Kredit', dataField: 'kredit', width: '15%', cellsFormat: 'd', width: '15%',cellsAlign: "right", 
+          { text: 'Kredit', align:'center', dataField: 'kredit', width: '15%', cellsFormat: 'd', width: '15%',cellsAlign: "right", 
                       aggregates: [{
                           'Total':
                             function (aggregatedValue, currentValue, column, record, aggregateLevel) {
@@ -252,7 +249,7 @@ $(document).ready(function () {
                         }
                       }
           },
-          { text: 'Status', dataField: 'status', width: '10%' },
+          { text: 'Status', align:'center', cellsalign:'center', dataField: 'status', width: '10%' },
         ]
     });
 

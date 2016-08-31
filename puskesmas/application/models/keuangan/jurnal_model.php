@@ -88,7 +88,7 @@ class Jurnal_model extends CI_Model {
             $data[$i]['tanggal']        =  date("d-m-Y",strtotime($key->tanggal));
             $data[$i]['uraian']         =  $key->uraian;
             $data[$i]['tipe_jurnal']    =  $key->tipe_jurnal;
-            $data[$i]['status']         =  $key->status;
+            $data[$i]['status']         =  ucwords($key->status);
             $data[$i]['id_kategori_transaksi']  =  $key->id_kategori_transaksi;
             $data[$i]['code_cl_phc']    =  $key->code_cl_phc;
             $data[$i]['debet']          =  '';

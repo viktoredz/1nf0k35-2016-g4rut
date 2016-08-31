@@ -425,7 +425,7 @@ $("#tambahinstansi").click(function(){
   $("#popup_jurum_instansi").jqxWindow({
     theme: theme, resizable: false,
     width: 450,
-    height: 500,
+    height: 400,
     isModal: true, autoOpen: false, modalOpacity: 0.2
   });
   $("#popup_jurum_instansi").jqxWindow('open');
