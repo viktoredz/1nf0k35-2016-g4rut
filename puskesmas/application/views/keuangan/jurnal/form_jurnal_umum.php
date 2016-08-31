@@ -389,7 +389,7 @@ if($alert_form!=""){ ?>
 </div>
 <script type="text/javascript">
 $(function(){
-  <?php if ($status=='draft') {?>
+  <?php if ($status=='draft' || $status=='ditutup') {?>
     $("#btn-draf_jurum").hide();
   <?php }else{?>
     $("#btn-draf_jurum").show();
