@@ -745,10 +745,10 @@ function delete_junal_umum($id=0){
 }
 function dodelselamanya($id=0){
 	$this->db->where('id_transaksi',$id);
-	$this->db->delete('xkeu_jurnal');
+	$this->db->delete('keu_jurnal');
 	
 	$this->db->where('id_transaksi',$id);
-	$this->db->delete('xkeu_transaksi');
+	$this->db->delete('keu_transaksi');
 }
 function gettotaldebetkredit($id='0'){
 	$this->db->select('sum(kredit) as totalkredit,sum(debet) as totaldebit');
