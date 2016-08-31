@@ -74,15 +74,20 @@
           </div>
         </div>
         <div class="row" style="margin: 5px">
-          <div class="col-md-4" style="padding: 5px">Deskripsi</div>
+          <div class="col-md-4" style="padding: 5px">Kategori</div>
           <div class="col-md-8">
-            <textarea class="form-control" id="deskripsi_instansi" name="deskripsi_instansi"><?php 
-                if(set_value('deskripsi_instansi')=="" && isset($deskripsi)){
+            <select id="deskripsi_instansi" name="deskripsi_instansi" class="form-control">
+            <?php foreach ($datakateg as $datkat => $valkat) { ?>
+              <option value="<?php echo $datkat; ?>"><?php echo $valkat; ?></option>
+            <?php } ?>
+            </select>
+            <!-- <textarea class="form-control" id="deskripsi_instansi" name="deskripsi_instansi"><?php 
+                /*if(set_value('deskripsi_instansi')=="" && isset($deskripsi)){
                   echo $deskripsi;
                 }else{
                   echo  set_value('deskripsi_instansi');
-                }
-                ?></textarea>
+                }*/
+                ?></textarea> -->
           </div>
         </div>
         <div class="row" style="margin: 5px">

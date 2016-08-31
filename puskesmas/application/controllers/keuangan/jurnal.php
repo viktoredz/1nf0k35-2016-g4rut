@@ -91,11 +91,11 @@ class Jurnal extends CI_Controller {
 
 		$this->db->where("nama like '%".$search."%'");
 		$this->db->limit(10,0);
-		$query= $this->db->get("mst_keu_instansi")->result();
+		$query= $this->db->get("mst_inv_pbf")->result();
 		foreach ($query as $q) {
 			$inst[] = array(
-				'key' 		=> $q->id_mst_instansi, 
-				'value' 	=> $q->nama.' - '.$q->deskripsi,
+				'key' 		=> $q->code, 
+				'value' 	=> $q->nama.' - '.$q->kategori,
 				'alamat' 	=> $q->alamat,
 			);
 		}
@@ -504,20 +504,20 @@ function add_instansi(){
 		$data['notice']			= validation_errors();
 		$data['action']			= "add";
 		$data['title_form']		= "Tambah Instansi";
-		
+		$data['datakateg']		= $this->jurnal_model->pilihan_enums('mst_inv_pbf','kategori');
 		die($this->parser->parse('keuangan/jurnal/form_instansi',$data));
 
 	}else{
 		
 		$values = array(
 			'nama'						=> $this->input->post('nama'),
-			'deskripsi'					=> $this->input->post('deskripsi'),
+			// 'deskripsi'					=> $this->input->post('deskripsi'),
 			'alamat' 					=> $this->input->post('alamat'),
-			'telepon' 					=> $this->input->post('jumlahdistribusi'),
-			'id_mst_kategori_instansi' 	=> $this->input->post('id_mst_kategori_instansi'),
+			'tlp' 						=> $this->input->post('telepon'),
+			'kategori' 					=> $this->input->post('deskripsi'),
 			'aktif' 					=> '1',
 		);
-		$simpan=$this->db->insert('mst_keu_instansi', $values);
+		$simpan=$this->db->insert('mst_inv_pbf', $values);
 		if($simpan==true){
 			die("OK|Data Tersimpan");
 		}else{
