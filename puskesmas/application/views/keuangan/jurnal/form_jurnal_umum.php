@@ -44,7 +44,7 @@ if($alert_form!=""){ ?>
           <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Jenis Transaksi</div>
           <div class="col-md-9">
-              <select id="jenistransaksi" name="jenistransaksi"  class="form-control">
+              <select disabled="disabled" id="jenistransaksi" name="jenistransaksi"  class="form-control">
                 <?php foreach ($filetransaksi as $datjentrans) { 
                   $select = $datjentrans->id_mst_transaksi==$id_mst_keu_transaksi ? 'selected' :'';
                 ?>
@@ -593,49 +593,58 @@ function inputvalueakunas(id_jurnal,tipe){
   });
 }
 $("#btn-simpan_jurum").click(function(){
-  var data = new FormData();
-  $('#notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
-  $('#notice').show();
-  data.append('id_transaksi', "<?php echo $id;?>");
-  data.append('tanggal', $('#tgl_transaksi').val());
-  data.append('uraian', $('#uraian').val());
-  data.append('keterangan', $('#keterangan').val());
-  // data.append('lampiran', $('#lampiran').val());
-  data.append('jenistransaksi', $('#jenistransaksi').val());
-  data.append('bukti_kas', $('#bukti_kas').val());
-  data.append('jatuh_tempo', $('#tgl_jatuhtempo').val());
-  data.append('nomor_faktur', $('#nomor_faktur').val());
-  data.append('id_mst_syarat_pembayaran', $('#syarat_pem').val());
-  data.append('id_instansi', $('#id_instansi').val());
-  data.append('id_kategori_transaksi', $('#kategori_transaksi').val());
-  data.append('lampiran', $('input[type=file]')[0].files[0]); 
+ $.get("<?php echo base_url()."keuangan/jurnal/gettotaldebetkredit/$id" ?>",function(data){
+    ob = $.parseJSON(data);
+    for (var i in ob) {
+      if (parseInt(ob[i].totaldebit) != parseInt(ob[i].totalkredit)) {
+        alert('Maaf total debit dengan total jumlah kredit tidak sama. Silahkan perbaiki terlebih dahulu');
+      }else{
+        var data = new FormData();
+        $('#notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
+        $('#notice').show();
+        data.append('id_transaksi', "<?php echo $id;?>");
+        data.append('tanggal', $('#tgl_transaksi').val());
+        data.append('uraian', $('#uraian').val());
+        data.append('keterangan', $('#keterangan').val());
+        // data.append('lampiran', $('#lampiran').val());
+        data.append('jenistransaksi', $('#jenistransaksi').val());
+        data.append('bukti_kas', $('#bukti_kas').val());
+        data.append('jatuh_tempo', $('#tgl_jatuhtempo').val());
+        data.append('nomor_faktur', $('#nomor_faktur').val());
+        data.append('id_mst_syarat_pembayaran', $('#syarat_pem').val());
+        data.append('id_instansi', $('#id_instansi').val());
+        data.append('id_kategori_transaksi', $('#kategori_transaksi').val());
+        data.append('lampiran', $('input[type=file]')[0].files[0]); 
 
-  $.ajax({
-      cache : false,
-      contentType : false,
-      processData : false,
-      type : 'POST',
-      url : '<?php echo base_url()."keuangan/jurnal/edit_junal_umum/$id" ?>',
-      data : data,
-      success : function(response){
-        var res  = response.split("|");
-        if(res[0]=="OK"){
-          var obj = jQuery.parseJSON(res[1]);
-          $("#error_mssg").addClass("alert alert-success alert-dismissable").show();
-          $("#mssgerr").html('Data berhasil diubah');
-        }
-        else if(res[0]=="Error"){
-           var obj = jQuery.parseJSON(res[1]);
-            $("#error_mssg").addClass("alert alert-danger alert-dismissable").show();
-            $("#mssgerr").html(obj.err_msg);
-        }
-        else{
-            var obj = jQuery.parseJSON(res[1]);
-            $("#error_mssg").addClass("alert alert-warning alert-dismissable").show();
-            $("#mssgerr").html(obj.err_msg);
-        }
+        $.ajax({
+            cache : false,
+            contentType : false,
+            processData : false,
+            type : 'POST',
+            url : '<?php echo base_url()."keuangan/jurnal/edit_junal_umum/$id" ?>',
+            data : data,
+            success : function(response){
+              var res  = response.split("|");
+              if(res[0]=="OK"){
+                var obj = jQuery.parseJSON(res[1]);
+                $("#error_mssg").addClass("alert alert-success alert-dismissable").show();
+                $("#mssgerr").html('Data berhasil diubah');
+              }
+              else if(res[0]=="Error"){
+                 var obj = jQuery.parseJSON(res[1]);
+                  $("#error_mssg").addClass("alert alert-danger alert-dismissable").show();
+                  $("#mssgerr").html(obj.err_msg);
+              }
+              else{
+                  var obj = jQuery.parseJSON(res[1]);
+                  $("#error_mssg").addClass("alert alert-warning alert-dismissable").show();
+                  $("#mssgerr").html(obj.err_msg);
+              }
+          }
+        });
+        return false;
+      }
     }
-  });
-  return false;
+ });
 });
 </script>

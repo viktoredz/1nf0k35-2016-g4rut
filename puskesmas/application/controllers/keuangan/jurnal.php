@@ -441,7 +441,6 @@ function edit_junal_umum($id='0'){
 				'nomor_faktur' 		=> $this->input->post('nomor_faktur'),
 				'id_mst_syarat_pembayaran' 	=> $this->input->post('id_mst_syarat_pembayaran'),
 				'id_instansi' 			=> $this->input->post('id_instansi'),
-				'id_mst_keu_transaksi' => $this->input->post('jenistransaksi'),
 			);
 			$simpan=$this->db->update('keu_transaksi', $values);
 			if($simpan==true){
@@ -727,6 +726,12 @@ function dodelselamanya($id=0){
 	
 	$this->db->where('id_transaksi',$id);
 	$this->db->delete('keu_transaksi');
+}
+function gettotaldebetkredit($id='0'){
+	$this->db->select('sum(kredit) as totalkredit,sum(debet) as totaldebit');
+	$this->db->where('id_transaksi',$id);
+	$query = $this->db->get('keu_jurnal')->result_array();
+	echo json_encode($query);
 }
 }
 

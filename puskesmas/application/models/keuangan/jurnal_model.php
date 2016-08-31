@@ -182,6 +182,7 @@ class Jurnal_model extends CI_Model {
             'id_jurnal'       => $this->idjurnal(),
             'id_transaksi'    => $this->input->post('id_transaksi'),
             'debet'           => '0',
+            'id_mst_akun'     => '6',
             'status'          => $tipe,
             );
         if ($this->db->insert('keu_jurnal',$data)) {

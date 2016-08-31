@@ -435,6 +435,7 @@ class Sts_model extends CI_Model {
 						'tipe_jurnal'=>'jurnal_umum',
 						'status'=>'ditutup',
 						'id_kategori_transaksi'=>'1',
+						'id_mst_keu_transaksi'=>'9',
 						'code_cl_phc'=>$this->input->post('kodeclphc'),
 						);
 		$this->db->insert('keu_transaksi',$datakeu_transaksipen);
@@ -469,6 +470,7 @@ class Sts_model extends CI_Model {
 						'status'=>'ditutup',
 						'id_kategori_transaksi'=>'1',
 						'code_cl_phc'=>$this->input->post('kodeclphc'),
+						'id_mst_keu_transaksi'=>'9',
 						);
 			$this->db->insert('keu_transaksi',$datakeu_transaksiset);
 			$datakeu_jurnal = array(
