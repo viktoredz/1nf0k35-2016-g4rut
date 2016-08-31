@@ -389,6 +389,11 @@ if($alert_form!=""){ ?>
 </div>
 <script type="text/javascript">
 $(function(){
+  <?php if ($status=='draft') {?>
+    $("#btn-draf_jurum").hide();
+  <?php }else{?>
+    $("#btn-draf_jurum").show();
+  <?php }?>
   $('#btn-close_jurum').click(function(){
       window.location.href="<?php echo base_url()?>keuangan/jurnal";
   });
@@ -593,7 +598,13 @@ function inputvalueakunas(id_jurnal,tipe){
   });
 }
 $("#btn-simpan_jurum").click(function(){
- $.get("<?php echo base_url()."keuangan/jurnal/gettotaldebetkredit/$id" ?>",function(data){
+  simpandatajurum('simpan');
+});
+$("#btn-draf_jurum").click(function(){
+  simpandatajurum('draft');
+});
+function simpandatajurum(tipesimpan){
+  $.get("<?php echo base_url()."keuangan/jurnal/gettotaldebetkredit/$id/" ?>",function(data){
     ob = $.parseJSON(data);
     for (var i in ob) {
       if (parseInt(ob[i].totaldebit) != parseInt(ob[i].totalkredit)) {
@@ -621,9 +632,14 @@ $("#btn-simpan_jurum").click(function(){
             contentType : false,
             processData : false,
             type : 'POST',
-            url : '<?php echo base_url()."keuangan/jurnal/edit_junal_umum/$id" ?>',
+            url : '<?php echo base_url()."keuangan/jurnal/edit_junal_umum/$id/" ?>'+tipesimpan,
             data : data,
             success : function(response){
+              if (tipesimpan=='draft') {
+                $("#btn-draf_jurum").hide();
+              }else{
+                $("#btn-draf_jurum").show();
+              }
               var res  = response.split("|");
               if(res[0]=="OK"){
                 var obj = jQuery.parseJSON(res[1]);
@@ -646,5 +662,7 @@ $("#btn-simpan_jurum").click(function(){
       }
     }
  });
-});
+}
+ 
+
 </script>

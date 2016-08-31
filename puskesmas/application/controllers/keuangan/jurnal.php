@@ -372,7 +372,7 @@ function idtrasaksi(){
         }
         return $kodpus.date("Y").date('m').$nourut;
     }
-function edit_junal_umum($id='0'){
+function edit_junal_umum($id='0',$tipesimpan='disimpan'){
 	$this->authentication->verify('keuangan','edit');
 
     $this->form_validation->set_rules('uraian', 'Uraian', 'trim');
@@ -391,6 +391,7 @@ function edit_junal_umum($id='0'){
 		$data['id']				= $id;
 		$data['action']			= "edit";
 		$data['title']			= "Jurnal Umum";
+		$data['tipesimpan']		= $tipesimpan;
 		$data['sub_title']		= "Ubah Transaksi";
 		$this->db->where('id_mst_kategori_transaksi','1');
 		$data['filetransaksi'] 	= $this->jurnal_model->pilihan_jenis();
@@ -431,11 +432,17 @@ function edit_junal_umum($id='0'){
         	$tgl = $t[2].'-'.$t[1].'-'.$t[0];
         	$ttempo=explode("-", $this->input->post('jatuh_tempo'));
         	$tgltempo = $ttempo[2].'-'.$ttempo[1].'-'.$ttempo[0];
+        	if ($tipesimpan=='draft') {
+        		$statussimpan = 'draft';
+        	}else{
+        		$statussimpan = 'disimpan';
+        	}
 			$values = array(
 				'tanggal'			=> $tgl,
 				'uraian'			=> $this->input->post('uraian'),
 				'keterangan' 		=> $this->input->post('keterangan'),
 				'bukti_kas' 		=> $this->input->post('bukti_kas'),
+				'status' 			=> $statussimpan,
 				'lampiran' 			=> $config['file_name'],
 				'jatuh_tempo' 		=> $tgltempo,
 				'nomor_faktur' 		=> $this->input->post('nomor_faktur'),
@@ -454,6 +461,7 @@ function edit_junal_umum($id='0'){
 		
 	}
 }
+
 
 function penyusutan_inventaris($id='0'){
 	$this->authentication->verify('keuangan','edit');
@@ -714,18 +722,33 @@ function json_transaksi(){
 
 		echo json_encode(array($json));
 }
-function delete_junal_umum($id=0){
-	$this->db->set('status','dihapus');
+function cekstatus($id=0){
 	$this->db->where('id_transaksi',$id);
-	$this->db->update('keu_transaksi');
-	$this->tab('1');
+	$query = $this->db->get('keu_transaksi');
+	if ($query->num_rows() > 0) {
+		$data = $query->row_array();
+		return $data['status'];
+	}else{
+		return 'disimpan';
+	}
+}
+function delete_junal_umum($id=0){
+	$tipedel = $this->cekstatus($id);
+	if ($tipedel=='draft') {
+		$this->dodelselamanya($id);
+	}else{
+		$this->db->set('status','dihapus');
+		$this->db->where('id_transaksi',$id);
+		$this->db->update('keu_transaksi');
+		$this->tab('1');
+	}	
 }
 function dodelselamanya($id=0){
 	$this->db->where('id_transaksi',$id);
-	$this->db->delete('keu_jurnal');
+	$this->db->delete('xkeu_jurnal');
 	
 	$this->db->where('id_transaksi',$id);
-	$this->db->delete('keu_transaksi');
+	$this->db->delete('xkeu_transaksi');
 }
 function gettotaldebetkredit($id='0'){
 	$this->db->select('sum(kredit) as totalkredit,sum(debet) as totaldebit');
