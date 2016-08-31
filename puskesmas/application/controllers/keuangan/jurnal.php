@@ -392,6 +392,7 @@ function edit_junal_umum($id='0'){
 		$data['action']			= "edit";
 		$data['title']			= "Jurnal Umum";
 		$data['sub_title']		= "Ubah Transaksi";
+		$this->db->where('id_mst_kategori_transaksi','1');
 		$data['filetransaksi'] 	= $this->jurnal_model->pilihan_jenis();
 		$data['filterkategori_transaksi'] =$this->jurnal_model->filterkategori_transaksi();
 		$data['getdebit']		= $this->jurnal_model->getdebit($id);
@@ -434,14 +435,13 @@ function edit_junal_umum($id='0'){
 				'tanggal'			=> $tgl,
 				'uraian'			=> $this->input->post('uraian'),
 				'keterangan' 		=> $this->input->post('keterangan'),
-				'id_mst_keu_transaksi' => $this->input->post('jenistransaksi'),
 				'bukti_kas' 		=> $this->input->post('bukti_kas'),
 				'lampiran' 			=> $config['file_name'],
 				'jatuh_tempo' 		=> $tgltempo,
 				'nomor_faktur' 		=> $this->input->post('nomor_faktur'),
 				'id_mst_syarat_pembayaran' 	=> $this->input->post('id_mst_syarat_pembayaran'),
 				'id_instansi' 			=> $this->input->post('id_instansi'),
-				'id_kategori_transaksi' => $this->input->post('id_kategori_transaksi'),
+				'id_mst_keu_transaksi' => $this->input->post('jenistransaksi'),
 			);
 			$simpan=$this->db->update('keu_transaksi', $values);
 			if($simpan==true){

@@ -52,12 +52,26 @@ if($alert_form!=""){ ?>
                 <?php } ?>
               </select>
           </div>
+          <!-- <input type="hidden" name="jenistransaksi" name="jenistransaksi" value="<?php 
+             /* if(set_value('jenistransaksi')=="" && isset($id_mst_keu_transaksi)){
+                echo $id_mst_keu_transaksi;
+              }else{
+                echo  set_value('jenistransaksi');
+              }*/
+              ?>"> 
+              <input type="hidden" name="kategori_transaksi" name="kategori_transaksi" value="<?php 
+              /*if(set_value('kategori_transaksi')=="" && isset($id_kategori_transaksi)){
+                echo $id_kategori_transaksi;
+              }else{
+                echo  set_value('kategori_transaksi');
+              }*/
+              ?>"> -->
         </div>
 
         <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Kategori</div>
           <div class="col-md-9">
-              <select id="kategori_transaksi" name="kategori_transaksi"  class="form-control">
+              <select disabled="disabled"  id="kategori_transaksi" name="kategori_transaksi"  class="form-control">
                 <?php foreach ($filterkategori_transaksi as $key) { 
                   $select = $key->id_mst_kategori_transaksi==$id_kategori_transaksi ? 'selected' :'';
                 ?>
@@ -84,7 +98,7 @@ if($alert_form!=""){ ?>
         <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Nomor Transaksi</div>
           <div class="col-md-9">
-            <input type="text" id="id_transaksi" name="id_transaksi" placeholder="Nomor Transaksi"  class="form-control" value="<?php 
+            <input type="text" disabled="disabled" id="id_transaksi" name="id_transaksi" placeholder="Nomor Transaksi"  class="form-control" value="<?php 
               if(set_value('id_transaksi')=="" && isset($id_transaksi)){
                 echo substr($id_transaksi, -10);
               }else{
@@ -319,7 +333,7 @@ if($alert_form!=""){ ?>
         <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Keterangan</div>
           <div class="col-md-9">
-            <textarea id="keterangan" name="keterangan" class="form-control"><?php 
+            <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan"><?php 
               if(set_value('keterangan')=="" && isset($keterangan)){
                 echo $keterangan;
               }else{
