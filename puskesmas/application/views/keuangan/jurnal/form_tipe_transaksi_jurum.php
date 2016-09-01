@@ -1,7 +1,7 @@
 <script type="text/javascript">
   $(function(){
    
-    $('#btn-close').click(function(){
+    $('#btn-close<?php echo $tipetrans?>').click(function(){
       close_popup();
     }); 
 
@@ -29,7 +29,7 @@
                     $('#notice').hide();
                     $('#notice-content').html('<div class="alert">'+res[1]+'</div>');
                     $('#notice').show();
-                    $("#jqxgridpilihtipe").jqxGrid('updatebounddata', 'cells');
+                    $("#jqxgridpilihtipe<?php echo $tipetrans?>").jqxGrid('updatebounddata', 'cells');
                     close_popup();
                 }
                 else if(res[0]=="Error"){
@@ -57,16 +57,16 @@ var source = {
       { name: 'deskripsi', type: 'string' },
       { name: 'detail', type: 'number' },
         ],
-    url: "<?php echo site_url('keuangan/jurnal/json_transaksi/'); ?>",
+    url: "<?php echo site_url('keuangan/jurnal/json_transaksi/'.$tipetrans); ?>",
     cache: false,
     updateRow: function (rowID, rowData, commit) {
             commit(true);
     },
     filter: function(){
-      $("#jqxgridpilihtipe").jqxGrid('updatebounddata', 'filter');
+      $("#jqxgridpilihtipe<?php echo $tipetrans?>").jqxGrid('updatebounddata', 'filter');
     },
     sort: function(){
-      $("#jqxgridpilihtipe").jqxGrid('updatebounddata', 'sort');
+      $("#jqxgridpilihtipe<?php echo $tipetrans?>").jqxGrid('updatebounddata', 'sort');
     },
     root: 'Rows',
         pagesize: 10,
@@ -82,7 +82,7 @@ var source = {
       }
     });
      
-    $("#jqxgridpilihtipe").jqxGrid(
+    $("#jqxgridpilihtipe<?php echo $tipetrans?>").jqxGrid(
     { 
       width: '100%',
       selectionmode: 'singlerow',
@@ -95,7 +95,7 @@ var source = {
 
       columns: [
         { text: 'Add', align: 'center', filtertype: 'none', sortable: false, width: '10%', cellsrenderer: function (row) {
-            var dataRecord = $("#jqxgridpilihtipe").jqxGrid('getrowdata', row);
+            var dataRecord = $("#jqxgridpilihtipe<?php echo $tipetrans?>").jqxGrid('getrowdata', row);
             if(dataRecord.detail==1){
             return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_add.gif' onclick='pilihjurnal(\""+dataRecord.id_mst_transaksi+"\");'></a></div>";
           }else{
@@ -111,13 +111,17 @@ var source = {
         
         
     $('#refreshdatabutton').click(function () {
-      $("#jqxgridpilihtipe").jqxGrid('updatebounddata', 'cells');
+      $("#jqxgridpilihtipe<?php echo $tipetrans?>").jqxGrid('updatebounddata', 'cells');
     });
     function pilihjurnal(id){
       if(confirm("Anda yakin akan membuat jurnal ini?")){
         close_popup();
-        $.get("<?php echo base_url().'keuangan/jurnal/add_junal_umum/'; ?>"+id, function(data) {
-          $("#content1").html(data);
+        $.get("<?php echo base_url().'keuangan/jurnal/add_junal_umum/'; ?>"+id+'/'+"<?php echo $tipetrans;?>", function(data) {
+          <?php if ($tipetrans=='jurnal_umum') {?>
+            $("#content1").html(data);
+          <?php }else{?>
+            $("#content2").html(data);
+          <?php }?>
         });
       }
     }
@@ -126,9 +130,9 @@ var source = {
 <div class="box-body">
     <div class="box-body" style="margin: 0px"><h4>{title}</h4></div>
     <div class="box-body">
-      <div id="jqxgridpilihtipe"></div>
+      <div id="jqxgridpilihtipe<?php echo $tipetrans?>"></div>
     </div>
     <div class="box-footer pull-right">
-        <button type="button" id="btn-close" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
+        <button type="button" id="btn-close<?php echo $tipetrans?>" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
     </div>
 </div>

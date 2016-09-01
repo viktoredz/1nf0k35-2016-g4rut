@@ -59,7 +59,7 @@ class Jurnal_model extends CI_Model {
                         'kodeakun'      => $key->kode,
                         'debet'         => $key->debet,
                         'kredit'        => $key->kredit,
-                        'uraian'        => ($key->kredit!= '0' ? ' &nbsp '.$key->uraian : $key->uraian),
+                        'uraian'        => ($key->status!= 'kredit' ? ' &nbsp '.$key->uraian : $key->uraian),
                     );
             
         }
@@ -242,7 +242,8 @@ class Jurnal_model extends CI_Model {
     function pilihan_jenis(){
         return $this->db->get('mst_keu_transaksi')->result();
     }
-    function get_data_tipetransaksi($start=0,$limit=999999,$options=array()){
+    function get_data_tipetransaksi($tipe,$start=0,$limit=999999,$options=array()){
+        $this->db->where('untuk_jurnal',$tipe);
         $this->db->select("mst_keu_transaksi.*,mst_keu_kategori_transaksi.nama as namakategori");
         $this->db->join('mst_keu_kategori_transaksi','mst_keu_kategori_transaksi.id_mst_kategori_transaksi = mst_keu_transaksi.id_mst_kategori_transaksi','left');
         $query =$this->db->get('mst_keu_transaksi',$limit,$start);
@@ -281,9 +282,9 @@ class Jurnal_model extends CI_Model {
                         'id_transaksi'=>$this->idtrasaksi(),
                         'tanggal'=> date('Y-m-d'),
                         'code_cl_phc'=>$kodpus,
-                        'tipe_jurnal'=>'jurnal_umum',
-                        'status'=>'ditutup',
-                        'id_kategori_transaksi'=>'1',
+                        'tipe_jurnal'=>$dat['untuk_jurnal'],
+                        'status'=>'draft',
+                        'id_kategori_transaksi'=>$dat['id_mst_kategori_transaksi'],
                         'id_mst_keu_transaksi'=> $dat['id_mst_transaksi'],
                         );
         $this->db->insert('keu_transaksi',$datakeu_transaksipen);
@@ -316,6 +317,9 @@ class Jurnal_model extends CI_Model {
     }
     function getallpuskesmas(){
         return $this->db->get('cl_phc')->result();
+    }
+    function get_data_inventaris($start=0,$limit=999999,$options=array()){
+        return $this->db->get('get_all_inventaris2',$limit,$start)->result();
     }
    
 }

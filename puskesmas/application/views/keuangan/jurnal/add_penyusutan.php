@@ -1,7 +1,7 @@
 
 <section class="content">
 <div class="box-header">
-  <h3 class="box-title">{title}</h3>
+  <h3 class="box-title">{title_form}</h3>
 </div>
 
 	
@@ -15,14 +15,17 @@
 	<button type="button" id="btn-close_inventaris" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
 </div>
 </section>
-
 <script type="text/javascript">
 var source = {
 	datatype: "json",
 	type	: "POST",
 	datafields: [
-	{ name: 'id_inventaris', type: 'string'},
-	{ name: 'nm_iventaris', type: 'string'},
+	{ name: 'id_inventaris_barang', type: 'string'},
+	{ name: 'register', type: 'string'},
+	{ name: 'id_mst_inv_barang', type: 'string'},
+	{ name: 'nama_barang', type: 'string'},
+	{ name: 'harga', type: 'string'},
+	{ name: 'edit', type: 'string'},
 ],
 url: "<?php echo site_url('keuangan/jurnal/json_penyusutan'); ?>",		
 cache: false,
@@ -64,13 +67,14 @@ $("#jqxgridinventaris").jqxGrid(
 		return obj.data;
 	},
 	columns: [
-		{ text: 'Pilih', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
+		{ text: 'Pilih', align: 'center', filtertype: 'none', sortable: false, width: '8%', cellsrenderer: function (row) {
 		    var dataRecord = $("#jqxgridinventaris").jqxGrid('getrowdata', row);
 			return "<div style='width:100%;padding-top:2px;text-align:center'><input type='checkbox' name='aset[]' value="+dataRecord.id_inventaris+"_td_"+dataRecord.nm_iventaris+" ></div>";
          }
         },
-		{ text: 'Id Inventaris', align: 'center', cellsalign: 'center' , sortable: false,editable:false , datafield: 'id_inventaris', columntype: 'textbox', filtertype: 'textbox', width: '19%' },
-		{ text: 'Nama', align: 'center', cellsalign: 'center',editable:true ,datafield: 'nm_iventaris', columntype: 'textbox', filtertype: 'textbox', width: '75%' },
+		{ text: 'Id Inventaris', align: 'center', cellsalign: 'center' , sortable: false,editable:false , datafield: 'id_mst_inv_barang', columntype: 'textbox', filtertype: 'textbox', width: '20%' },
+		{ text: 'Register', align: 'center', cellsalign: 'center' , sortable: false,editable:false , datafield: 'register', columntype: 'textbox', filtertype: 'textbox', width: '10%' },
+		{ text: 'Nama', align: 'center', editable:true ,datafield: 'nama_barang', columntype: 'textbox', filtertype: 'textbox', width: '62%' },
     ]
 });
 

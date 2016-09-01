@@ -33,9 +33,11 @@
                   <div class="col-md-4">
                     <select class="form-control" id="filetransaksiumum" name="filetransaksiumum"> 
                         <option value="all">Semua Status</option>
-                      <?php foreach ($filetransaksi as $key => $value) {?>
+                      <?php 
+                      foreach ($filetransaksi as $key => $value) {
+                        if ($key!='dihapus') {                      ?>
                         <option value="<?php echo $key;?>"><?php echo ucfirst($value);?></option>
-                      <?php }?>
+                      <?php } }?>
                     </select>
                   </div>
                 </div>
@@ -324,7 +326,7 @@ $("#filterpuskesmas").change(function(){
 });
 $("#add_jurnal_umum").click(function(){
   $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-  $.get("<?php echo base_url().'keuangan/jurnal/pilih_tipe_transaksijurum/'; ?>", function(data) {
+  $.get("<?php echo base_url().'keuangan/jurnal/pilih_tipe_transaksijurum/jurnal_umum'; ?>", function(data) {
     $("#popup_content").html(data);
   });
   $("#popup_jurnal").jqxWindow({

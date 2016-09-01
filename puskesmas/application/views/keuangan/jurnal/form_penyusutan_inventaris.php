@@ -31,58 +31,59 @@
           <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Jenis Transaksi</div>
           <div class="col-md-9">
-            <input type="text" id="jenis_transaksi" name="jenis_transaksi" placeholder="Jenis Transaksi"  class="form-control" value="<?php 
-              if(set_value('jenis_transaksi')=="" && isset($jenis_transaksi)){
-                echo $jenis_transaksi;
-              }else{
-                echo  set_value('jenis_transaksi');
-              }
-              ?>" />
+            <select disabled="disabled" id="jenistransaksipenyesuaian" name="jenistransaksipenyesuaian"  class="form-control">
+                <?php foreach ($filetransaksi as $datjentrans) { 
+                  $select = $datjentrans->id_mst_transaksi==$id_mst_keu_transaksi ? 'selected' :'';
+                ?>
+                  <option value="<?php echo $datjentrans->id_mst_transaksi;?>" <?php echo $select;?>><?php echo $datjentrans->nama;?></option>
+                <?php } ?>
+              </select>
           </div>
         </div>
         <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Kategori</div>
           <div class="col-md-9">
-            <input type="text" id="kategori" name="kategori" placeholder="Kategori"  class="form-control" value="<?php 
-              if(set_value('kategori')=="" && isset($kategori)){
-                echo $jenis_transaksi;
-              }else{
-                echo  set_value('kategori');
-              }
-              ?>" />
+            <select disabled="disabled"  id="kategori_transaksipenyesuaian" name="kategori_transaksipenyesuaian"  class="form-control">
+                <?php foreach ($filterkategori_transaksi as $key) { 
+                  $select = $key->id_mst_kategori_transaksi==$id_kategori_transaksi ? 'selected' :'';
+                ?>
+                  <option value="<?php echo $key->id_mst_kategori_transaksi;?>" <?php echo $select;?>><?php echo $key->nama;?></option>
+                <?php } ?>
+              </select>
           </div>
         </div>
-        <div class="row" style="margin: 5px">
+        <!-- <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Alasan Perubahan</div>
           <div class="col-md-9">
             <textarea id="alasan_perubahan" name="alasan_perubahan" class="form-control"><?php 
-              if(set_value('alasan_perubahan')=="" && isset($alasan_perubahan)){
+             /* if(set_value('alasan_perubahan')=="" && isset($alasan_perubahan)){
                 echo $alasan_perubahan;
               }else{
                 echo  set_value('nomor_balasan_perubahanukti_kas');
-              }
+              }*/
               ?></textarea> 
           </div>
-        </div>
+        </div> -->
         <div class="row" style="margin: 5px">
           <div class="col-md-12" style="padding: 5px"><h3>Informasi Dasar</h3></div>
         </div>
         <div class="row" style="margin: 5px">
           <div class="col-md-3" style="padding: 5px">Nomor Transaksi</div>
           <div class="col-md-9">
-            <input type="text" id="nomor_transaksi" name="nomor_transaksi" placeholder="Nomor Transaksi"  class="form-control" value="<?php 
-              if(set_value('nomor_transaksi')=="" && isset($nomor_transaksi)){
-                echo $nomor_transaksi;
+            <input type="text" disabled="disabled" id="id_transaksipenyesuaian" name="id_transaksipenyesuaian" placeholder="Nomor Transaksi"  class="form-control" value="<?php 
+              if(set_value('id_transaksipenyesuaian')=="" && isset($id_transaksi)){
+                echo substr($id_transaksi, -10);
               }else{
-                echo  set_value('nomor_transaksi');
+                echo  set_value('id_transaksipenyesuaian');
               }
               ?>" />
           </div>
+          </div>
         </div>
         <div class="row" style="margin: 5px">
-          <div class="col-md-3" style="padding: 5px">Tanggal Transaksi</div>
+          <div class="col-md-3">Tanggal Transaksi</div>
           <div class="col-md-9">
-            <!-- <div type="text" id="tgl_transaksi" name="tgl_transaksi" /></div> -->
+            <div type="text" id="tgl_transaksipenyesuaian" name="tgl_transaksipenyesuaian"></div>
           </div>
         </div>
         <div class="row" style="margin: 5px">
@@ -96,9 +97,13 @@
         </div>
         <div class="row" style="margin: 5px">
           <div class="col-md-12">
-            <div id='jqxExpander'>
-              <div><i class="glyphicon glyphicon-trash"></i> Early History of the Internet</div>
-              <div>
+<!--show hide-->
+              <div class="row"> 
+                 <div class="col-md-1"><i class="glyphicon glyphicon-trash"></i></div>
+                 <div class="col-md-10"><b>Early History of the Internet</b></div>
+                 <div class="col-md-1"><div id="showdown"><b><i class="glyphicon glyphicon-chevron-down"></i></b></div><div id="showup"><b><i class="glyphicon glyphicon-chevron-up"></i></b></div></div>
+              </div>
+              <div id="showhide">
                 <div class="box-body">
                   <div class="row">
                     <div class="col-md-12">Transaksi Penyusutan</div>
@@ -189,7 +194,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+<!--show hide-->
           </div>
         </div>
         <!--End create -->
@@ -208,8 +213,22 @@ $(function(){
   $('#btn-close_penyusutan_jurum').click(function(){
       window.location.href="<?php echo base_url()?>keuangan/jurnal";
   });
-  $("#jqxExpander").jqxExpander({ width: '100%',theme: 'summer'});
-  // $("#tgl_transaksi").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
+  
+  $("#tgl_transaksipenyesuaian").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
+  $("#showhide").show();
+  $("#showdown").show();
+  $("#showup").hide();
+});
+
+$("#showdown").click(function(){
+  $("#showdown").hide();
+  $("#showup").show();
+  $("#showhide").hide("slow");
+});
+$("#showup").click(function(){
+  $("#showdown").show();
+  $("#showup").hide();
+  $("#showhide").show("slow");
 });
 function add_datainventaris(){
   var id=0;

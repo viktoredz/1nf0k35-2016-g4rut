@@ -208,7 +208,9 @@ $("#ubahdetailjurum").click(function(){
     </div>
         <div class="box-footer">
             <div style="float:left">
+              <?php if ($status !='ditutup') { ?>
               <button type="button" class="btn btn-danger" id="btn_hapus_detail_jurum"><i class="glyphicon glyphicon-trash"></i> Hapus Transaksi</button>
+              <?php } ?>
             </div>
             <div style="float:right">
               <button type="button" class="btn btn-primary" id="ubahdetailjurum"><i class="glyphicon glyphicon-edit"></i> Ubah</button>

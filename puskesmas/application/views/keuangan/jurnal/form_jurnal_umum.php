@@ -391,6 +391,11 @@ if($alert_form!=""){ ?>
 $(function(){
   <?php if ($status=='draft' || $status=='ditutup') {?>
     $("#btn-draf_jurum").hide();
+        <?php if ($status=='ditutup') { ?>
+          $("#btn-reset_jurum").hide();
+          $("#btn-simpan_jurum").hide();
+          $("#btn-delete_jurum").hide();
+        <?php } ?>
   <?php }else{?>
     $("#btn-draf_jurum").show();
   <?php }?>
