@@ -14,6 +14,7 @@ class Jurnal extends CI_Controller {
 		$this->session->set_userdata('filter_bulan','');
 		$this->session->set_userdata('filter_tahun','');
 		$this->session->set_userdata('filter_transaksi','');
+		$this->session->set_userdata('filter_kibdata','');
 
 		$data['content']       = $this->parser->parse("keuangan/jurnal/show",$data,true);		
 		
@@ -26,6 +27,8 @@ class Jurnal extends CI_Controller {
 		$this->session->set_userdata('filter_tahun','');
 		$this->session->set_userdata('filter_transaksi','');
 		$this->session->set_userdata('filter_puskesmas','');
+		$this->session->set_userdata('filter_kibdata','');
+
 		$data = array();
 
 		switch ($pageIndex) {
@@ -476,16 +479,15 @@ class Jurnal extends CI_Controller {
 			$data['alert_form']		= validation_errors();
 			$data['id']				= $id;
 			$data['action']			= "edit";
-			$data['title_form']			= "Jurnal Umum";
+			$data['title_form']		= "Jurnal Umum";
 			$data['tipesimpan']		= $tipesimpan;
 			$data['sub_title']		= "Ubah Transaksi";
 			$this->db->where('id_mst_kategori_transaksi','1');
 			$data['filetransaksi'] 	= $this->jurnal_model->pilihan_jenis();
 			$data['filterkategori_transaksi'] =$this->jurnal_model->filterkategori_transaksi();
-			$data['getdebit']		= $this->jurnal_model->getdebit($id);
-			$data['getkredit']		= $this->jurnal_model->getkredit($id);
-			$data['getsyarat']		= $this->jurnal_model->getsyarat();
+			$data['getallinventaris']=$this->jurnal_model->get_allinventaris($id);
 			$data['getdataakun']	= $this->jurnal_model->getdataakun();
+
 			die($this->parser->parse('keuangan/jurnal/form_penyusutan_inventaris',$data));
 
 		}else{
@@ -603,7 +605,7 @@ class Jurnal extends CI_Controller {
 			
 		}
 	}
-	function json_penyusutan(){
+	function json_penyusutan($id=0){
 			$this->authentication->verify('keuangan','show');
 
 
@@ -629,7 +631,13 @@ class Jurnal extends CI_Controller {
 					$this->db->order_by($ord, $this->input->post('sortorder'));
 				}
 			}
-			$rows_all = $this->jurnal_model->get_data_inventaris();
+			if ($this->session->userdata('filter_kibdata')!='') {
+				if ($this->session->userdata('filter_kibdata')=='all') {
+				}else{
+					$this->db->like('id_mst_inv_barang',$this->session->userdata('filter_kibdata'),'after');
+				}
+			}
+			$rows_all = $this->jurnal_model->get_data_inventaris($id);
 
 
 			if($_POST) {
@@ -654,7 +662,13 @@ class Jurnal extends CI_Controller {
 					$this->db->order_by($ord, $this->input->post('sortorder'));
 				}
 			}
-			$rows = $this->jurnal_model->get_data_inventaris($this->input->post('recordstartindex'), $this->input->post('pagesize'));
+			if ($this->session->userdata('filter_kibdata')!='') {
+				if ($this->session->userdata('filter_kibdata')=='all') {
+				}else{
+					$this->db->like('id_mst_inv_barang',$this->session->userdata('filter_kibdata'),'after');
+				}
+			}
+			$rows = $this->jurnal_model->get_data_inventaris($id,$this->input->post('recordstartindex'), $this->input->post('pagesize'));
 			$data = array();
 			$no=1;
 			foreach($rows as $act) {
@@ -886,6 +900,7 @@ class Jurnal extends CI_Controller {
 		echo json_encode($query);
 	}
 	function add_penyusutan_inventaris($id){
+		$this->session->set_userdata('filter_kibdata','');
 		$this->authentication->verify('keuangan','add');
 
 	    $this->form_validation->set_rules('nama', 'Nama Instansi', 'trim|required');
@@ -897,27 +912,25 @@ class Jurnal extends CI_Controller {
 
 			$data['notice']			= validation_errors();
 			$data['action']			= "add";
+			$data['id']				= $id;
 			$data['title_form']		= "Tambah Instansi";
 			$data['datakateg']		= $this->jurnal_model->pilihan_enums('mst_inv_pbf','kategori');
 			die($this->parser->parse('keuangan/jurnal/add_penyusutan',$data));
 
 		}else{
 			
-			$values = array(
-				'nama'						=> $this->input->post('nama'),
-				// 'deskripsi'					=> $this->input->post('deskripsi'),
-				'alamat' 					=> $this->input->post('alamat'),
-				'tlp' 						=> $this->input->post('telepon'),
-				'kategori' 					=> $this->input->post('deskripsi'),
-				'aktif' 					=> '1',
-			);
-			$simpan=$this->db->insert('mst_inv_pbf', $values);
-			if($simpan==true){
-				die("OK|Data Tersimpan");
-			}else{
-				 die("Error|Proses data gagal");
+		}
+	}
+	function add_inventaris($id=''){
+		$this->authentication->verify('keuangan','add');
+		echo $this->jurnal_model->addInventaris($id);
+		die();
+	}
+	function filterkib(){
+		if($_POST) {
+			if($this->input->post('kibdata') != '') {
+				$this->session->set_userdata('filter_kibdata',$this->input->post('kibdata'));
 			}
-			
 		}
 	}
 }

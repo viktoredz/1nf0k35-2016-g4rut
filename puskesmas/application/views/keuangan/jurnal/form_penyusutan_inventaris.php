@@ -94,26 +94,42 @@
         -->
         <div class="row" style="margin: 5px">
           <div class="col-md-12" style="padding: 5px"><button type="button" id="add_inventaris" onclick="add_datainventaris()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Tambah Inventaris</button></div>
-        </div>
+        </div><br>
         <div class="row" style="margin: 5px">
           <div class="col-md-12">
 <!--show hide-->
-              <div class="row"> 
-                 <div class="col-md-1"><i class="glyphicon glyphicon-trash"></i></div>
-                 <div class="col-md-10"><b>Early History of the Internet</b></div>
-                 <div class="col-md-1"><div id="showdown"><b><i class="glyphicon glyphicon-chevron-down"></i></b></div><div id="showup"><b><i class="glyphicon glyphicon-chevron-up"></i></b></div></div>
+      <?php foreach($getallinventaris as $keyinv) { ?>
+            <div id="createtransaksiinventaris<?php echo $keyinv['id_transaksi_inventaris'];?>" name="createtransaksiinventaris">
+              <div class="row" style="border-bottom:solid #3333ff;"> 
+                 <div class="col-md-1" style="padding:5px"><i class="glyphicon glyphicon-trash"></i></div>
+                 <div class="col-md-10"><font size="4"><b><?php echo $keyinv['nama_barang'] ?></b></font></div>
+                 <div class="col-md-1">
+                      <b><i  id="showdown<?php echo $keyinv['id_transaksi_inventaris'];?>" name="showdown" class="glyphicon glyphicon-chevron-down" onclick='showdowndata("<?php echo $keyinv['id_transaksi_inventaris'];?>")'></i></b>
+                    <b><i id="showup<?php echo $keyinv['id_transaksi_inventaris'];?>" name="showup" class="glyphicon glyphicon-chevron-up" onclick='showupdata("<?php echo $keyinv['id_transaksi_inventaris'];?>")'></i></b>
+                 </div>
+
               </div>
-              <div id="showhide">
+              <div id="showhide<?php echo $keyinv['id_transaksi_inventaris'];?>" name="showhide">
                 <div class="box-body">
                   <div class="row">
-                    <div class="col-md-12">Transaksi Penyusutan</div>
+                    <div class="col-md-3">
+                      Transaksi Penyusutan
+                    </div>
+                    <div class="col-md-2">
+                      <div id="tgl_periode_penyusutan_awal<?php echo $keyinv['id_transaksi_inventaris'];?>" name="tgl_periode_penyusutan_awal"></div>&nbsp;&nbsp;
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-6">
+                      <div id="tgl_periode_penyusutan_akhir<?php echo $keyinv['id_transaksi_inventaris'];?>" name="tgl_periode_penyusutan_akhir"></div>
+                    </div>
                   </div>
                   <div class="row" style="margin: 5px">
                     <div class="col-md-3" style="padding: 5px">Uraian</div>
                     <div class="col-md-9">
-                      <input type="text" id="uraian" name="uraian" placeholder="Uraian"  class="form-control" value="<?php 
-                        if(set_value('uraian')=="" && isset($uraian)){
-                          echo $uraian;
+                      <input type="text" id="uraian<?php echo $keyinv['id_transaksi_inventaris'];?>" name="uraian" placeholder="Uraian"  class="form-control" value="<?php 
+                        if(set_value('uraian')=="" && isset($keyinv['uraian'])){
+                          echo $keyinv['uraian'];
                         }else{
                           echo  set_value('uraian');
                         }
@@ -121,7 +137,7 @@
                     </div>
                   </div>
                   <div class="row" style="margin: 5px">
-                    <div class="col-md-6" style="padding: 5px">Uraian</div>
+                    <div class="col-md-6" style="padding: 5px">Alat</div>
                     <div class="col-md-3">
                       Debit
                     </div>
@@ -129,54 +145,55 @@
                       Kredit
                     </div>
                   </div>
-                  <div class="row" style="margin: 5px">
-                    <div class="col-md-6" style="padding: 5px">Alat</div>
-                    <div class="col-md-3">
-                      <input type="text" id="jml_debit" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
-                        if(set_value('jml_debit')=="" && isset($jml_debit)){
-                          echo $jml_debit;
+              <div clas='box-body'>
+              <?php foreach ($keyinv['childern'] as $keydetail) { ?>
+                  <div class="row" id="detailinventaris<?php echo $keydetail['id_jurnal'];?>" name="detailinventaris">
+                    <?php if ($keydetail['status']=='kredit') { ?>
+                    <div class="col-md-6" style="padding: 5px">
+                    <?php }else{?>
+                      <div class="col-md-1" style="padding: 5px"> </div>
+                      <div class="col-md-5" style="padding: 5px"> 
+                    <?php } ?>
+                      <select id="id_mst_akun<?php echo $keydetail['id_jurnal'];?>" name="id_mst_akun" class="form-control">
+                        <?php foreach ($getdataakun as $dataakun) { 
+                          $select = $dataakun->id_mst_akun == $keydetail['id_mst_akun'] ? 'selected' : '';
+                        ?>
+                          <option value="<?php echo $dataakun->id_mst_akun?>" <?php echo $select;?>><?php echo  $dataakun->uraian?></option>
+                        <?php } ?>
+                      </select>
+                    </div>
+
+                    <div class="col-md-3" >
+                      <?php if ($keydetail['status']=='debet') { ?>
+                      <input type="text" id="jml_debit<?php echo $keydetail['id_jurnal'];?>" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
+                        if(set_value('jml_debit')=="" && isset($keydetail['debet'])){
+                          echo $keydetail['debet'];
                         }else{
                           echo  set_value('jml_debit');
                         }
                         ?>" />
+                      <?php }?>
                     </div>
                     <div class="col-md-3">
-                      <input type="text" id="jml_kredit" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
-                        if(set_value('jml_kredit')=="" && isset($jml_kredit)){
-                          echo $jml_kredit;
+                      <?php if ($keydetail['status']=='kredit') { ?>
+                      <input type="text" id="jml_kredit<?php echo $keydetail['id_jurnal'];?>" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
+                        if(set_value('jml_kredit')=="" && isset($keydetail['kredit'])){
+                          echo $keydetail['kredit'];
                         }else{
                           echo  set_value('jml_kredit');
                         }
                         ?>" />
+                      <?php }?>
                     </div>
                   </div>
-                  <div class="row" style="margin: 5px">
-                    <div class="col-md-6" style="padding: 5px">Keadaan Kendaraan</div>
-                    <div class="col-md-3">
-                      <input type="text" id="jml_debit" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
-                        if(set_value('jml_debit')=="" && isset($jml_debit)){
-                          echo $jml_debit;
-                        }else{
-                          echo  set_value('jml_debit');
-                        }
-                        ?>" />
-                    </div>
-                    <div class="col-md-3">
-                      <input type="text" id="jml_kredit" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
-                        if(set_value('jml_kredit')=="" && isset($jml_kredit)){
-                          echo $jml_kredit;
-                        }else{
-                          echo  set_value('jml_kredit');
-                        }
-                        ?>" />
-                    </div>
-                  </div>
+              <?php } ?>
+              </div>
                   <div class="row" style="margin: 5px">
                     <div class="col-md-6" style="padding: 5px">Total</div>
                     <div class="col-md-3">
                       <input type="text" id="jml_debit" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
-                        if(set_value('jml_debit')=="" && isset($jml_debit)){
-                          echo $jml_debit;
+                        if(set_value('jml_debit')=="" && isset($keyinv['totaldebet'])){
+                          echo $keyinv['totaldebet'];
                         }else{
                           echo  set_value('jml_debit');
                         }
@@ -184,16 +201,20 @@
                     </div>
                     <div class="col-md-3">
                       <input type="text" id="jml_kredit" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
-                        if(set_value('jml_kredit')=="" && isset($jml_kredit)){
-                          echo $jml_kredit;
+                        if(set_value('jml_kredit')=="" && isset($keyinv['totalkredit'])){
+                          echo $keyinv['totalkredit'];
                         }else{
                           echo  set_value('jml_kredit');
                         }
                         ?>" />
                     </div>
                   </div>
+
+
                 </div>
               </div>
+            </div>
+        <?php } ?>     
 <!--show hide-->
           </div>
         </div>
@@ -210,30 +231,34 @@
 </div>
 <script type="text/javascript">
 $(function(){
+  <?php if (count($getallinventaris) > 0) { ?>
+    $("[name='tgl_periode_penyusutan_awal']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
+    $("[name='tgl_periode_penyusutan_akhir']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
+  <?php }?>
   $('#btn-close_penyusutan_jurum').click(function(){
       window.location.href="<?php echo base_url()?>keuangan/jurnal";
   });
   
   $("#tgl_transaksipenyesuaian").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
-  $("#showhide").show();
-  $("#showdown").show();
-  $("#showup").hide();
+  $("[name='showhide']").hide();
+  $("[name='showdown']").hide();
+  $("[name='showup']").show();
 });
 
-$("#showdown").click(function(){
-  $("#showdown").hide();
-  $("#showup").show();
-  $("#showhide").hide("slow");
-});
-$("#showup").click(function(){
-  $("#showdown").show();
-  $("#showup").hide();
-  $("#showhide").show("slow");
-});
+function showdowndata(id){
+  $("#showdown"+id).hide();
+  $("#showup"+id).show();
+  $("#showhide"+id).hide("slow");
+}
+function showupdata(id){
+  $("#showup"+id).hide();
+  $("#showdown"+id).show();
+  $("#showhide"+id).show("slow");
+}
 function add_datainventaris(){
   var id=0;
   $("#popup_inventaris #popup_content_inventaris").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-  $.get("<?php echo base_url().'keuangan/jurnal/add_penyusutan_inventaris/'; ?>"+id, function(data) {
+  $.get("<?php echo base_url().'keuangan/jurnal/add_penyusutan_inventaris/'.$id; ?>", function(data) {
     $("#popup_content_inventaris").html(data);
   });
   $("#popup_inventaris").jqxWindow({
@@ -243,5 +268,8 @@ function add_datainventaris(){
     isModal: true, autoOpen: false, modalOpacity: 0.2
   });
   $("#popup_inventaris").jqxWindow('open');
+}
+function addinventaris(data){
+  alert(data);
 }
 </script>

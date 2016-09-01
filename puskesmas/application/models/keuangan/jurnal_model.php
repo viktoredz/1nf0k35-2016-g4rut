@@ -318,8 +318,99 @@ class Jurnal_model extends CI_Model {
     function getallpuskesmas(){
         return $this->db->get('cl_phc')->result();
     }
-    function get_data_inventaris($start=0,$limit=999999,$options=array()){
+    function get_data_inventaris($id=0,$start=0,$limit=999999,$options=array()){
+        $this->db->not_like('id_mst_inv_barang','06','after');
+        $this->db->not_like('id_mst_inv_barang','05','after');
+        $this->db->where_not_in('id_inventaris_barang',"select id_inventaris from keu_transaksi_inventaris where id_transaksi=".'"'.$id.'"'."");
         return $this->db->get('get_all_inventaris2',$limit,$start)->result();
     }
-   
+    function namabarang($id){
+        $this->db->where('id_inventaris_barang',$id);
+        $data = $this->db->get('get_all_inventaris2')->row_array();
+        return $data;
+    }
+    function addInventaris($idtransaksi){
+        $db = explode('_tr_',$this->input->post('data_barang'));
+        $tempid='';
+        $dataid='';
+        for($i=0; $i<(count($db))-1; $i++){
+           $tempid = $dataid;
+           $getdat = $this->namabarang($db[$i]);
+            $valuesdata = array(
+                'id_inventaris'=>$db[$i],
+                'id_transaksi' => $idtransaksi,
+                'uraian' => $getdat['nama_barang'],
+                'periode_penyusutan_awal' => date('Y-m-d'),
+                'periode_penyusutan_akhir' => date('Y-m-d'), 
+                'pemakaian_period' => '0'
+            );
+            $this->db->insert('keu_transaksi_inventaris',$valuesdata);
+            $id = $this->db->insert_id();
+            $dataid = $id.'####'.$tempid;
+            $datakredit=array(
+                        'id_jurnal'=>$this->idjurnal(),
+                        'id_transaksi'=> $idtransaksi,
+                        'id_mst_akun'=>'0',
+                        'debet'=>'0',
+                        'kredit'=>$getdat['harga'],
+                        'status'=> 'kredit',
+                        'id_keu_transaksi_inventaris'=> $id,
+                        );
+                $this->db->insert('keu_jurnal',$datakredit);
+            $datadebet=array(
+                        'id_jurnal'=>$this->idjurnal(),
+                        'id_transaksi'=> $idtransaksi,
+                        'id_mst_akun'=>'0',
+                        'debet'=>$getdat['harga'],
+                        'kredit'=>'0',
+                        'status'=> 'debet',
+                        'id_keu_transaksi_inventaris'=> $id,
+                        );
+                $this->db->insert('keu_jurnal',$datadebet);
+        }
+        return $dataid;
+    }
+    function get_allinventaris($id){
+        $this->db->where('id_transaksi',$id);
+        $this->db->select('keu_transaksi_inventaris.*,inv_inventaris_barang.nama_barang,(select sum(debet) from keu_jurnal where id_keu_transaksi_inventaris = keu_transaksi_inventaris.id_transaksi_inventaris) as totaldebet,(select sum(kredit) from keu_jurnal where id_keu_transaksi_inventaris = keu_transaksi_inventaris.id_transaksi_inventaris) as totalkredit');
+        $this->db->join('inv_inventaris_barang','inv_inventaris_barang.id_inventaris_barang=keu_transaksi_inventaris.id_inventaris','left');
+        $query = $this->db->get('keu_transaksi_inventaris');
+        $data=array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result_array() as $key) {
+                $data[$key['id_transaksi_inventaris']]['id_transaksi_inventaris']    = $key['id_transaksi_inventaris'];
+                $data[$key['id_transaksi_inventaris']]['id_inventaris']              = $key['id_inventaris'];
+                $data[$key['id_transaksi_inventaris']]['id_transaksi']               = $key['id_transaksi'];
+                $data[$key['id_transaksi_inventaris']]['periode_penyusutan_awal']    = $key['periode_penyusutan_awal'];
+                $data[$key['id_transaksi_inventaris']]['periode_penyusutan_akhir']   = $key['periode_penyusutan_akhir'];
+                $data[$key['id_transaksi_inventaris']]['uraian']                     = $key['uraian'];
+                $data[$key['id_transaksi_inventaris']]['nama_barang']                = $key['nama_barang'];
+                $data[$key['id_transaksi_inventaris']]['pemakaian_period']           = $key['pemakaian_period'];
+                $data[$key['id_transaksi_inventaris']]['totalkredit']                = $key['totalkredit'];
+                $data[$key['id_transaksi_inventaris']]['totaldebet']                 = $key['totaldebet'];
+                $data[$key['id_transaksi_inventaris']]['childern']                   = $this->getjurnal($key['id_transaksi_inventaris']);
+            }
+        }
+        
+        return $data;
+    }
+   function getjurnal($id=0){
+        $this->db->order_by('kredit','desc');
+        $this->db->where('id_keu_transaksi_inventaris',$id);
+        $query = $this->db->get('keu_jurnal');
+        $data=array();
+        if ($query->num_rows()>0) {
+            foreach ($query->result_array() as $key) {
+                $data[$key['id_jurnal']]['id_jurnal']       = $key['id_jurnal'];
+                $data[$key['id_jurnal']]['id_transaksi']    = $key['id_transaksi'];
+                $data[$key['id_jurnal']]['id_mst_akun']     = $key['id_mst_akun'];
+                $data[$key['id_jurnal']]['debet']           = $key['debet'];
+                $data[$key['id_jurnal']]['kredit']          = $key['kredit'];
+                $data[$key['id_jurnal']]['status']          = $key['status'];
+                $data[$key['id_jurnal']]['id_keu_transaksi_inventaris']    = $key['id_keu_transaksi_inventaris'];
+            }
+        }
+        return $data;
+
+   }
 }
