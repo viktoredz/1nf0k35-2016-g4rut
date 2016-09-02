@@ -923,8 +923,9 @@ class Jurnal extends CI_Controller {
 	}
 	function add_inventaris($id=''){
 		$this->authentication->verify('keuangan','add');
-		echo $this->jurnal_model->addInventaris($id);
-		die();
+		$data = $this->jurnal_model->addInventaris($id);
+		// $data = $this->jurnal_model->getdatajson("1####2####3####4####5####6");
+		die(json_encode($data));
 	}
 	function filterkib(){
 		if($_POST) {
@@ -932,6 +933,19 @@ class Jurnal extends CI_Controller {
 				$this->session->set_userdata('filter_kibdata',$this->input->post('kibdata'));
 			}
 		}
+	}
+	function delete_penyusutan_transaksi(){
+		$this->authentication->verify('keuangan','del');
+		if ($this->jurnal_model->delete_penyusutan_trans()) {
+			die('OK');
+		}else{
+			die('error');
+		}
+	}
+	function getdataakun(){
+		$this->authentication->verify('keuangan','show');
+		$data = $this->jurnal_model->getdataakun();
+		die(json_encode($data));
 	}
 }
 

@@ -98,10 +98,11 @@
         <div class="row" style="margin: 5px">
           <div class="col-md-12">
 <!--show hide-->
+    <div id="jurnaltrasaksidata_penyusutan">
       <?php foreach($getallinventaris as $keyinv) { ?>
             <div id="createtransaksiinventaris<?php echo $keyinv['id_transaksi_inventaris'];?>" name="createtransaksiinventaris">
               <div class="row" style="border-bottom:solid #3333ff;"> 
-                 <div class="col-md-1" style="padding:5px"><i class="glyphicon glyphicon-trash"></i></div>
+                 <div class="col-md-1" style="padding:5px"><i class="glyphicon glyphicon-trash" onclick='delete_jurnalpenyesuaian("<?php echo $keyinv['id_transaksi_inventaris'];?>")'></i></div>
                  <div class="col-md-10"><font size="4"><b><?php echo $keyinv['nama_barang'] ?></b></font></div>
                  <div class="col-md-1">
                       <b><i  id="showdown<?php echo $keyinv['id_transaksi_inventaris'];?>" name="showdown" class="glyphicon glyphicon-chevron-down" onclick='showdowndata("<?php echo $keyinv['id_transaksi_inventaris'];?>")'></i></b>
@@ -155,7 +156,7 @@
                       <div class="col-md-5" style="padding: 5px"> 
                     <?php } ?>
                       <select id="id_mst_akun<?php echo $keydetail['id_jurnal'];?>" name="id_mst_akun" class="form-control">
-                        <?php foreach ($getdataakun as $dataakun) { 
+                        <?php  foreach ($getdataakun as $dataakun) { 
                           $select = $dataakun->id_mst_akun == $keydetail['id_mst_akun'] ? 'selected' : '';
                         ?>
                           <option value="<?php echo $dataakun->id_mst_akun?>" <?php echo $select;?>><?php echo  $dataakun->uraian?></option>
@@ -214,7 +215,8 @@
                 </div>
               </div>
             </div>
-        <?php } ?>     
+        <?php } ?>   
+    </div>  
 <!--show hide-->
           </div>
         </div>
@@ -256,7 +258,7 @@ function showupdata(id){
   $("#showhide"+id).show("slow");
 }
 function add_datainventaris(){
-  var id=0;
+  // var id=0;
   $("#popup_inventaris #popup_content_inventaris").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
   $.get("<?php echo base_url().'keuangan/jurnal/add_penyusutan_inventaris/'.$id; ?>", function(data) {
     $("#popup_content_inventaris").html(data);
@@ -268,8 +270,130 @@ function add_datainventaris(){
     isModal: true, autoOpen: false, modalOpacity: 0.2
   });
   $("#popup_inventaris").jqxWindow('open');
+  // $.get("<?php echo base_url().'keuangan/jurnal/add_inventaris/' ?>",  function(data) {
+  //     $("#popup_inventaris").jqxWindow('close');
+  //     addinventaris(data);
+  // });
 }
+
 function addinventaris(data){
-  alert(data);
+  var obj = $.parseJSON(data);
+  var form_create_data ='';
+  var form_create_detail ='';
+  $.each(obj, function(key,value) {
+    form_create_data += '<div id="createtransaksiinventaris'+value.id_transaksi_inventaris+'" name="createtransaksiinventaris">\
+              <div class="row" style="border-bottom:solid #3333ff;">\
+                 <div class="col-md-1" style="padding:5px"><i class="glyphicon glyphicon-trash" onclick="delete_jurnalpenyesuaian(\''+value.id_transaksi_inventaris+'\')"></i></div>\
+                 <div class="col-md-10"><font size="4"><b>'+value.nama_barang+'</b></font></div>\
+                 <div class="col-md-1">\
+                      <b><i  id="showdown'+value.id_transaksi_inventaris+'" name="showdown" class="glyphicon glyphicon-chevron-down" onclick="showdowndata(\''+value.id_transaksi_inventaris+'\')"></i></b>\
+                    <b><i id="showup'+value.id_transaksi_inventaris+' name="showup" class="glyphicon glyphicon-chevron-up" onclick="showupdata(\''+value.id_transaksi_inventaris+'\')"></i></b>\
+                 </div>\
+              </div>\
+              <div id="showhide'+value.id_transaksi_inventaris+'" name="showhide">\
+                <div class="box-body">\
+                  <div class="row">\
+                    <div class="col-md-3">\
+                      Transaksi Penyusutan\
+                    </div>\
+                    <div class="col-md-2">\
+                      <div id="tgl_periode_penyusutan_awal'+value.id_transaksi_inventaris+'" name="tgl_periode_penyusutan_awal"></div>&nbsp;&nbsp;\
+                    </div>\
+                    <div class="col-md-1">\
+                    </div>\
+                    <div class="col-md-6">\
+                      <div id="tgl_periode_penyusutan_akhir'+value.id_transaksi_inventaris+'" name="tgl_periode_penyusutan_akhir"></div>\
+                    </div>\
+                  </div>\
+                  <div class="row" style="margin: 5px">\
+                    <div class="col-md-3" style="padding: 5px">Uraian</div>\
+                    <div class="col-md-9">\
+                      <input type="text" id="uraian'+value.id_transaksi_inventaris+'" name="uraian" placeholder="Uraian"  class="form-control" value="'+value.uraian+'" />\
+                    </div>\
+                  </div>\
+                  <div class="row" style="margin: 5px">\
+                    <div class="col-md-6" style="padding: 5px">Alat</div>\
+                    <div class="col-md-3">\
+                      Debit\
+                    </div>\
+                    <div class="col-md-3">\
+                      Kredit\
+                    </div>\
+                  </div>\
+                  <div clas="box-body">';
+
+          $.each(value.childern, function(keychildern,valuechildern) {
+                form_create_data +='<div class="row" id="detailinventaris'+valuechildern.id_jurnal+'" name="detailinventaris">';
+                  if (valuechildern.status=='kredit') {
+                  form_create_data+='<div class="col-md-6" style="padding: 5px">';
+                  }else{
+                  form_create_data+='<div class="col-md-1" style="padding: 5px"> </div>\
+                      <div class="col-md-5" style="padding: 5px">';
+                  }
+                  form_create_data+='<select id="id_mst_akun'+valuechildern.id_jurnal+'" name="id_mst_akun" class="form-control">\
+                      </select>\
+                    </div>\
+                    <div class="col-md-3" >';
+                  if (valuechildern.status=='debet') {
+                    form_create_data+='<input type="text" id="jml_debit'+valuechildern.id_jurnal+'" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="'+valuechildern.debet+'" />';
+                  }
+                  form_create_data+='</div>\
+                        <div class="col-md-3">';
+
+                  if (valuechildern.status=='kredit') {
+                      form_create_data+='<input type="text" id="jml_kredit'+valuechildern.id_jurnal+'" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="'+valuechildern.kredit+'" />';
+                  }
+                  form_create_data+='</div>\
+                  </div>';
+                  mengisiselectcreate(valuechildern.id_jurnal);
+        });
+    form_create_data +='</div>\
+                    <div class="row" style="margin: 5px">\
+                    <div class="col-md-6" style="padding: 5px">Total</div>\
+                    <div class="col-md-3">\
+                      <input type="text" id="jml_debit" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="'+value.totaldebet+'" />\
+                    </div>\
+                    <div class="col-md-3">\
+                      <input type="text" id="jml_kredit" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="'+value.totalkredit+'" />\
+                    </div>\
+                  </div>\
+                </div>\
+              </div>\
+            </div>';
+
+  });
+  $('#jurnaltrasaksidata_penyusutan').append(form_create_data);
+  $("[name='showhide']").hide();
+  $("[name='showdown']").hide();
+  $("[name='showup']").show();
+}
+function mengisiselectcreate(key){
+  $.get("<?php echo base_url()."keuangan/jurnal/getdataakun/" ?>",function(data){
+      var objda = $.parseJSON(data);
+      var options = [];
+      $.each(objda, function(idx, obj) {
+        options.push('<option value="'+obj.id_mst_akun+'">'+ obj.uraian +'</option>');
+      });
+      $('#id_mst_akun'+key+'').html(options);
+  });
+}
+function delete_jurnalpenyesuaian(id_transaksi_inv) {
+  if (confirm("Anda yakin Akan menghapus Data Ini ?")) {
+      $.ajax({
+       type: 'POST',
+       url : '<?php echo base_url()."keuangan/jurnal/delete_penyusutan_transaksi/" ?>',
+       data : 'id_transaksi_inv='+id_transaksi_inv,
+       success: function (response) {
+        if(response=='OK'){
+            $("#createtransaksiinventaris"+id_transaksi_inv).remove();
+        }else{
+          alert("Failed.");
+        };
+       }
+    });
+
+  } else{
+
+  };
 }
 </script>
