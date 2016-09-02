@@ -83,7 +83,13 @@
         <div class="row" style="margin: 5px">
           <div class="col-md-3">Tanggal Transaksi</div>
           <div class="col-md-9">
-            <div type="text" id="tgl_transaksipenyesuaian" name="tgl_transaksipenyesuaian"></div>
+            <div type="text" id="tgl_transaksipenyesuaian" name="tgl_transaksipenyesuaian" value="<?php 
+                        if(set_value('tgl_transaksipenyesuaian')=="" && isset($tanggal)){
+                          echo $tanggal;
+                        }else{
+                          echo  set_value('tgl_transaksipenyesuaian');
+                        }
+                        ?>"></div>
           </div>
         </div>
         <div class="row" style="margin: 5px">
@@ -117,18 +123,30 @@
                       Transaksi Penyusutan
                     </div>
                     <div class="col-md-2">
-                      <div id="tgl_periode_penyusutan_awal<?php echo $keyinv['id_transaksi_inventaris'];?>" name="tgl_periode_penyusutan_awal"></div>&nbsp;&nbsp;
+                      <div onchange='updatedatadetail("<?php echo $keyinv['id_transaksi_inventaris'];?>","tgl_periode_penyusutan_awal","periode_penyusutan_awal","keu_transaksi_inventaris")' id="tgl_periode_penyusutan_awal<?php echo $keyinv['id_transaksi_inventaris'];?>" name="tgl_periode_penyusutan_awal" value="<?php 
+                        if(set_value('tgl_periode_penyusutan_awal')=="" && isset($keyinv['periode_penyusutan_awal'])){
+                          echo $keyinv['periode_penyusutan_awal'];
+                        }else{
+                          echo  set_value('tgl_periode_penyusutan_awal');
+                        }
+                        ?>" ></div>&nbsp;&nbsp;
                     </div>
                     <div class="col-md-1">
                     </div>
                     <div class="col-md-6">
-                      <div id="tgl_periode_penyusutan_akhir<?php echo $keyinv['id_transaksi_inventaris'];?>" name="tgl_periode_penyusutan_akhir"></div>
+                      <div onchange='updatedatadetail("<?php echo $keyinv['id_transaksi_inventaris'];?>","tgl_periode_penyusutan_akhir","periode_penyusutan_akhir","keu_transaksi_inventaris")' id="tgl_periode_penyusutan_akhir<?php echo $keyinv['id_transaksi_inventaris'];?>" name="tgl_periode_penyusutan_akhir" value="<?php 
+                        if(set_value('tgl_periode_penyusutan_akhir')=="" && isset($keyinv['periode_penyusutan_akhir'])){
+                          echo $keyinv['periode_penyusutan_akhir'];
+                        }else{
+                          echo  set_value('tgl_periode_penyusutan_akhir');
+                        }
+                        ?>" ></div>
                     </div>
                   </div>
                   <div class="row" style="margin: 5px">
                     <div class="col-md-3" style="padding: 5px">Uraian</div>
                     <div class="col-md-9">
-                      <input type="text" id="uraian<?php echo $keyinv['id_transaksi_inventaris'];?>" name="uraian" placeholder="Uraian"  class="form-control" value="<?php 
+                      <input type="text" onchange='updatedatadetail("<?php echo $keyinv['id_transaksi_inventaris'];?>","uraian","uraian","keu_transaksi_inventaris")' id="uraian<?php echo $keyinv['id_transaksi_inventaris'];?>" name="uraian" placeholder="Uraian"  class="form-control" value="<?php 
                         if(set_value('uraian')=="" && isset($keyinv['uraian'])){
                           echo $keyinv['uraian'];
                         }else{
@@ -155,7 +173,7 @@
                       <div class="col-md-1" style="padding: 5px"> </div>
                       <div class="col-md-5" style="padding: 5px"> 
                     <?php } ?>
-                      <select id="id_mst_akun<?php echo $keydetail['id_jurnal'];?>" name="id_mst_akun" class="form-control">
+                      <select  onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","id_mst_akun","id_mst_akun","keu_jurnal")' id="id_mst_akun<?php echo $keydetail['id_jurnal'];?>" name="id_mst_akun" class="form-control">
                         <?php  foreach ($getdataakun as $dataakun) { 
                           $select = $dataakun->id_mst_akun == $keydetail['id_mst_akun'] ? 'selected' : '';
                         ?>
@@ -166,7 +184,7 @@
 
                     <div class="col-md-3" >
                       <?php if ($keydetail['status']=='debet') { ?>
-                      <input type="text" id="jml_debit<?php echo $keydetail['id_jurnal'];?>" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
+                      <input onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","jml_debit","debet","keu_jurnal")' type="text" id="jml_debit<?php echo $keydetail['id_jurnal'];?>" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
                         if(set_value('jml_debit')=="" && isset($keydetail['debet'])){
                           echo $keydetail['debet'];
                         }else{
@@ -177,7 +195,7 @@
                     </div>
                     <div class="col-md-3">
                       <?php if ($keydetail['status']=='kredit') { ?>
-                      <input type="text" id="jml_kredit<?php echo $keydetail['id_jurnal'];?>" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
+                      <input onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","jml_kredit","kredit","keu_jurnal")'  type="text" id="jml_kredit<?php echo $keydetail['id_jurnal'];?>" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
                         if(set_value('jml_kredit')=="" && isset($keydetail['kredit'])){
                           echo $keydetail['kredit'];
                         }else{
@@ -192,20 +210,20 @@
                   <div class="row" style="margin: 5px">
                     <div class="col-md-6" style="padding: 5px">Total</div>
                     <div class="col-md-3">
-                      <input type="text" id="jml_debit" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
-                        if(set_value('jml_debit')=="" && isset($keyinv['totaldebet'])){
+                      <input type="text" disabled="disabled" id="totaljml_debit<?php echo $keyinv['id_transaksi_inventaris'];?>" name="totaljml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
+                        if(set_value('totaljml_debit')=="" && isset($keyinv['totaldebet'])){
                           echo $keyinv['totaldebet'];
                         }else{
-                          echo  set_value('jml_debit');
+                          echo  set_value('totaljml_debit');
                         }
                         ?>" />
                     </div>
                     <div class="col-md-3">
-                      <input type="text" id="jml_kredit" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
-                        if(set_value('jml_kredit')=="" && isset($keyinv['totalkredit'])){
+                      <input type="text" disabled="disabled" id="totaljml_kredit<?php echo $keyinv['id_transaksi_inventaris'];?>" name="totaljml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
+                        if(set_value('totaljml_kredit')=="" && isset($keyinv['totalkredit'])){
                           echo $keyinv['totalkredit'];
                         }else{
-                          echo  set_value('jml_kredit');
+                          echo  set_value('totaljml_kredit');
                         }
                         ?>" />
                     </div>
@@ -297,18 +315,18 @@ function addinventaris(data){
                       Transaksi Penyusutan\
                     </div>\
                     <div class="col-md-2">\
-                      <div id="tgl_periode_penyusutan_awal'+value.id_transaksi_inventaris+'" name="tgl_periode_penyusutan_awal"></div>&nbsp;&nbsp;\
+                      <div onchange="updatedatadetail(\''+value.id_transaksi_inventaris+'\',\'tgl_periode_penyusutan_awal\',\'periode_penyusutan_awal\',\'keu_transaksi_inventaris\')" id="tgl_periode_penyusutan_awal'+value.id_transaksi_inventaris+'" name="tgl_periode_penyusutan_awal"></div>&nbsp;&nbsp;\
                     </div>\
                     <div class="col-md-1">\
                     </div>\
                     <div class="col-md-6">\
-                      <div id="tgl_periode_penyusutan_akhir'+value.id_transaksi_inventaris+'" name="tgl_periode_penyusutan_akhir"></div>\
+                      <div onchange="updatedatadetail(\''+value.id_transaksi_inventaris+'\',\'tgl_periode_penyusutan_akhir\',\'periode_penyusutan_akhir\',\'keu_transaksi_inventaris\')" id="tgl_periode_penyusutan_akhir'+value.id_transaksi_inventaris+'" name="tgl_periode_penyusutan_akhir"></div>\
                     </div>\
                   </div>\
                   <div class="row" style="margin: 5px">\
                     <div class="col-md-3" style="padding: 5px">Uraian</div>\
                     <div class="col-md-9">\
-                      <input type="text" id="uraian'+value.id_transaksi_inventaris+'" name="uraian" placeholder="Uraian"  class="form-control" value="'+value.uraian+'" />\
+                      <input type="text" onchange="updatedatadetail(\''+value.id_transaksi_inventaris+'\',\'uraian\',\'uraian\',\'keu_transaksi_inventaris\')" id="uraian'+value.id_transaksi_inventaris+'" name="uraian" placeholder="Uraian"  class="form-control" value="'+value.uraian+'" />\
                     </div>\
                   </div>\
                   <div class="row" style="margin: 5px">\
@@ -330,18 +348,18 @@ function addinventaris(data){
                   form_create_data+='<div class="col-md-1" style="padding: 5px"> </div>\
                       <div class="col-md-5" style="padding: 5px">';
                   }
-                  form_create_data+='<select id="id_mst_akun'+valuechildern.id_jurnal+'" name="id_mst_akun" class="form-control">\
+                  form_create_data+='<select onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'id_mst_akun\',\'id_mst_akun\',\'keu_jurnal\')" id="id_mst_akun'+valuechildern.id_jurnal+'" name="id_mst_akun" class="form-control">\
                       </select>\
                     </div>\
                     <div class="col-md-3" >';
                   if (valuechildern.status=='debet') {
-                    form_create_data+='<input type="text" id="jml_debit'+valuechildern.id_jurnal+'" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="'+valuechildern.debet+'" />';
+                    form_create_data+='<input  onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'jml_debit\',\'debet\',\'keu_jurnal\')" type="text" id="jml_debit'+valuechildern.id_jurnal+'" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="'+valuechildern.debet+'" />';
                   }
                   form_create_data+='</div>\
                         <div class="col-md-3">';
 
                   if (valuechildern.status=='kredit') {
-                      form_create_data+='<input type="text" id="jml_kredit'+valuechildern.id_jurnal+'" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="'+valuechildern.kredit+'" />';
+                      form_create_data+='<input onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'jml_kredit\',\'kredit\',\'keu_jurnal\')" type="text" id="jml_kredit'+valuechildern.id_jurnal+'" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="'+valuechildern.kredit+'" />';
                   }
                   form_create_data+='</div>\
                   </div>';
@@ -351,10 +369,10 @@ function addinventaris(data){
                     <div class="row" style="margin: 5px">\
                     <div class="col-md-6" style="padding: 5px">Total</div>\
                     <div class="col-md-3">\
-                      <input type="text" id="jml_debit" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="'+value.totaldebet+'" />\
+                      <input disabled="disabled" type="text" id="totaljml_debit'+value.id_transaksi_inventaris+'" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="'+value.totaldebet+'" />\
                     </div>\
                     <div class="col-md-3">\
-                      <input type="text" id="jml_kredit" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="'+value.totalkredit+'" />\
+                      <input disabled="disabled" type="text" id="totaljml_kredit'+value.id_transaksi_inventaris+'" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="'+value.totalkredit+'" />\
                     </div>\
                   </div>\
                 </div>\
@@ -366,6 +384,8 @@ function addinventaris(data){
   $("[name='showhide']").hide();
   $("[name='showdown']").hide();
   $("[name='showup']").show();
+  $("[name='tgl_periode_penyusutan_awal']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
+  $("[name='tgl_periode_penyusutan_akhir']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
 }
 function mengisiselectcreate(key){
   $.get("<?php echo base_url()."keuangan/jurnal/getdataakun/" ?>",function(data){
@@ -396,4 +416,90 @@ function delete_jurnalpenyesuaian(id_transaksi_inv) {
 
   };
 }
+function updatedatadetail(idinv,namahtml,dataubah,namatable){
+  values = $("#"+namahtml+idinv).val();
+  $.post("<?php echo base_url().'keuangan/jurnal/ubahdata/'?>",{
+            'id_transaksi':"<?php echo $id?>",
+            'idinv':idinv,
+            'dataubah':dataubah,
+            'values':values,
+            'table':namatable,
+          },  function(data){
+  });
+}
+function updatedatadetailtransaksi(idjurnal,namahtml,dataubah,namatable){
+  values = $("#"+namahtml+idjurnal).val();
+  $.post("<?php echo base_url().'keuangan/jurnal/ubahdatadetail/'?>",{
+            'id_transaksi':"<?php echo $id?>",
+            'idjurnal':idjurnal,
+            'dataubah':dataubah,
+            'values':values,
+            'table':namatable,
+          },  function(data){
+            if (dataubah=='debet' || dataubah=='kredit') {
+              updatetotal(idjurnal,namahtml,dataubah,namatable);
+            }
+  });
+}
+function updatetotal(idjurnal,namahtml,dataubah,namatable){
+  values = $("#"+namahtml+idjurnal).val();
+  $.post("<?php echo base_url().'keuangan/jurnal/gettotaldetail/'?>",{
+            'id_transaksi':"<?php echo $id?>",
+            'idjurnal':idjurnal,
+            'dataubah':dataubah,
+            'values':values,
+            'table':namatable,
+          },  function(data){
+            res = data.split(' | ');
+            if (res[0]=='OK') {
+              if (dataubah=='debet') {
+                $("#totaljml_debit"+res[2]).val(res[1]);
+              }else{
+                $("#totaljml_kredit"+res[2]).val(res[1]);
+              }
+            }
+  });
+}
+$("#btn-simpan_penyusutan_jurum").click(function(){
+  $.get("<?php echo base_url()."keuangan/jurnal/gettotaldebetkreditpenyesuaian/$id/" ?>",function(data){
+    ob = data.split(' | ');
+      if (ob[0]=='error') {
+        alert('Maaf ! '+ ob[1] +' Silahkan perbaiki terlebih dahulu');
+      }else{
+        var data = new FormData();
+        $('#notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
+        $('#notice').show();
+        data.append('id_transaksi', "<?php echo $id;?>");
+        data.append('tanggal', $('#tgl_transaksipenyesuaian').val());
+
+        $.ajax({
+            cache : false,
+            contentType : false,
+            processData : false,
+            type : 'POST',
+            url : '<?php echo base_url()."keuangan/jurnal/edit_junal_penyesuaian/$id/" ?>',
+            data : data,
+            success : function(response){
+              var res  = response.split("|");
+              if(res[0]=="OK"){
+                var obj = jQuery.parseJSON(res[1]);
+                $("#error_mssg").addClass("alert alert-success alert-dismissable").show();
+                $("#mssgerr").html('Data berhasil diubah');
+              }
+              else if(res[0]=="Error"){
+                 var obj = jQuery.parseJSON(res[1]);
+                  $("#error_mssg").addClass("alert alert-danger alert-dismissable").show();
+                  $("#mssgerr").html(obj.err_msg);
+              }
+              else{
+                  var obj = jQuery.parseJSON(res[1]);
+                  $("#error_mssg").addClass("alert alert-warning alert-dismissable").show();
+                  $("#mssgerr").html(obj.err_msg);
+              }
+          }
+        });
+        return false;
+      }
+ });
+});
 </script>

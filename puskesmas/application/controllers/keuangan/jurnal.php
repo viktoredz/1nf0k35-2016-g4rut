@@ -464,14 +464,9 @@ class Jurnal extends CI_Controller {
 	function edit_junal_penyesuaian($id='0',$tipesimpan='disimpan'){
 		$this->authentication->verify('keuangan','edit');
 
-	    $this->form_validation->set_rules('uraian', 'Uraian', 'trim');
-	    $this->form_validation->set_rules('keterangan', 'Keterangan', 'trim');
-	    $this->form_validation->set_rules('jenistransaksi', 'jenistransaksi', 'trim');
-	    $this->form_validation->set_rules('bukti_kas', 'Bukti Kas', 'trim');
-	    $this->form_validation->set_rules('nomor_faktur', 'Nomor Faktur', 'trim');
-	    $this->form_validation->set_rules('id_mst_syarat_pembayaran', 'Syarat Pembayaran', 'trim');
-	    $this->form_validation->set_rules('id_instansi', 'Instansi', 'trim');
-	    $this->form_validation->set_rules('id_kategori_transaksi', 'Kategori Transaksi', 'trim');
+	    $this->form_validation->set_rules('id_transaksi', 'Uraian', 'trim');
+	    $this->form_validation->set_rules('tanggal', 'Tanggal Penyesuaian', 'trim');
+
 
 		if($this->form_validation->run()== FALSE){
 
@@ -492,35 +487,11 @@ class Jurnal extends CI_Controller {
 
 		}else{
 
-			$config['upload_path']          = './public/files/datafile/';
-	        $config['allowed_types'] 		= 'avi|png|jpeg|pdf|jpg|xlx|xlxs|doc|docx';
-	        $config['file_name']      		= 'file-'.trim(str_replace(" ","",date('dmYHis')));
-
-	        $this->load->library('upload', $config);
-	        $this->upload->initialize($config);
-	    	$this->upload->do_upload('lampiran');
-	    	$this->upload->data();
 	    	$this->db->where('id_transaksi',$this->input->post('id_transaksi'));
 	    	$t=explode("-", $this->input->post('tanggal'));
 	    	$tgl = $t[2].'-'.$t[1].'-'.$t[0];
-	    	$ttempo=explode("-", $this->input->post('jatuh_tempo'));
-	    	$tgltempo = $ttempo[2].'-'.$ttempo[1].'-'.$ttempo[0];
-	    	if ($tipesimpan=='draft') {
-	    		$statussimpan = 'draft';
-	    	}else{
-	    		$statussimpan = 'disimpan';
-	    	}
 			$values = array(
 				'tanggal'			=> $tgl,
-				'uraian'			=> $this->input->post('uraian'),
-				'keterangan' 		=> $this->input->post('keterangan'),
-				'bukti_kas' 		=> $this->input->post('bukti_kas'),
-				'status' 			=> $statussimpan,
-				'lampiran' 			=> $config['file_name'],
-				'jatuh_tempo' 		=> $tgltempo,
-				'nomor_faktur' 		=> $this->input->post('nomor_faktur'),
-				'id_mst_syarat_pembayaran' 	=> $this->input->post('id_mst_syarat_pembayaran'),
-				'id_instansi' 			=> $this->input->post('id_instansi'),
 			);
 			$simpan=$this->db->update('keu_transaksi', $values);
 			if($simpan==true){
@@ -946,6 +917,80 @@ class Jurnal extends CI_Controller {
 		$this->authentication->verify('keuangan','show');
 		$data = $this->jurnal_model->getdataakun();
 		die(json_encode($data));
+	}
+	function ubahdata(){
+		$this->authentication->verify('keuangan','add');
+
+	    $this->form_validation->set_rules('dataubah', 'data yang diubah', 'trim|required');
+	    $this->form_validation->set_rules('id_transaksi', 'id transaksi', 'trim|required');
+	    $this->form_validation->set_rules('idinv', 'id inventaris', 'trim|required');
+	    $this->form_validation->set_rules('values', 'values', 'trim|required');
+
+		if($this->form_validation->run()== FALSE){
+			$data['notice']			= validation_errors();
+			die('error | '.json_encode($data));
+		}else if($this->jurnal_model->ubahdatadetail()){
+			$data['notice']			= "Data Tersimpan";
+			die('OK | '.json_encode($data));
+		}else{
+			$data['notice']			= 'Data Failed';
+			die('error | '.json_encode($data));
+		}
+	}
+	function ubahdatadetail(){
+		$this->authentication->verify('keuangan','add');
+
+	    $this->form_validation->set_rules('dataubah', 'data yang diubah', 'trim|required');
+	    $this->form_validation->set_rules('id_transaksi', 'id transaksi', 'trim|required');
+	    $this->form_validation->set_rules('idjurnal', 'id junal', 'trim|required');
+	    $this->form_validation->set_rules('values', 'values', 'trim|required');
+
+		if($this->form_validation->run()== FALSE){
+			$data['notice']			= validation_errors();
+			die('error | '.json_encode($data));
+		}else if($this->jurnal_model->ubahdatadetailtransaksi()){
+			$data['notice']			= "Data Tersimpan";
+			die('OK | '.json_encode($data));
+		}else{
+			$data['notice']			= 'Data Failed';
+			die('error | '.json_encode($data));
+		}
+	}
+	function gettotaldetail(){
+		$this->authentication->verify('keuangan','add');
+		echo $data = $this->jurnal_model->gettotaldetail();
+		die();
+	}
+	function cektotaldebetkredit($id_inv=0,$id_trans=0,$tipe=''){
+		$this->db->select("sum($tipe) as total");
+		$this->db->where('id_transaksi',$id_trans);
+		$this->db->where('id_keu_transaksi_inventaris',$id_inv);
+		$query = $this->db->get('keu_jurnal')->row_array();
+		return $query['total'];
+	}
+	function gettotaldebetkreditpenyesuaian($id='0'){
+		// $this->db->select('sum(kredit) as totalkredit,sum(debet) as totaldebit');
+		$this->db->where('id_transaksi',$id);
+		$this->db->group_by('id_keu_transaksi_inventaris');
+		$query = $this->db->get('keu_jurnal')->result_array();
+		foreach ($query as $key) {
+			$totaldebet = $this->cektotaldebetkredit($key['id_keu_transaksi_inventaris'],$key['id_transaksi'],'debet');
+			$totalkredit = $this->cektotaldebetkredit($key['id_keu_transaksi_inventaris'],$key['id_transaksi'],'kredit');
+
+			if ($totaldebet != $totalkredit) {
+				$getdata = $this->ambildatadata($key['id_keu_transaksi_inventaris'],$key['id_transaksi']);
+
+				die("error | Total Kredit dan Total Debet tidak sama pada data $getdata");
+			}
+		}
+		// echo json_encode($query);
+	}
+	function ambildatadata($id_inv=0,$id_trans=0,$tipe=''){
+		$this->db->select("inv_inventaris_barang.nama_barang");
+		$this->db->join('inv_inventaris_barang','inv_inventaris_barang.id_inventaris_barang = keu_transaksi_inventaris.id_inventaris','left');
+		$this->db->where('keu_transaksi_inventaris.id_transaksi_inventaris',$id_inv);
+		$query = $this->db->get('keu_transaksi_inventaris')->row_array();
+		return $query['nama_barang'];
 	}
 }
 

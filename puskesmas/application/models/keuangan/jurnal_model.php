@@ -449,4 +449,43 @@ class Jurnal_model extends CI_Model {
         return $this->db->delete('keu_transaksi_inventaris');
 
    }
+   function ubahdatadetail(){
+        $variabel = $this->input->post('dataubah');
+        $id_transaksi = $this->input->post('id_transaksi');
+        $id_transaksi_inventaris = $this->input->post('idinv');
+        $values = $this->input->post('values');
+        $table = $this->input->post('table');
+        if ($variabel=="periode_penyusutan_awal" || $variabel=="periode_penyusutan_akhir") {
+            $pisah = explode('-', $values);
+            $values = $pisah[2].'-'.$pisah[1].'-'.$pisah[0];
+        }
+        $this->db->set($variabel, $values);
+        $this->db->where('id_transaksi',$id_transaksi);
+        $this->db->where('id_transaksi_inventaris',$id_transaksi_inventaris);
+        return $this->db->update($table);
+   }
+
+   function ubahdatadetailtransaksi(){
+        $variabel = $this->input->post('dataubah');
+        $id_transaksi = $this->input->post('id_transaksi');
+        $idjurnal = $this->input->post('idjurnal');
+        $values = $this->input->post('values');
+        $table = $this->input->post('table');
+        $this->db->set($variabel, $values);
+        $this->db->where('id_transaksi',$id_transaksi);
+        $this->db->where('id_jurnal',$idjurnal);
+        return $this->db->update($table);
+   }
+   function gettotaldetail(){
+        $variabel = $this->input->post('dataubah');
+        $id_transaksi = $this->input->post('id_transaksi');
+        $idjurnal = $this->input->post('idjurnal');
+        $values = $this->input->post('values');
+        $table = $this->input->post('table');
+        $this->db->select("sum($variabel) as totaldata,$table.*");
+        $this->db->where('id_transaksi',$id_transaksi);
+        $this->db->where('id_jurnal',$idjurnal);
+        $query = $this->db->get($table)->row_array();
+        return 'OK | '.$query['totaldata'].' | '.$query['id_keu_transaksi_inventaris'];
+   }
 }
