@@ -44,11 +44,16 @@ class Jurnal_model extends CI_Model {
         print_r($category_data);
     }
 
-    function getchildumum($parent=0){
+    function getchildumum($parent=0,$type){
         $this->db->where("keu_jurnal.id_transaksi",$parent);
         $this->db->select("keu_jurnal.*,mst_keu_akun.uraian,mst_keu_akun.kode");
         $this->db->join('mst_keu_akun','keu_jurnal.id_mst_akun=mst_keu_akun.id_mst_akun');
-        $this->db->order_by("debet",'desc');
+        if ($type=='jurnal_umum') {
+            $this->db->order_by("debet",'desc');
+        }else{
+            $this->db->order_by("kredit",'desc');
+        }
+        
         $query = $this->db->get("keu_jurnal");
         $data=array();
         foreach ($query->result() as $key) {
@@ -71,14 +76,16 @@ class Jurnal_model extends CI_Model {
     function filterkategori_transaksi(){
         return $this->db->get('mst_keu_kategori_transaksi')->result();
     }
-    function get_datajurnalumum($type,$status='0'){
+    function get_datajurnalumum($type='jurnal_umum',$status='0'){
         if ($status!='0') {
             $this->db->where('status', 'dihapus');
         }else{
             $this->db->where('status !=', 'dihapus');
         }
         $this->db->select("*");
-        $this->db->where("tipe_jurnal",$type);
+        if ($type!='semuajurnal') {
+            $this->db->where("tipe_jurnal",$type);
+        }
         $query = $this->db->get("keu_transaksi");
         $i=0;
         $data=array();
@@ -94,7 +101,7 @@ class Jurnal_model extends CI_Model {
             $data[$i]['debet']          =  '';
             $data[$i]['kredit']         =  '';
             $data[$i]['edit']           =  '1';
-            $data[$i]['child']         = $this->getchildumum($key->id_transaksi);
+            $data[$i]['child']         = $this->getchildumum($key->id_transaksi,$type);
         $i++;
         }
         return $data;

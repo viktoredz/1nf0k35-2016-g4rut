@@ -156,6 +156,21 @@
                     </div>
                   </div>
                   <div class="row" style="margin: 5px">
+                    <div class="col-md-3" style="padding: 5px">Pemakaian Periode Ini</div>
+                    <div class="col-md-5">
+                      <input type="text" onchange='updatedatadetail("<?php echo $keyinv['id_transaksi_inventaris'];?>","pemakaian_period","pemakaian_period","keu_transaksi_inventaris")' id="pemakaian_period<?php echo $keyinv['id_transaksi_inventaris'];?>" name="pemakaian_period" placeholder="Pemakaian Periode Ini"  class="form-control" value="<?php 
+                        if(set_value('pemakaian_period')=="" && isset($keyinv['pemakaian_period'])){
+                          echo $keyinv['pemakaian_period'];
+                        }else{
+                          echo  set_value('pemakaian_period');
+                        }
+                        ?>" />
+                    </div>
+                    <div class="col-md-4">
+                      Jam
+                    </div>
+                  </div>
+                  <div class="row" style="margin: 5px">
                     <div class="col-md-6" style="padding: 5px">Alat</div>
                     <div class="col-md-3">
                       Debit
@@ -330,6 +345,15 @@ function addinventaris(data){
                     </div>\
                   </div>\
                   <div class="row" style="margin: 5px">\
+                    <div class="col-md-3" style="padding: 5px">Pemakaian Periode Ini</div>\
+                    <div class="col-md-5">\
+                      <input type="text" onchange="updatedatadetail(\''+value.id_transaksi_inventaris+'\',\'pemakaian_period\',\'pemakaian_period\',\'keu_transaksi_inventaris\')" id="pemakaian_period'+value.id_transaksi_inventaris+'" name="pemakaian_period" placeholder="Pemakaian Periode Ini"  class="form-control" value="'+value.pemakaian_period+'" />\
+                    </div>\
+                    <div class="col-md-4">\
+                      Jam\
+                    </div>\
+                  </div>\
+                  <div class="row" style="margin: 5px">\
                     <div class="col-md-6" style="padding: 5px">Alat</div>\
                     <div class="col-md-3">\
                       Debit\
@@ -501,5 +525,13 @@ $("#btn-simpan_penyusutan_jurum").click(function(){
         return false;
       }
  });
+});
+$("#btn-delete_penyusutan_jurum").click(function(){
+    var con = confirm("Anda yakin akan menghapus data ini?");
+    if (con == true) {
+      $.get("<?php echo base_url().'keuangan/jurnal/delete_junal_penyesuaian/'.$id; ?>", function(data) {
+        $("#content2").html(data);
+      });
+    }
 });
 </script>

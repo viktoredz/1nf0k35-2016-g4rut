@@ -156,7 +156,7 @@ class Jurnal extends CI_Controller {
 		}else{
 			$this->db->where('MONTH(tanggal)',date("m"));
 		}
-		$data = $this->jurnal_model->get_datajurnalumum($type,'dihapus');
+		$data = $this->jurnal_model->get_datajurnalumum('semuajurnal','dihapus');
 		
 		echo json_encode($data);
 	}
@@ -857,9 +857,18 @@ class Jurnal extends CI_Controller {
 			$this->tab('1');
 		}	
 	}
+	function delete_junal_penyesuaian($id=0){
+		$this->db->set('status','dihapus');
+		$this->db->where('id_transaksi',$id);
+		$this->db->update('keu_transaksi');
+		$this->tab('2');
+	}
 	function dodelselamanya($id=0){
 		$this->db->where('id_transaksi',$id);
 		$this->db->delete('keu_jurnal');
+		
+		$this->db->where('id_transaksi',$id);
+		$this->db->delete('keu_transaksi_inventaris');
 		
 		$this->db->where('id_transaksi',$id);
 		$this->db->delete('keu_transaksi');
