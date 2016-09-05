@@ -22,18 +22,18 @@
             <div class="box box-primary">
             <div class="row" style="margin: 5px">
                 <div class="col-md-4" style="padding: 5px">
-                  Menambahkan 2 Inventaris
+                  Menambahkan <?php echo count($datainventaris); ?> Inventaris
                 </div>
                 <div class="col-md-8" style="float:right">
                   <input type="checkbox" name="transaksitambah" checked=""> Tambakan Sebagai Transaksi
                   </div>
                 </div>
               </div>
-              <?php $i=1; foreach ($dataedit as $key) {
+              <?php $i=1; foreach ($datainventaris as $key) {
               ?>
               <div class="row" style="margin: 5px">
                 <div class="col-md-12" style="padding: 5px">
-                 <font size="3"><b><?php echo $i;?> <?php echo $key['judul'] ?></b></font>
+                 <font size="3"><b><?php echo $i;?> <?php echo $key['nama_barang'] ?></b></font>
                 </div>
               </div>
               <div class="row" style="margin: 5px">
@@ -41,7 +41,7 @@
                  ID Inventaris
                 </div>
                 <div class="col-md-8">
-                  <?php echo $key['id_inventaris'] ?>
+                  <?php echo $key['id_inventaris_barang'] ?>
                 </div>
               </div>
               <div class="row" style="margin: 5px">

@@ -104,25 +104,33 @@
         <div class="row" style="margin: 5px">
           <div class="col-md-12">
 <!--show hide-->
-    <div id="jurnaltrasaksidata_penyusutan">
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <!-- <div id="jurnaltrasaksidata_penyusutan"> -->
       <?php foreach($getallinventaris as $keyinv) { ?>
-            <div id="createtransaksiinventaris<?php echo $keyinv['id_transaksi_inventaris'];?>" name="createtransaksiinventaris">
-              <div class="row" style="border-bottom:solid #3333ff;"> 
-                 <div class="col-md-1" style="padding:5px"><i class="glyphicon glyphicon-trash" onclick='delete_jurnalpenyesuaian("<?php echo $keyinv['id_transaksi_inventaris'];?>")'></i></div>
-                 <div class="col-md-10"><font size="4"><b><?php echo $keyinv['nama_barang'] ?></b></font></div>
-                 <div class="col-md-1">
-                      <b><i  id="showdown<?php echo $keyinv['id_transaksi_inventaris'];?>" name="showdown" class="glyphicon glyphicon-chevron-down" onclick='showdowndata("<?php echo $keyinv['id_transaksi_inventaris'];?>")'></i></b>
-                    <b><i id="showup<?php echo $keyinv['id_transaksi_inventaris'];?>" name="showup" class="glyphicon glyphicon-chevron-up" onclick='showupdata("<?php echo $keyinv['id_transaksi_inventaris'];?>")'></i></b>
-                 </div>
-
-              </div>
-              <div id="showhide<?php echo $keyinv['id_transaksi_inventaris'];?>" name="showhide">
-                <div class="box-body">
+        <div class="panel panel-default" id="createtransaksiinventaris<?php echo $keyinv['id_transaksi_inventaris'];?>" name="createtransaksiinventaris">
+          <div class="panel-heading" role="tab" id="heading<?php echo $keyinv['id_transaksi_inventaris'];?>">
+            <h4 class="panel-title">
+              <i class="glyphicon glyphicon-trash" onclick='delete_jurnalpenyesuaian("<?php echo $keyinv['id_transaksi_inventaris'];?>")'></i> 
+              <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $keyinv['id_transaksi_inventaris'];?>" aria-expanded="false" aria-controls="collapse<?php echo $keyinv['id_transaksi_inventaris'];?>">
+                <font size="4"><b><?php echo $keyinv['nama_barang'] ?></b></font>
+              </a>
+            </h4>
+          </div>
+          <div id="collapse<?php echo $keyinv['id_transaksi_inventaris'];?>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading<?php echo $keyinv['id_transaksi_inventaris'];?>">
+            <div class="panel-body">
+              <div class="box-body">
                   <div class="row">
-                    <div class="col-md-3">
-                      Transaksi Penyusutan
+                    <div class="col-md-12">
+                      <b>Transaksi Penyusutan</b>
                     </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-md-1"></div>
                     <div class="col-md-2">
+                      Awal Periode
+                    </div>
+                    <div class="col-md-9">
                       <div onchange='updatedatadetail("<?php echo $keyinv['id_transaksi_inventaris'];?>","tgl_periode_penyusutan_awal","periode_penyusutan_awal","keu_transaksi_inventaris")' id="tgl_periode_penyusutan_awal<?php echo $keyinv['id_transaksi_inventaris'];?>" name="tgl_periode_penyusutan_awal" value="<?php 
                         if(set_value('tgl_periode_penyusutan_awal')=="" && isset($keyinv['periode_penyusutan_awal'])){
                           echo $keyinv['periode_penyusutan_awal'];
@@ -131,9 +139,14 @@
                         }
                         ?>" ></div>&nbsp;&nbsp;
                     </div>
+                  </div>
+                  <div class="row">
                     <div class="col-md-1">
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-2">
+                      Akhir Periode
+                    </div>
+                    <div class="col-md-9">
                       <div onchange='updatedatadetail("<?php echo $keyinv['id_transaksi_inventaris'];?>","tgl_periode_penyusutan_akhir","periode_penyusutan_akhir","keu_transaksi_inventaris")' id="tgl_periode_penyusutan_akhir<?php echo $keyinv['id_transaksi_inventaris'];?>" name="tgl_periode_penyusutan_akhir" value="<?php 
                         if(set_value('tgl_periode_penyusutan_akhir')=="" && isset($keyinv['periode_penyusutan_akhir'])){
                           echo $keyinv['periode_penyusutan_akhir'];
@@ -157,8 +170,8 @@
                   </div>
                   <div class="row" style="margin: 5px">
                     <div class="col-md-3" style="padding: 5px">Pemakaian Periode Ini</div>
-                    <div class="col-md-5">
-                      <input type="text" onchange='updatedatadetail("<?php echo $keyinv['id_transaksi_inventaris'];?>","pemakaian_period","pemakaian_period","keu_transaksi_inventaris")' id="pemakaian_period<?php echo $keyinv['id_transaksi_inventaris'];?>" name="pemakaian_period" placeholder="Pemakaian Periode Ini"  class="form-control" value="<?php 
+                    <div class="col-md-2">
+                      <input type="number" onchange='updatedatadetail("<?php echo $keyinv['id_transaksi_inventaris'];?>","pemakaian_period","pemakaian_period","keu_transaksi_inventaris")' id="pemakaian_period<?php echo $keyinv['id_transaksi_inventaris'];?>" name="pemakaian_period" placeholder="Pemakaian Periode Ini"  class="form-control" value="<?php 
                         if(set_value('pemakaian_period')=="" && isset($keyinv['pemakaian_period'])){
                           echo $keyinv['pemakaian_period'];
                         }else{
@@ -166,17 +179,18 @@
                         }
                         ?>" />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-7"  style="padding: 5px">
                       Jam
                     </div>
                   </div>
+                  <br>
                   <div class="row" style="margin: 5px">
-                    <div class="col-md-6" style="padding: 5px">Alat</div>
+                    <div class="col-md-6" style="padding: 5px"><b>Alat</b></div>
                     <div class="col-md-3">
-                      Debit
+                      <b>Debit</b>
                     </div>
                     <div class="col-md-3">
-                      Kredit
+                      <b>Kredit</b>
                     </div>
                   </div>
               <div clas='box-body'>
@@ -199,7 +213,7 @@
 
                     <div class="col-md-3" >
                       <?php if ($keydetail['status']=='debet') { ?>
-                      <input onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","jml_debit","debet","keu_jurnal")' type="text" id="jml_debit<?php echo $keydetail['id_jurnal'];?>" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
+                      <input onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","jml_debit","debet","keu_jurnal")' type="number" id="jml_debit<?php echo $keydetail['id_jurnal'];?>" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
                         if(set_value('jml_debit')=="" && isset($keydetail['debet'])){
                           echo $keydetail['debet'];
                         }else{
@@ -210,7 +224,7 @@
                     </div>
                     <div class="col-md-3">
                       <?php if ($keydetail['status']=='kredit') { ?>
-                      <input onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","jml_kredit","kredit","keu_jurnal")'  type="text" id="jml_kredit<?php echo $keydetail['id_jurnal'];?>" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
+                      <input onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","jml_kredit","kredit","keu_jurnal")'  type="number" id="jml_kredit<?php echo $keydetail['id_jurnal'];?>" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
                         if(set_value('jml_kredit')=="" && isset($keydetail['kredit'])){
                           echo $keydetail['kredit'];
                         }else{
@@ -223,9 +237,9 @@
               <?php } ?>
               </div>
                   <div class="row" style="margin: 5px">
-                    <div class="col-md-6" style="padding: 5px">Total</div>
+                    <div class="col-md-6" style="padding: 5px"><b>Total</b></div>
                     <div class="col-md-3">
-                      <input type="text" disabled="disabled" id="totaljml_debit<?php echo $keyinv['id_transaksi_inventaris'];?>" name="totaljml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
+                      <input type="number" disabled="disabled" id="totaljml_debit<?php echo $keyinv['id_transaksi_inventaris'];?>" name="totaljml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
                         if(set_value('totaljml_debit')=="" && isset($keyinv['totaldebet'])){
                           echo $keyinv['totaldebet'];
                         }else{
@@ -234,7 +248,7 @@
                         ?>" />
                     </div>
                     <div class="col-md-3">
-                      <input type="text" disabled="disabled" id="totaljml_kredit<?php echo $keyinv['id_transaksi_inventaris'];?>" name="totaljml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
+                      <input type="number" disabled="disabled" id="totaljml_kredit<?php echo $keyinv['id_transaksi_inventaris'];?>" name="totaljml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
                         if(set_value('totaljml_kredit')=="" && isset($keyinv['totalkredit'])){
                           echo $keyinv['totalkredit'];
                         }else{
@@ -248,6 +262,7 @@
                 </div>
               </div>
             </div>
+          </div>
         <?php } ?>   
     </div>  
 <!--show hide-->
@@ -266,6 +281,7 @@
 </div>
 <script type="text/javascript">
 $(function(){
+  $('.collapse').collapse()
   <?php if (count($getallinventaris) > 0) { ?>
     $("[name='tgl_periode_penyusutan_awal']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
     $("[name='tgl_periode_penyusutan_akhir']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
@@ -308,23 +324,23 @@ function add_datainventaris(){
   //     addinventaris(data);
   // });
 }
-
 function addinventaris(data){
   var obj = $.parseJSON(data);
   var form_create_data ='';
   var form_create_detail ='';
   $.each(obj, function(key,value) {
-    form_create_data += '<div id="createtransaksiinventaris'+value.id_transaksi_inventaris+'" name="createtransaksiinventaris">\
-              <div class="row" style="border-bottom:solid #3333ff;">\
-                 <div class="col-md-1" style="padding:5px"><i class="glyphicon glyphicon-trash" onclick="delete_jurnalpenyesuaian(\''+value.id_transaksi_inventaris+'\')"></i></div>\
-                 <div class="col-md-10"><font size="4"><b>'+value.nama_barang+'</b></font></div>\
-                 <div class="col-md-1">\
-                      <b><i  id="showdown'+value.id_transaksi_inventaris+'" name="showdown" class="glyphicon glyphicon-chevron-down" onclick="showdowndata(\''+value.id_transaksi_inventaris+'\')"></i></b>\
-                    <b><i id="showup'+value.id_transaksi_inventaris+' name="showup" class="glyphicon glyphicon-chevron-up" onclick="showupdata(\''+value.id_transaksi_inventaris+'\')"></i></b>\
-                 </div>\
+
+    form_create_data += '<div class="panel panel-default" id="createtransaksiinventaris'+value.id_transaksi_inventaris+'" name="createtransaksiinventaris">\
+              <div class="panel-heading" role="tab" id="heading'+value.id_transaksi_inventaris+'">\
+                <h4 class="panel-title">\
+                <i class="glyphicon glyphicon-trash" onclick="delete_jurnalpenyesuaian(\''+value.id_transaksi_inventaris+'\')"></i>\
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse'+value.id_transaksi_inventaris+'" aria-expanded="false" aria-controls="collapse'+value.id_transaksi_inventaris+'">\
+                    <font size="4"><b>'+value.nama_barang+'</b></font>\
+                  </a>\
+                </h4>\
               </div>\
-              <div id="showhide'+value.id_transaksi_inventaris+'" name="showhide">\
-                <div class="box-body">\
+              <div id="collapse'+value.id_transaksi_inventaris+'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading'+value.id_transaksi_inventaris+'">\
+                <div class="panel-body">\
                   <div class="row">\
                     <div class="col-md-3">\
                       Transaksi Penyusutan\
@@ -346,20 +362,20 @@ function addinventaris(data){
                   </div>\
                   <div class="row" style="margin: 5px">\
                     <div class="col-md-3" style="padding: 5px">Pemakaian Periode Ini</div>\
-                    <div class="col-md-5">\
-                      <input type="text" onchange="updatedatadetail(\''+value.id_transaksi_inventaris+'\',\'pemakaian_period\',\'pemakaian_period\',\'keu_transaksi_inventaris\')" id="pemakaian_period'+value.id_transaksi_inventaris+'" name="pemakaian_period" placeholder="Pemakaian Periode Ini"  class="form-control" value="'+value.pemakaian_period+'" />\
+                    <div class="col-md-2">\
+                      <input type="number" onchange="updatedatadetail(\''+value.id_transaksi_inventaris+'\',\'pemakaian_period\',\'pemakaian_period\',\'keu_transaksi_inventaris\')" id="pemakaian_period'+value.id_transaksi_inventaris+'" name="pemakaian_period" placeholder="Pemakaian Periode Ini"  class="form-control" value="'+value.pemakaian_period+'" />\
                     </div>\
-                    <div class="col-md-4">\
+                    <div class="col-md-7">\
                       Jam\
                     </div>\
                   </div>\
                   <div class="row" style="margin: 5px">\
-                    <div class="col-md-6" style="padding: 5px">Alat</div>\
+                    <div class="col-md-6" style="padding: 5px"><b>Alat</b></div>\
                     <div class="col-md-3">\
-                      Debit\
+                      <b>Debit</b>\
                     </div>\
                     <div class="col-md-3">\
-                      Kredit\
+                      <b>Kredit</b>\
                     </div>\
                   </div>\
                   <div clas="box-body">';
@@ -377,13 +393,13 @@ function addinventaris(data){
                     </div>\
                     <div class="col-md-3" >';
                   if (valuechildern.status=='debet') {
-                    form_create_data+='<input  onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'jml_debit\',\'debet\',\'keu_jurnal\')" type="text" id="jml_debit'+valuechildern.id_jurnal+'" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="'+valuechildern.debet+'" />';
+                    form_create_data+='<input  onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'jml_debit\',\'debet\',\'keu_jurnal\')" type="number" id="jml_debit'+valuechildern.id_jurnal+'" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="'+valuechildern.debet+'" />';
                   }
                   form_create_data+='</div>\
                         <div class="col-md-3">';
 
                   if (valuechildern.status=='kredit') {
-                      form_create_data+='<input onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'jml_kredit\',\'kredit\',\'keu_jurnal\')" type="text" id="jml_kredit'+valuechildern.id_jurnal+'" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="'+valuechildern.kredit+'" />';
+                      form_create_data+='<input onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'jml_kredit\',\'kredit\',\'keu_jurnal\')" type="number" id="jml_kredit'+valuechildern.id_jurnal+'" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="'+valuechildern.kredit+'" />';
                   }
                   form_create_data+='</div>\
                   </div>';
@@ -391,12 +407,12 @@ function addinventaris(data){
         });
     form_create_data +='</div>\
                     <div class="row" style="margin: 5px">\
-                    <div class="col-md-6" style="padding: 5px">Total</div>\
+                    <div class="col-md-6" style="padding: 5px"><b>Total</b></div>\
                     <div class="col-md-3">\
-                      <input disabled="disabled" type="text" id="totaljml_debit'+value.id_transaksi_inventaris+'" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="'+value.totaldebet+'" />\
+                      <input disabled="disabled" type="number" id="totaljml_debit'+value.id_transaksi_inventaris+'" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="'+value.totaldebet+'" />\
                     </div>\
                     <div class="col-md-3">\
-                      <input disabled="disabled" type="text" id="totaljml_kredit'+value.id_transaksi_inventaris+'" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="'+value.totalkredit+'" />\
+                      <input disabled="disabled" type="number" id="totaljml_kredit'+value.id_transaksi_inventaris+'" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="'+value.totalkredit+'" />\
                     </div>\
                   </div>\
                 </div>\
@@ -404,7 +420,7 @@ function addinventaris(data){
             </div>';
 
   });
-  $('#jurnaltrasaksidata_penyusutan').append(form_create_data);
+  $('#accordion').append(form_create_data);
   $("[name='showhide']").hide();
   $("[name='showdown']").hide();
   $("[name='showup']").show();

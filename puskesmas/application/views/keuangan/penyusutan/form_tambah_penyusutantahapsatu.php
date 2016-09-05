@@ -25,16 +25,8 @@
                   Pengadaan 
                 </div>
                 <div class="col-md-8">
-                  <div id='tgl' name="pengadaan_tgl" value="<?=date("m/d/Y")?>" >
+                  <div id='pengadaan_tgl' name="pengadaan_tgl">
                   </div>
-                </div>
-              </div>
-              <div class="row" style="margin: 5px">
-                <div class="col-md-4" style="padding: 5px">
-                 Kata
-                </div>
-                <div class="col-md-8">
-                  <input type="text" class="form-control" name="kata" placeholder="Filter Kata" >
                 </div>
               </div>
               <div class="row" style="margin: 5px">
@@ -74,55 +66,21 @@
    $("[name='btn_keuangan_close']").click(function(){
         $("#popup_keuangan_penyusutan").jqxWindow('close');
     });
-
-    $("[name='btn_keuangan_add_sts']").click(function(){
-        var data = new FormData();
-        $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
-        $('#biodata_notice').show();
-
-        data.append('id_sts',          $("[name='sts_id']").val());
-        data.append('nomor',           $("[name='sts_nomor']").val());
-        data.append('tgl',             $("[name='sts_tgl']").val());
-        
-        $.ajax({
-            cache : false,
-            contentType : false,
-            processData : false,
-            type : 'POST',
-            url : '<?php echo base_url()."keuangan/sts/add_sts"   ?>',
-            data : data ,
-            success : function(response){
-              a = response.split(" | ");
-              if(a[0]=="OK"){
-                $("#popup_keuangan_penyusutan").jqxWindow('close');
-                alert("Data STS berhasil disimpan.");
-                $("#jqxgridPilih").jqxGrid('updatebounddata', 'cells');
-                window.location.href="<?php echo base_url().'keuangan/sts/detail';?>/" + a[1];
-              }else{
-                $('#popup_keuangan_sts_content').html(response);
-              }
-            }
-         });
-
-        return false;
-    });
   });
  var sourcepilih = {
       datatype: "json",
       type    : "POST",
       datafields: [
-      { name: 'id_inventaris', type: 'string'},
-      { name: 'nama_inventaris', type: 'string'},
-      { name: 'metode', type: 'string'},
-      { name: 'nilai_awal', type: 'string'},
-      { name: 'nilai_akhir',type: 'string'},   
-      { name: 'status',type: 'string'},
-      { name: 'edit', type: 'number'},
-      { name: 'id', type: 'number'},
+      { name: 'nama_barang', type: 'string'},
+      { name: 'id_mst_inv_barang', type: 'string'},
+      { name: 'id_inventaris_barang', type: 'string'},
+      { name: 'register',type: 'string'},   
+      { name: 'id_cl_phc',type: 'string'}, 
+      { name: 'harga',type: 'string'}, 
       { name: 'delete', type: 'number'},
       { name: 'view', type: 'number'},
   ],
-  url: "<?php echo site_url('keuangan/penyusutan/json'); ?>",
+  url: "<?php echo site_url('keuangan/penyusutan/json_detail'); ?>",
   cache: false,
   updaterow: function (rowid, rowdata, commit) {
       },
@@ -161,15 +119,34 @@
           return obj.data;    
       },
       columns: [
-          { text: 'Pilih',filtertype: 'none', align:'center', datafield: 'id', columntype: 'checkbox', width: '8%' },
-          { text: 'ID Inventaris', datafield: 'id_inventaris', columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '15%',cellsalign: 'center'},
-          { text: 'Nama Inventaris', datafield: 'nama_inventaris', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '47%'},
-          { text: 'Status', datafield: 'status', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'center', width: '30%' }
+          { text: 'Pilih', align: 'center', filtertype: 'none', sortable: false, width: '8%', cellsrenderer: function (row) {
+            var dataRecord = $("#jqxgridPilih").jqxGrid('getrowdata', row);
+          return "<div style='width:100%;padding-top:2px;text-align:center'><input type='checkbox' name='idinv[]' value="+dataRecord.id_inventaris_barang+" ></div>";
+                 }
+                },
+          { text: 'ID Inventaris', datafield: 'id_inventaris_barang', columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '15%',cellsalign: 'center'},
+          { text: 'Nama Inventaris', datafield: 'nama_barang', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '47%'},
+          { text: 'Status', datafield: 'status', columntype: 'textbox', filtertype: 'none', align: 'center', cellsalign: 'center', width: '30%' }
       ]
   });
-function addstepdua(id) {
-  $.get("<?php echo base_url().'keuangan/penyusutan/addstepdua' ?>/", function(data) {
+function addsteplanjut(id) {
+  $.post("<?php echo base_url().'keuangan/penyusutan/add_inventaris'?>/",{'dataceklis':id},function(data) {
     $("#popup_keuangan_penyusutan_content").html(data);
   });
+}
+function addstepdua(id) { 
+    var values = new Array(); 
+    $.each($("input[name='idinv[]']:checked"), function() {
+      values.push($(this).val());   
+    });
+    data_barang=$("#pengadaan_tgl").val()+'_tu_';
+    if(values.length > 0){
+      for(i=0; i<values.length; i++){
+        data_barang = data_barang+values[i]+"_tr_";
+      }
+      addsteplanjut(data_barang);
+    }else{
+      alert('Silahkan Pilih Barang Terlebih Dahulu');
+    }
 }
 </script>

@@ -1,5 +1,5 @@
 <?php
-class Jurnal_model extends CI_Model {
+class Neracalajur_model extends CI_Model {
 
     function __construct() {
         parent::__construct();
@@ -216,7 +216,7 @@ class Jurnal_model extends CI_Model {
         {
             $nourut = "0001";
         }
-        $kodpus=$this->session->userdata('puskesmas');
+        $kodpus='P'.$this->session->userdata('puskesmas');
         return $kodpus.date("Y").date('m').$nourut;
     }
     function delete_kreditdebet($tipe){
@@ -257,7 +257,7 @@ class Jurnal_model extends CI_Model {
         return $query->result();
     }
     function idtrasaksi(){
-        $kodpus = $this->session->userdata('puskesmas');
+        $kodpus = 'P'.$this->session->userdata('puskesmas');
         $q = $this->db->query("select MAX(RIGHT(id_transaksi,4)) as kd_max from keu_transaksi");
         $nourut="";
         if($q->num_rows()>0)
@@ -283,7 +283,7 @@ class Jurnal_model extends CI_Model {
         return $this->db->get('mst_keu_transaksi_item')->result_array();
     }
     function addjurnal($id){
-        $kodpus = $this->session->userdata('puskesmas');
+        $kodpus = 'P'.$this->session->userdata('puskesmas');
         $dat = $this->mst_keu_tran($id);
         $datakeu_transaksipen=array(
                         'id_transaksi'=>$this->idtrasaksi(),
