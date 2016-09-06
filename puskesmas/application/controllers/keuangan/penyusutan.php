@@ -307,114 +307,98 @@ class Penyusutan extends CI_Controller {
 		$this->authentication->verify('keuangan','show');
 
 
-		// if($_POST) {
-		// 	$fil = $this->input->post('filterscount');
-		// 	$ord = $this->input->post('sortdatafield');
+		if($_POST) {
+			$fil = $this->input->post('filterscount');
+			$ord = $this->input->post('sortdatafield');
 
-		// 	for($i=0;$i<$fil;$i++) {
-		// 		$field = $this->input->post('filterdatafield'.$i);
-		// 		$value = $this->input->post('filtervalue'.$i);
+			for($i=0;$i<$fil;$i++) {
+				$field = $this->input->post('filterdatafield'.$i);
+				$value = $this->input->post('filtervalue'.$i);
 
-		// 		if($field == 'tgl' ) {
-		// 			$value = date("Y-m-d",strtotime($value));
+				if($field == 'tgl' ) {
+					$value = date("Y-m-d",strtotime($value));
 
-		// 			$this->db->where($field,$value);
-		// 		}elseif($field != 'year') {
-		// 			$this->db->like($field,$value);
-		// 		}
-		// 	}
+					$this->db->where($field,$value);
+				}elseif($field != 'year') {
+					$this->db->like($field,$value);
+				}
+			}
 
-		// 	if(!empty($ord)) {
-		// 		$this->db->order_by($ord, $this->input->post('sortorder'));
-		// 	}
-		// }
+			if(!empty($ord)) {
+				$this->db->order_by($ord, $this->input->post('sortorder'));
+			}
+		}
 	
-		// if($this->session->userdata('filter_bulan')!=''){
-		// 	if($this->session->userdata('filter_bulan')=="all"){
+		if($this->session->userdata('filter_puskesmas')!=''){
+			if($this->session->userdata('filter_puskesmas')=="all"){
 
-		// 	}else{
-		// 		$this->db->where("MONTH(tgl)",$this->session->userdata('filter_bulan'));
-		// 	}
-		// }else{
-		// 		$this->db->where("MONTH(tgl)",date("m"));
-		// }
-		// if($this->session->userdata('filter_tahun')!=''){
-		// 	if($this->session->userdata('filter_tahun')=="all"){
-
-		// 	}else{
-		// 		$this->db->where("YEAR(tgl)",$this->session->userdata('filter_tahun'));
-		// 	}
-		// }else{
-		// 	$this->db->where("YEAR(tgl)",date("Y"));
-		// }
+			}else{
+				$this->db->where("id_cl_phc",$this->session->userdata('filter_puskesmas'));
+			}
+		}else{
+				$this->db->where("id_cl_phc",'P'.$this->session->userdata('puskesmas'));
+		}
 	
-		// $rows_all = $this->penyusutan_model->get_data();
+		$rows_all = $this->penyusutan_model->get_dataedit();
 
-		// if($_POST) {
-		// 	$fil = $this->input->post('filterscount');
-		// 	$ord = $this->input->post('sortdatafield');
+		if($_POST) {
+			$fil = $this->input->post('filterscount');
+			$ord = $this->input->post('sortdatafield');
 
-		// 	for($i=0;$i<$fil;$i++) {
-		// 		$field = $this->input->post('filterdatafield'.$i);
-		// 		$value = $this->input->post('filtervalue'.$i);
+			for($i=0;$i<$fil;$i++) {
+				$field = $this->input->post('filterdatafield'.$i);
+				$value = $this->input->post('filtervalue'.$i);
 
-		// 		if($field == 'tgl' ) {
-		// 			$value = date("Y-m-d",strtotime($value));
+				if($field == 'tgl' ) {
+					$value = date("Y-m-d",strtotime($value));
 
-		// 			$this->db->where($field,$value);
-		// 		}elseif($field != 'year') {
-		// 			$this->db->like($field,$value);
-		// 		}
-		// 	}
+					$this->db->where($field,$value);
+				}elseif($field != 'year') {
+					$this->db->like($field,$value);
+				}
+			}
 
-		// 	if(!empty($ord)) {
-		// 		$this->db->order_by($ord, $this->input->post('sortorder'));
-		// 	}
-		// }
+			if(!empty($ord)) {
+				$this->db->order_by($ord, $this->input->post('sortorder'));
+			}
+		}
 		
-		// if($this->session->userdata('filter_bulan')!=''){
-		// 	if($this->session->userdata('filter_bulan')=="all"){
+		if($this->session->userdata('filter_puskesmas')!=''){
+			if($this->session->userdata('filter_puskesmas')=="all"){
 
-		// 	}else{
-		// 		$this->db->where("MONTH(tgl)",$this->session->userdata('filter_bulan'));
-		// 	}
-		// }else{
-		// 	$this->db->where("MONTH(tgl)",date("m"));
-		// }
-		// if($this->session->userdata('filter_tahun')!=''){
-		// 	if($this->session->userdata('filter_tahun')=="all"){
-
-		// 	}else{
-		// 		$this->db->where("YEAR(tgl)",$this->session->userdata('filter_tahun'));
-		// 	}
-		// }else{
-		// 	$this->db->where("YEAR(tgl)",date("Y"));
-		// }
+			}else{
+				$this->db->where("id_cl_phc",$this->session->userdata('filter_puskesmas'));
+			}
+		}else{
+				$this->db->where("id_cl_phc",'P'.$this->session->userdata('puskesmas'));
+		}
 		
-		// $rows = $this->penyusutan_model->get_data($this->input->post('recordstartindex'), $this->input->post('pagesize'));
-		// $data = array();
+		$rows = $this->penyusutan_model->get_dataedit($this->input->post('recordstartindex'), $this->input->post('pagesize'));
+		$data = array();
 
-		// 	foreach($rows as $act) {
-	 // 		$data[] = array(
-		// 		'id_sts'   => $act->id_sts,
-		// 		'tgl'	   => date("d-m-Y",strtotime($act->tgl)),
-		// 		'ttd_penerima_nama'	=> $act->ttd_penerima_nama,
-		// 		'nomor'	   => $act->nomor,
-		// 		'total'    => $act->total,
-		// 		'status'   => ucwords($act->status),
-		// 		'edit'	   => 1,
-		// 		'delete'   => 1
-		// 	);
-		// }
-
-		$data = array(
-			'0' => array('id_inventaris' => '1','nama_inventaris' => 'Mobil Tesla - Model S','akun_inventaris' => '2121212 - Alat','akun_beban' => '62710 - Biaya Penyusutan','metode' => 'Jumlah Angka Tahun','nilai_ekonomis'=> 5,'nilai_sisa'   => '200000000'),
-			'1' => array('id_inventaris' => '2','nama_inventaris' => 'Komputer Mac Pro','akun_inventaris' => '211216 - Komputer','akun_beban' => '62710 - Biaya Penyusutan','metode' => 'Saldo Menurun','nilai_ekonomis'=> 5,'nilai_sisa'   => ''),
-			'2' => array('id_inventaris' => '3','nama_inventaris' => 'Bangunan Gedung A','akun_inventaris' => '2121212 - Alat','akun_beban' => '62710 - Biaya Penyusutan','metode' => 'Faris Lurus','nilai_ekonomis'=> 5,'nilai_sisa'   => '0'),
-			'3' => array('id_inventaris' => '4','nama_inventaris' => 'Tanah - Tanah Jalan X','akun_inventaris' => '2121212 - Alat','akun_beban' => '62710 - Biaya Penyusutan','metode' => 'Tanpa Penyusutan','nilai_ekonomis'=> '','nilai_sisa'   => ''),
-			'4' => array('id_inventaris' => '5','nama_inventaris' => 'Alat Kesehatan _ MRI','akun_inventaris' => '2121212 - Alat','akun_beban' => '62710 - Biaya Penyusutan','metode' => 'Manual','nilai_ekonomis'=> 5,'nilai_sisa'   => '0'),
+			foreach($rows as $act) {
+	 		$data[] = array(
+				'nama_barang'   		=> $act->nama_barang,
+				'id_mst_inv_barang'	   	=> $act->id_mst_inv_barang,
+				'id_inventaris_barang'	=> $act->id_inventaris_barang,
+				'register'    			=> $act->register,
+				'id_cl_phc'   			=> $act->id_cl_phc,
+				'harga'   				=> $act->harga,
+				'namaakun'   			=> $act->namaakun,
+				'kodeakun'   			=> $act->kodeakun,
+				'namaakumulasi'   		=> $act->namaakumulasi,
+				'kodeakumulasi'   		=> $act->kodeakumulasi,
+				'namapenyusutan'   		=> $act->namapenyusutan,
+				'kodenamaakun'   		=> $act->kodeakun.' - '.$act->namaakun,
+				'kodenamaakumulasi'   	=> $act->kodeakumulasi.' - '.$act->namaakumulasi,
+				'nilai_ekonomis'   		=> $act->nilai_ekonomis,
+				'nilai_sisa'   			=> $act->nilai_sisa,
+				'edit'	   => 1,
+				'delete'   => 1
 			);
-		$size = sizeof($data);
+		}
+
+		$size = sizeof($rows_all);
 		$json = array(
 			'TotalRows' => (int) $size,
 			'Rows' => $data
@@ -432,30 +416,14 @@ class Penyusutan extends CI_Controller {
 	}
 	function arrayakuninventaris($value='')
 	{
-		$data = array(
-			'0' => array('value'=>'212121','label' => '212121 - Alat'), 
-			'1' => array('value'=>'21126','label' =>'21126 - komputer')
-		);
-		echo json_encode($data);
-	}
-	function arrayakunbeban($value='')
-	{
-		$data = array(
-			'0' => array('value'=>'62710','label' => '62710 - Biaya Penyusutan'), 
-			'1' => array('value'=>'62720','label' => '62720 - Biaya Tambahan')
-		);
+		$data = $this->penyusutan_model->getallnilaiakun();
 		echo json_encode($data);
 	}
 	function arraymetodepenyusutan($value='')
 	{
-		$data = array(
-			'0' => array('value'=>'1','label' => 'Jumlah Angka Tahun'), 
-			'1' => array('value'=>'2','label' => 'Saldo Menurun'),
-			'2' => array('value'=>'3','label' => 'Garis Lurus'),
-			'3' => array('value'=>'4','label' => 'Tanpa Penyusutan'),
-			'4' => array('value'=>'5','label' => 'Manual'),
-			'5' => array('value'=>'5','label' => 'Metode Unit Produksi'),
-		);
+		$this->db->where('aktif','1');
+		$this->db->select('id_mst_metode_penyusutan,nama');
+		$data = $this->db->get('mst_keu_metode_penyusutan')->result_array();
 		echo json_encode($data);
 	}
 	function add_inventaris(){
@@ -513,28 +481,19 @@ class Penyusutan extends CI_Controller {
 	function addsteptiga($id=0){
 		$this->authentication->verify('keuangan','add');
 
-	    $this->form_validation->set_rules('id_sts', 'ID STS', 'trim|required');
+	    $this->form_validation->set_rules('id_transaksi', 'ID Transaksi', 'trim|required');
 
-		$data['id_sts']	   			    = "";
+	    $data 							= $this->penyusutan_model->gettransaksi($id);
+	    $data['getalldata']		   	    = $this->penyusutan_model->getdatajurnal($id);
+	    $data['getakun']				= $this->penyusutan_model->getallnilaiakun();
 		$data['alert_form']		   	    = "";
 	    $data['action']					= "add";
 	    $data['form_title']				= "Add Inventaris - Step 3";
-	    $data['dataedit']				= array(
-	    										'0' => array('id_inventaris' => '21212121','judul' =>'Mobil Tesla - Model S','akun_inventaris'=>'211266','nilai_ekonomis'=>'2','akun_bebanpenyusustan'=>'62710','metode_penyusustan'=>'0'),
-	    										'1' => array('id_inventaris' => '32323232','judul' =>'Komputer - Mac Pro','akun_inventaris'=>'21122','nilai_ekonomis'=>'10','akun_bebanpenyusustan'=>'62711','metode_penyusustan'=>'1'),
-	    									);
-	    $data['nilaiakun_inventaris']	= array('0' =>array('key' => '21122', 'value'=>'21122 - Alat Angkutan'),
-	    										'1' =>array('key' => '211266', 'value'=>'211266 - Alat Komputer'));
-	    $data['nilaiakun_bebanpenyusustan']	= array('0' =>array('key' => '62710','value'=>'62710 - Biaya Penyusustan'),
-	    										 	'1' =>array('key' => '62711','value'=>'62711 - Biaya Tambahan'));
-	    $data['nilaimetode_penyusustan']	= array('0' =>array('key' => '1','value'=>'Saldo Menurun'),
-	    										 	'1' =>array('key' => '2','value'=>'Metode Garis Lurus'),
-	    										 	'2' =>array('key' => '3','value'=>'Tanpa Penyusutan'));
+	    
 		if($this->form_validation->run()== FALSE){
 			die($this->parser->parse("keuangan/penyusutan/form_tambah_penyusutantahaptiga",$data));
-		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){
-				$id=$this->penyusutan_model->add_sts();
-				die("OK | $id");
+		}elseif($this->penyusutan_model->simpandatatransaksi()){
+				die("OK");
 		}else{
 			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
 			redirect(base_url()."keuangan/penyusutan/addsteptiga");
@@ -561,5 +520,8 @@ class Penyusutan extends CI_Controller {
 		if($_POST) {
 			$this->session->set_userdata('filter_nomo_kontrak',$this->input->post('nomor'));
 		}
+	}
+	function updatestatusakuninventaris(){
+
 	}
 }

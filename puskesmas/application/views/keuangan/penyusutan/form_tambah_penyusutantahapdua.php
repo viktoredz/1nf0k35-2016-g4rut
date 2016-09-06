@@ -85,7 +85,7 @@
                  Nilai Ekonomis
                 </div>
                 <div class="col-md-8">
-                  <input type="text" class="form-control" name="nilai_ekonomis" id="nilai_ekonomis<?php echo $i;?>" placeholder="Nilai Ekonomis" value="<?php 
+                  <input type="number" class="form-control" name="nilai_ekonomis" id="nilai_ekonomis<?php echo $i;?>" placeholder="Nilai Ekonomis" value="<?php 
                       if (isset($key['nilai_ekonomis']) && set_value('nilai_ekonomis')) {
                         echo $key['nilai_ekonomis'];
                       }else{
@@ -123,6 +123,7 @@
           data.append('id_mst_akun_akumulasi<?php echo $no;?>', $("#akun_bebanpenyusustan<?php echo $no;?>").val());
           data.append('id_mst_metode_penyusutan<?php echo $no;?>', $("#metode_penyusustan<?php echo $no;?>").val());
           data.append('nilai_ekonomis<?php echo $no;?>', $("#nilai_ekonomis<?php echo $no;?>").val());
+          data.append('nama_barang<?php echo $no;?>', "<?php echo $datain['nama_barang']?>");
         <?php $no++;} ?>
           data.append('jumlahdata', "<?php echo count($datainventaris) ?>");
           if(document.getElementById('transaksitambah').checked) {

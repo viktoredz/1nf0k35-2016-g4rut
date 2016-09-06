@@ -19,6 +19,7 @@
       <div class="box-body">
             <div class="div-grid">
                 <div id="jqxgridEdit"></div>
+                <div style="font-size: 13px; margin-top: 20px; font-family: Verdana, Geneva, 'DejaVu Sans', sans-serif;" id="eventLog"></div>
             </div>
         </div>
       </div>
@@ -43,13 +44,17 @@
             datatype: "json",
             type    : "POST",
             datafields: [
-            { name: 'id_inventaris', type: 'string'},
-            { name: 'nama_inventaris', type: 'string'},
-            { name: 'akun_inventaris', type: 'string'},
-            { name: 'akun_beban', type: 'string'},
-            { name: 'metode',type: 'string'},   
-            { name: 'nilai_ekonomis', type: 'number'},
-            { name: 'nilai_sisa', type: 'number'},
+            { name: 'nama_barang', type: 'string'},
+            { name: 'id_mst_inv_barang', type: 'string'},
+            { name: 'id_inventaris_barang', type: 'string'},
+            { name: 'register',type: 'string'},   
+            { name: 'id_cl_phc',type: 'string'}, 
+            { name: 'harga',type: 'string'},
+            { name: 'kodenamaakumulasi',type: 'string'},
+            { name: 'kodenamaakun',type: 'string'},
+            { name: 'namapenyusutan',type: 'string'},
+            { name: 'nilai_ekonomis',type: 'string'},
+            { name: 'nilai_sisa',type: 'number'}
         ],
         url: "<?php echo site_url('keuangan/penyusutan/json_edit'); ?>",
         cache: false,
@@ -84,38 +89,25 @@
              datatype: "json",
             type    : "POST",
              datafields: [
-                 { name: 'label', type: 'string' },
-                 { name: 'value', type: 'string' }
+                 { name: 'nama_akun', type: 'string' },
+                 { name: 'id_mst_akun', type: 'number' }
              ],
              url: "<?php echo site_url('keuangan/penyusutan/arrayakuninventaris'); ?>",
         };
         var akuninventarisAdapter = new $.jqx.dataAdapter(akuninventaris, {
             autoBind: true
         });
-        var akunbeban =
+        var penyusutan =
         {
              datatype: "json",
             type    : "POST",
              datafields: [
-                 { name: 'label', type: 'string' },
-                 { name: 'value', type: 'string' }
+                 { name: 'sds', type: 'string' },
+                 { name: 'sdsds', type: 'string' }
              ],
-             url: "<?php echo site_url('keuangan/penyusutan/arrayakunbeban'); ?>",
+             url: "<?php echo site_url('keuangan/penyusutan/arraypenyusutan'); ?>",
         };
-        var akunbebanAdapter = new $.jqx.dataAdapter(akunbeban, {
-            autoBind: true
-        });
-        var metodepenyusutan =
-        {
-             datatype: "json",
-            type    : "POST",
-             datafields: [
-                 { name: 'label', type: 'string' },
-                 { name: 'value', type: 'string' }
-             ],
-             url: "<?php echo site_url('keuangan/penyusutan/arraymetodepenyusutan'); ?>",
-        };
-        var metodepenyusutanAdapter = new $.jqx.dataAdapter(metodepenyusutan, {
+        var penyusutanAdapter = new $.jqx.dataAdapter(penyusutan, {
             autoBind: true
         });
         $("#jqxgridEdit").jqxGrid(
@@ -130,48 +122,89 @@
                 return obj.data;    
             },
             columns: [
-                { text: 'ID Inventaris', datafield: 'id_inventaris',editable:false, columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '8%',cellsalign: 'center'},
-                { text: 'Nama Inventaris', datafield: 'nama_inventaris', editable:false, columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '17%'},
-                { text: '<i class="fa fa-pencil-square-o"></i> Akun Inventaris', datafield: 'akun_inventaris',  filtertype: 'textbox', align: 'center',  width: '15%', columntype: 'dropdownlist',
-                        createeditor: function (row, value, editor) {
-                            editor.jqxDropDownList({ source: akuninventarisAdapter, displayMember: 'label', valueMember: 'value' });
+                { text: 'ID Inventaris', datafield: 'id_inventaris_barang',editable:false, columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '8%',cellsalign: 'center'},
+                { text: 'Nama Inventaris', datafield: 'nama_barang', editable:false, columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '17%'},
+                { text: '<i class="fa fa-pencil-square-o"></i> Akun Inventaris', datafield: 'kodenamaakun',  filtertype: 'textbox', align: 'center',  width: '15%', columntype: 'dropdownlist',
+                    createEditor: function (row, cellvalue, editor, cellText, width, height) {
+                       editor.jqxDropDownList({autoDropDownHeight: true,source: akuninventarisAdapter, displayMember: "nama_akun", valueMember: "id_mst_akun"});
+
+                   },
+                   initEditor: function (row, cellvalue, editor, celltext, width, height) {
+                       editor.jqxDropDownList('selectItem', cellvalue);
+                   },
+                   getEditorValue: function (row, cellvalue, editor) {
+                       editor.val();
+                        if(editor.val() % 1 === 0){\
+                            var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
+                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatestatusakuninventaris', {id_jabatan:editor.val()}, function( data ) {
+                                if(data != 0){
+                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
+                                }else{
+                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                                }
+                            });
+                        }else{
+                           $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
                         }
+                   },
+
                 },
-                { text: '<i class="fa fa-pencil-square-o"></i> Akun Beban Penyusutan', datafield: 'akun_beban', filtertype: 'textbox', align: 'center',  width: '15%', columntype: 'dropdownlist',
-                        createeditor: function (row, value, editor) {
-                            editor.jqxDropDownList({ source: akunbebanAdapter, displayMember: 'label', valueMember: 'value' });
+                { text: '<i class="fa fa-pencil-square-o"></i> Akun Beban Penyusutan', datafield: 'kodenamaakumulasi', filtertype: 'textbox', align: 'center',  width: '15%', columntype: 'dropdownlist',
+                    createEditor: function (row, cellvalue, editor, cellText, width, height) {
+                       editor.jqxDropDownList({autoDropDownHeight: true,source: akuninventarisAdapter, displayMember: "nama_akun", valueMember: "id_mst_akun"});
+
+                   },
+                   initEditor: function (row, cellvalue, editor, celltext, width, height) {
+                       editor.jqxDropDownList('selectItem', cellvalue);
+                   },
+                   getEditorValue: function (row, cellvalue, editor) {
+                       editor.val();
+                        if(editor.val() % 1 === 0){\
+                            var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
+                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatestatusakuninventaris', {id_jabatan:editor.val()}, function( data ) {
+                                if(data != 0){
+                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
+                                }else{
+                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                                }
+                            });
+                        }else{
+                           $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
                         }
+                   },
+
                 },
-                { text: '<i class="fa fa-pencil-square-o"></i> Metode Penyusutan', datafield: 'metode', columntype: 'textbox', filtertype: 'textbox', align: 'center', width: '15%', columntype: 'dropdownlist',
-                        createeditor: function (row, value, editor) {
-                            editor.jqxDropDownList({ source: metodepenyusutanAdapter, displayMember: 'label', valueMember: 'value' });
-                        } 
+                { text: '<i class="fa fa-pencil-square-o"></i> Metode Penyusutan', datafield: 'namapenyusutan', columntype: 'textbox', filtertype: 'textbox', align: 'center', width: '15%', columntype: 'dropdownlist',
+                    createEditor: function (row, cellvalue, editor, cellText, width, height) {
+                       editor.jqxDropDownList({autoDropDownHeight: true,source: penyusutanAdapter, displayMember: "nama_penyusutan", valueMember: "id_mst_metode_penyusutan"});
+
+                   },
+                   initEditor: function (row, cellvalue, editor, celltext, width, height) {
+                       editor.jqxDropDownList('selectItem', cellvalue);
+                   },
+                   getEditorValue: function (row, cellvalue, editor) {
+                       editor.val();
+                        if(editor.val() % 1 === 0){
+                            var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
+                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatestatusakuninventaris', {id_jabatan:editor.val()}, function( data ) {
+                                if(data != 0){
+                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
+                                }else{
+                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                                }
+                            });
+                        }else{
+                           $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                        }
+                   },
+
                 },
                 { text: '<i class="fa fa-pencil-square-o"></i> Nilai Ekonomis (Tahun)', datafield: 'nilai_ekonomis', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '15%' },
                 { text: '<i class="fa fa-pencil-square-o"></i> Sisa', datafield: 'nilai_sisa', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '15%'
                 },
             ]
         });
-         $("#jqxgridEdit").on('cellselect', function (event) {
-                var column = $("#jqxgridEdit").jqxGrid('getcolumn', event.args.datafield);
-                var value = $("#jqxgridEdit").jqxGrid('getcellvalue', event.args.rowindex, column.datafield);
-                var displayValue = $("#jqxgridEdit").jqxGrid('getcellvalue', event.args.rowindex, column.displayfield);
-                $("#eventLog").html("<div>Selected Cell<br/>Row: " + event.args.rowindex + ", Column: " + column.text + ", Value: " + value + ", Label: " + displayValue + "</div>");
-            });
-        $("#jqxgridEdit").on('cellendedit', function (event) {
-            var column = $("#jqxgridEdit").jqxGrid('getcolumn', event.args.datafield);
-            if (column.displayfield != column.datafield) {
-                $("#eventLog").html("<div>Cell Edited:<br/>Index: " + event.args.rowindex + ", Column: " + column.text + "<br/>Value: " + event.args.value.value + ", Label: " + event.args.value.label
-                    + "<br/>Old Value: " + event.args.oldvalue.value + ", Old Label: " + event.args.oldvalue.label + "</div>"
-                    );
-            }
-            else {
-                $("#eventLog").html("<div>Cell Edited:<br/>Row: " + event.args.rowindex + ", Column: " + column.text + "<br/>Value: " + event.args.value
-                    + "<br/>Old Value: " + event.args.oldvalue + "</div>"
-                    );
-            }
-        });
-
-
 </script>
 
+
+   

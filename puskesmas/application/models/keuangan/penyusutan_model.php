@@ -13,6 +13,14 @@ class Penyusutan_model extends CI_Model {
     	$this->db->join('get_all_inventaris2','get_all_inventaris2.id_inventaris_barang=keu_inventaris.id_inventaris_barang','left');
         return $this->db->get('keu_inventaris',$limit,$start)->result();
     }
+    function get_dataedit($start=0,$limit=999999,$options=array()){
+    	$this->db->select("get_all_inventaris2.id_mst_inv_barang,get_all_inventaris2.register,get_all_inventaris2.id_cl_phc,keu_inventaris.*,get_all_inventaris2.nama_barang,get_all_inventaris2.harga,mst_keu_akun.kode as kodeakun,mst_keu_akun.uraian as namaakun,akunakumulasi.kode as kodeakumulasi,akunakumulasi.uraian as namaakumulasi,mst_keu_metode_penyusutan.nama as namapenyusutan ");
+    	$this->db->join('mst_keu_akun','mst_keu_akun.id_mst_akun = keu_inventaris.id_mst_akun','left');
+    	$this->db->join('mst_keu_akun akunakumulasi','akunakumulasi.id_mst_akun = keu_inventaris.id_mst_akun_akumulasi','left');
+    	$this->db->join('mst_keu_metode_penyusutan','keu_inventaris.id_mst_metode_penyusutan=mst_keu_metode_penyusutan.id_mst_metode_penyusutan','left');
+    	$this->db->join('get_all_inventaris2','get_all_inventaris2.id_inventaris_barang=keu_inventaris.id_inventaris_barang','left');
+        return $this->db->get('keu_inventaris',$limit,$start)->result();
+    }
     function get_data_inventaris($start=0,$limit=999999,$options=array()){
     	$this->db->select("get_all_inventaris2.*,IF((SELECT `id_inventaris` FROM `keu_inventaris` WHERE id_inventaris_barang=get_all_inventaris2.`id_inventaris_barang` limit 1) IS NULL,'','ditambahkan') AS status,inv_pengadaan.nomor_kontrak,inv_pengadaan.tgl_pengadaan", false);
     	$this->db->join('inv_pengadaan','inv_pengadaan.id_pengadaan = get_all_inventaris2.id_pengadaan','left');
@@ -58,22 +66,12 @@ class Penyusutan_model extends CI_Model {
     		'id_mst_metode_penyusutan'	=> $this->input->post("id_mst_metode_penyusutan$i"),
     		);
     		$this->db->update('keu_inventaris',$datasave,$datawhere);
-
-    		$datatransaksi = array(
-    			'id_transaksi'				=> $this->id_transaksi(),
-    			'tanggal'					=> $this->input->post("id_mst_akun$i"),
-    			'uraian'					=> $this->input->post("uraian"),
-    			'status'					=> $this->input->post("uraian$i"),
-    			'tipe_jurnal'					=> $this->input->post("uraian$i"),
-    			'code_cl_phc'					=> $this->input->post("uraian$i"),
-    			);
-    		$this->db->insert('keu_transaksi',$datatransaksi);
     		$id_invbaru = $datawhere['id_inventaris'].'_tr_'.$data;
     		$uraian = $this->input->post("nama_barang$i").' & '.$datauraian;
     	}
     	$kodpus='P'.$this->session->userdata('puskesmas');
     	$datatransaksi = array(
-    			'id_transaksi'				=> $this->id_transaksi(),
+    			'id_transaksi'				=> $this->idtransaksi(),
     			'tanggal'					=> date("Y-m-d"),
     			'uraian'					=> $uraian,
     			'status'					=> 'disimpan',
@@ -81,10 +79,63 @@ class Penyusutan_model extends CI_Model {
     			'code_cl_phc'				=> $kodpus,
     			);
     	$this->db->insert('keu_transaksi',$datatransaksi);
-    	return $id_invbaru;
+    	for ($x=1; $x <=$jmldata ; $x++) { 
+    		$harga = $this->getharga($this->input->post("id_inventaris_barang$x"));
+    		$datatransaksi = array(
+    			'id_jurnal'				=> $this->idjurnal(),
+    			'id_transaksi'			=> $datatransaksi['id_transaksi'],
+    			'id_mst_akun'			=> $this->input->post("id_mst_akun$x"),
+    			'debet'					=> $harga,
+    			'kredit'				=> '0',
+    			'status'				=> 'debet',
+    			);
+    		$this->db->insert('keu_jurnal',$datatransaksi);
+    	}
+    	return $datatransaksi['id_transaksi'];
+    }
+    function idtransaksi(){
+        $kodpus = $this->session->userdata('puskesmas');
+        $q = $this->db->query("select MAX(RIGHT(id_transaksi,4)) as kd_max from keu_transaksi");
+        $nourut="";
+        if($q->num_rows()>0)
+        {
+            foreach($q->result() as $k)
+            {
+                $tmp = ((int)$k->kd_max)+1;
+                $nourut = sprintf("%04s", $tmp);
+            }
+        }
+        else
+        {
+            $nourut = "0001";
+        }
+        return $kodpus.date("Y").date('m').$nourut;
+    }
+    function getharga($id=0){
+    	$this->db->where('id_inventaris_barang',$id);
+    	$query = $this->db->get('get_all_inventaris2')->row_array();
+    	return $query['harga'];
     }
      function idinventaris($id='0'){
         $q = $this->db->query("select RIGHT(MAX(id_inventaris),4) as kd_max from keu_inventaris");
+        $nourut="";
+        if($q->num_rows()>0)
+        {
+            foreach($q->result() as $k)
+            {
+                $tmp = ((int)$k->kd_max)+1;
+                $nourut = sprintf("%04s", $tmp);
+            }
+        }
+        else
+        {
+            $nourut = "0001";
+        }
+        $kodpus=$this->session->userdata('puskesmas');
+        return $kodpus.date("Y").date('m').$nourut;
+    }
+    function idjurnal($id='0'){
+        $q = $this->db->query("select RIGHT(MAX(id_jurnal),4) as kd_max from keu_jurnal");
         $nourut="";
         if($q->num_rows()>0)
         {
@@ -165,5 +216,36 @@ class Penyusutan_model extends CI_Model {
     }
     function getallmetodepenyusustan(){
     	return $this->db->get('mst_keu_metode_penyusutan')->result_array();
+    }
+    function getdatajurnal($id){
+    	$this->db->select("keu_jurnal.*,mst_keu_akun.kode,mst_keu_akun.uraian as namaakun");
+    	$this->db->where('id_transaksi',$id);
+    	$this->db->join('mst_keu_akun','keu_jurnal.id_mst_akun=mst_keu_akun.id_mst_akun','left');
+    	return $this->db->get('keu_jurnal')->result();
+    }
+    function gettransaksi($id){
+    	$this->db->where('id_transaksi',$id);
+    	$this->db->select("keu_transaksi.*,keu_transaksi.uraian as namauraian,(select sum(debet) from keu_jurnal where id_transaksi=keu_transaksi.id_transaksi) as jumlahtotal");
+    	return $this->db->get('keu_transaksi')->row_array();	
+    }
+    function simpandatatransaksi(){
+    	$datawhere = array(
+    		'id_transaksi' => $this->input->post('id_transaksi'),
+    		);
+    	$tgl = explode('-', $this->input->post('tanggal'));
+    	$data=array(
+    		'tanggal' => $tgl[2].'-'.$tgl[1].'-'.$tgl[0],
+    		'uraian' => $this->input->post('uraian'),
+    		);
+    	$this->db->update('keu_transaksi',$data,$datawhere);
+    	$datajurnal=array(
+    		'id_jurnal'				=> $this->idjurnal(),
+			'id_transaksi'			=> $this->input->post('id_transaksi'),
+			'id_mst_akun'			=> $this->input->post("akunkredit"),
+			'debet'					=> '0',
+			'kredit'				=> $this->input->post("jumlahtotal"),
+			'status'				=> 'kredit',
+    		);
+    	return $this->db->insert('keu_jurnal',$datajurnal);
     }
 }

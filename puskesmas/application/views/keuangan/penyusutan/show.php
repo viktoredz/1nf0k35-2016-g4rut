@@ -207,6 +207,8 @@ $("#popup_keuangan_penyusutan").jqxWindow({
 });
 $("#popup_keuangan_penyusutan").jqxWindow('open');
 }
-
+$("#editalldata").click(function(){
+  window.location.href = "<?php echo base_url().'keuangan/penyusutan/edit' ?>";
+});
 </script>
 
