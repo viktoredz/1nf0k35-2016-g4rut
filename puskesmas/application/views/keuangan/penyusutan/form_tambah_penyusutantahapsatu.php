@@ -7,37 +7,57 @@
 <?php } ?>
 
 <form action="#" method="POST" name="frmPegawai">
-  <div class="row" style="margin: 15px 5px 15px 5px">
-    <div class="col-sm-6">
-      <h4>{form_title}</h4>
-    </div>
-    <div class="col-sm-6" style="text-align: right">
-      <button type="button" name="btn_keuangan_add_sts" class="btn btn-warning" onclick="addstepdua(2)"><i class='glyphicon glyphicon-arrow-right'></i> &nbsp; Selanjutnya</button>
-      <button type="button" name="btn_keuangan_close" class="btn btn-primary"><i class='fa fa-close'></i> &nbsp; Batal</button>
-    </div>
+<div class="row" style="margin: 15px 5px 15px 5px">
+  <div class="col-sm-6">
+    <h4>{form_title}</h4>
   </div>
+  <div class="col-sm-6" style="text-align: right">
+    <button type="button" name="btn_keuangan_add_sts" class="btn btn-warning" onclick="addstepdua(2)"><i class='glyphicon glyphicon-arrow-right'></i> &nbsp; Selanjutnya</button>
+    <button type="button" name="btn_keuangan_close" class="btn btn-primary"><i class='fa fa-close'></i> &nbsp; Batal</button>
+  </div>
+</div>
 
   <div class="row" style="margin: 5px">
-          <div class="col-md-12">
-            <div class="box box-primary">
-            <div class="row" style="margin: 5px">
-                <div class="col-md-4" style="padding: 5px">
-                  Pengadaan 
-                </div>
-                <div class="col-md-8">
-                  <div id='pengadaan_tgl' name="pengadaan_tgl">
-                  </div>
-                </div>
-              </div>
-              <div class="row" style="margin: 5px">
-                <div class="col-md-12" style="padding: 5px">
-                  <div id="jqxgridPilih"></div>
-                </div>
-              </div>
-              <br>
-            </div>
-          </div>
+    <div class="col-md-12">
+      <div class="box box-primary">
+      <div class="row" style="margin: 5px">
+        <div class="col-md-4" style="padding: 5px">
+          Pengadaan 
+        </div>
+        <div class="col-md-4">
+          <select id="filterpengadaanbulan" class="form-control">
+            <?php foreach ($bulan as $key => $value) { ?>
+              <option value="<?php echo $key;?>"><?php echo $value;?></option>
+            <?php } ?>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <select id="filterpengadaantahun" class="form-control">
+            <?php for ($tahun=date("Y")-7; $tahun <= date("Y"); $tahun++) { 
+              $select = $tahun == date("Y") ? 'selected' :'';
+            ?>
+              <option value="<?php echo $tahun;?>" <?php echo $select;?>><?php echo $tahun;?></option>
+            <?php } ?>
+          </select>
+        </div>
+      </div>
+      <div class="row" style="margin: 5px">
+        <div class="col-md-4" style="padding: 5px">
+          Nomor Pengadaan 
+        </div>
+        <div class="col-md-8">
+          <input type="text" name="nomo_kontrak" id="nomo_kontrak" class="form-control" placeholder="Nomor Pengadaan">
+        </div>
+      </div>
+      <div class="row" style="margin: 5px">
+        <div class="col-md-12" style="padding: 5px">
+          <div id="jqxgridPilih"></div>
+        </div>
+      </div>
+      <br>
+      </div>
   </div>
+</div>
 </form>
 
 <script>
@@ -60,11 +80,10 @@
     tabIndex = 1;
     kodeSTS();
 
-    $("[name='pengadaan_tgl']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
-
     
    $("[name='btn_keuangan_close']").click(function(){
         $("#popup_keuangan_penyusutan").jqxWindow('close');
+         $("#jqxgrid").jqxGrid('updatebounddata', 'cells');
     });
   });
  var sourcepilih = {
@@ -75,7 +94,9 @@
       { name: 'id_mst_inv_barang', type: 'string'},
       { name: 'id_inventaris_barang', type: 'string'},
       { name: 'register',type: 'string'},   
-      { name: 'id_cl_phc',type: 'string'}, 
+      { name: 'id_cl_phc',type: 'string'},
+      { name: 'nomor_kontrak',type: 'string'}, 
+      { name: 'status',type: 'string'}, 
       { name: 'harga',type: 'string'}, 
       { name: 'delete', type: 'number'},
       { name: 'view', type: 'number'},
@@ -139,7 +160,7 @@ function addstepdua(id) {
     $.each($("input[name='idinv[]']:checked"), function() {
       values.push($(this).val());   
     });
-    data_barang=$("#pengadaan_tgl").val()+'_tu_';
+    data_barang='';
     if(values.length > 0){
       for(i=0; i<values.length; i++){
         data_barang = data_barang+values[i]+"_tr_";
@@ -149,4 +170,19 @@ function addstepdua(id) {
       alert('Silahkan Pilih Barang Terlebih Dahulu');
     }
 }
+$("#filterpengadaanbulan").change(function(){
+  $.post("<?php echo base_url().'keuangan/penyusutan/filterpengadaanbulan' ?>", 'bulan='+$(this).val(),  function(){
+          $("#jqxgridPilih").jqxGrid('updateBoundData','cell');
+    });
+});
+$("#filterpengadaantahun").change(function(){
+  $.post("<?php echo base_url().'keuangan/penyusutan/filterpengadaantahun' ?>", 'tahun='+$(this).val(),  function(){
+          $("#jqxgridPilih").jqxGrid('updateBoundData','cell');
+    });
+});
+$("#nomo_kontrak").change(function(){
+  $.post("<?php echo base_url().'keuangan/penyusutan/filternomo_kontrak' ?>", 'nomor='+$(this).val(),  function(){
+          $("#jqxgridPilih").jqxGrid('updateBoundData','cell');
+    });
+});
 </script>

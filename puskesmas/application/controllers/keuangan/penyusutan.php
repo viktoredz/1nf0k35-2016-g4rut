@@ -18,6 +18,10 @@ class Penyusutan extends CI_Controller {
 
 		$data['title_group']    = "Keuangan";
 		$data['title_form']     = "Daftar Inventaris";	
+		$this->session->set_userdata('filter_nomo_kontrak','');
+	    $this->session->set_userdata('filter_pengadaanbulan','');
+	    $this->session->set_userdata('filter_pengadaantahun','');
+
 
 		$data['content'] = $this->parser->parse("keuangan/penyusutan/show",$data,true);						
 		
@@ -193,7 +197,18 @@ class Penyusutan extends CI_Controller {
 		}else{
 				$this->db->where("id_cl_phc",'P'.$this->session->userdata('puskesmas'));
 		}
+		if($this->session->userdata('filter_pengadaantahun')!=''){
+			$this->db->where("YEAR(tgl_pengadaan)",$this->session->userdata('filter_pengadaantahun'));
+		}
+		if($this->session->userdata('filter_pengadaanbulan')!=''){
+			$this->db->where("MONTH(tgl_pengadaan)",$this->session->userdata('filter_pengadaanbulan'));
+		}
+		if($this->session->userdata('filter_nomo_kontrak')!=''){
+			$this->db->like("nomor_kontrak",$this->session->userdata('filter_nomo_kontrak'));
+		}
 	
+
+
 		$rows_all = $this->penyusutan_model->get_data_inventaris();
 
 		if($_POST) {
@@ -227,7 +242,15 @@ class Penyusutan extends CI_Controller {
 		}else{
 				$this->db->where("id_cl_phc",'P'.$this->session->userdata('puskesmas'));
 		}
-		
+		if($this->session->userdata('filter_pengadaantahun')!=''){
+			$this->db->where("YEAR(tgl_pengadaan)",$this->session->userdata('filter_pengadaantahun'));
+		}
+		if($this->session->userdata('filter_pengadaanbulan')!=''){
+			$this->db->where("MONTH(tgl_pengadaan)",$this->session->userdata('filter_pengadaanbulan'));
+		}
+		if($this->session->userdata('filter_nomo_kontrak')!=''){
+			$this->db->like("nomor_kontrak",$this->session->userdata('filter_nomo_kontrak'));
+		}
 		$rows = $this->penyusutan_model->get_data_inventaris($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 
@@ -240,6 +263,7 @@ class Penyusutan extends CI_Controller {
 				'id_cl_phc'   			=> $act->id_cl_phc,
 				'harga'   				=> $act->harga,
 				'status'   				=> $act->status,
+				'nomor_kontrak'   		=> $act->nomor_kontrak,
 				'edit'	   => 1,
 				'delete'   => 1
 			);
@@ -443,6 +467,10 @@ class Penyusutan extends CI_Controller {
 		$data['alert_form']		   	    = "";
 	    $data['action']					= "add";
 	    $data['form_title']				= "Add Inventaris - Step 1";
+	    $data['bulan'] =array(1=>"Januari","Februari","Maret","April","Mei","Juni","July","Agustus","September","Oktober","November","Desember");
+	    $this->session->set_userdata('filter_nomo_kontrak','');
+	    $this->session->set_userdata('filter_pengadaanbulan','');
+	    $this->session->set_userdata('filter_pengadaantahun','');
 
 		if($this->form_validation->run()== FALSE){
 			die($this->parser->parse("keuangan/penyusutan/form_tambah_penyusutantahapsatu",$data));
@@ -456,18 +484,26 @@ class Penyusutan extends CI_Controller {
 	function addstepdua($id=0){
 		$this->authentication->verify('keuangan','add');
 
-	    $this->form_validation->set_rules('dataceklis', 'data baran inventaris', 'trim|required');
+	    $this->form_validation->set_rules('jumlahdata', 'Data Inventaris Barang', 'trim|required');
+	    
 
 		$data['datainventaris']	   		= $this->penyusutan_model->getalldatainv($id);
 		$data['alert_form']		   	    = "";
 	    $data['action']					= "add";
 	    $data['form_title']				= "Add Inventaris - Step 2";
+	    $data['nilaiakun_inventaris']	= $this->penyusutan_model->getallnilaiakun();
+	    $data['nilaiakun_bebanpenyusustan']	= $this->penyusutan_model->getallnilaiakun();
+	    $data['nilaimetode_penyusustan']= $this->penyusutan_model->getallmetodepenyusustan();
+	    
 	    
 		if($this->form_validation->run()== FALSE){
 			die($this->parser->parse("keuangan/penyusutan/form_tambah_penyusutantahapdua",$data));
-		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){
-				$id=$this->penyusutan_model->add_sts();
-				die("OK | $id");
+		}elseif($id = $this->penyusutan_model->addstepdua()){
+				if ($this->input->post('transaksitambah')=='1') {
+					$this->addsteptiga($id);
+				}else{
+					die("OK | $id");
+				}
 		}else{
 			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
 			redirect(base_url()."keuangan/penyusutan/addstepdua");
@@ -478,8 +514,6 @@ class Penyusutan extends CI_Controller {
 		$this->authentication->verify('keuangan','add');
 
 	    $this->form_validation->set_rules('id_sts', 'ID STS', 'trim|required');
-		$this->form_validation->set_rules('nomor','Nomor','trim|required|callback_sts_nomor');
-		$this->form_validation->set_rules('tgl','Tanggal','trim|required|callback_sts_tgl');
 
 		$data['id_sts']	   			    = "";
 		$data['alert_form']		   	    = "";
@@ -506,5 +540,26 @@ class Penyusutan extends CI_Controller {
 			redirect(base_url()."keuangan/penyusutan/addsteptiga");
 		}
 		die($this->parser->parse("keuangan/penyusutan/form_tambah_penyusutantahaptiga",$data));
+	}
+
+
+	function filterpengadaanbulan(){
+		if($_POST) {
+			if($this->input->post('bulan') != '') {
+				$this->session->set_userdata('filter_pengadaanbulan',$this->input->post('bulan'));
+			}
+		}
+	}
+	function filterpengadaantahun(){
+		if($_POST) {
+			if($this->input->post('tahun') != '') {
+				$this->session->set_userdata('filter_pengadaantahun',$this->input->post('tahun'));
+			}
+		}
+	}
+	function filternomo_kontrak(){
+		if($_POST) {
+			$this->session->set_userdata('filter_nomo_kontrak',$this->input->post('nomor'));
+		}
 	}
 }

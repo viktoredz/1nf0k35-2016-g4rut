@@ -18,7 +18,7 @@
         </div>
           <div class="box-footer">
             <button type="button" class="btn btn-primary" onclick='add_inventaris()'><i class='fa fa-plus-square'></i> &nbsp;Tambah Inventaris</button> 
-            <button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp;Refresh</button>    
+            <button type="button" class="btn btn-success" id="btn-refresh-data"><i class='fa fa-refresh'></i> &nbsp;Refresh</button>    
             <div class="pull-right">
                 <select id="filterpuskesmas" name="filterpuskesmas" class="form-control">
                     <?php foreach ($data_puskesmas as $datapus){
@@ -106,7 +106,7 @@ var dataadapter = new $.jqx.dataAdapter(source, {
     }
 });
 
-$('#btn-refresh').click(function () {
+$('#btn-refresh-data').click(function () {
     $("#jqxgrid").jqxGrid('clearfilters');
 });
 
