@@ -114,7 +114,9 @@ class Penyusutan extends CI_Controller {
 				'namametode'   			=> $act->namametode,
 				'id_inventaris'   		=> $act->id_inventaris,
 				'edit'	   => 1,
-				'delete'   => 1
+				'delete'   => 1,
+				'view'   => 1
+				
 			);
 		}
 
@@ -279,26 +281,26 @@ class Penyusutan extends CI_Controller {
 
 		echo json_encode(array($json));
 	}
-	function edit_penyusutan($id=''){
+	function edit_penyusutan($id=0){
 		$this->authentication->verify('keuangan','add');
 
-	    $this->form_validation->set_rules('id_sts', 'ID STS', 'trim|required');
-		$this->form_validation->set_rules('nomor','Nomor','trim|required|callback_sts_nomor');
-		$this->form_validation->set_rules('tgl','Tanggal','trim|required|callback_sts_tgl');
+	    $this->form_validation->set_rules('id_inventaris', 'ID Inventaris', 'trim|required');
+		$this->form_validation->set_rules('id_mst_akun','Akun','trim|required');
+		$this->form_validation->set_rules('id_mst_akun_akumulasi','Akun Akumulasi','trim|required');
+		$this->form_validation->set_rules('id_mst_metode_penyusutan','Metode Penyusutan','trim|required');
 
-		$data['id_sts']	   			    = $id;
+			
+	    $data 							= $this->penyusutan_model->get_edit_row($id);
 		$data['alert_form']		   	    = "";
-	    $data['action']					= "edit";		
-	    $data 							= array('id_inventaris' => '121211213','nilai_ekonomis'=>10,'nama_inventaris'=>'Mobil Tesla - Model S');
-	    $data['akun_inventaris']		= array('212121' => '212121 - Alat Angkutan Darat','313131'=>'313131 - Alat Angkutan Udara');
-	    $data['akun_bebaninventaris']	= array('612123' => 'Biaya Penyusutan','6123213' => 'Biaya Tambahan');
-	    $data['metode_penyusutan']		= array('1' => 'Metode Garis Lurus','2' => 'Tanpa Penyusutan','3' => 'Saldo Menurun','4' => 'Metode Unit Produksi','5' => 'Tanpa Penyusutan');
+	    $data['action']					= "edit";	
+	    $data['akun_inventaris']		= $this->penyusutan_model->getallnilaiakun();
+	    $data['akun_bebaninventaris']	= $this->penyusutan_model->getallnilaiakun();
+	    $data['metode_penyusutan']		= $this->penyusutan_model->getallmetodepenyusustan();
 	    $data['title_form']				= "Ubah Inventaris Penyusutan";	
 		if($this->form_validation->run()== FALSE){
 			die($this->parser->parse("keuangan/penyusutan/form_edit_penyusutan",$data));
-		}elseif($this->cek_tgl_sts($this->input->post('tgl'))){
-				$id=$this->penyusutan_model->add_sts();
-				die("OK | $id");
+		}elseif($this->penyusutan_model->editpenyusutan()){
+				die("OK");
 		}else{
 			$this->session->set_flashdata('alert_form', 'Tanggal harus lebih dari tanggal terakhir input dan tidak lebih dari tanggal hari ini.');
 			redirect(base_url()."keuangan/penyusutan/edit_penyusutan");
@@ -392,6 +394,7 @@ class Penyusutan extends CI_Controller {
 				'namaakumulasi'   		=> $act->namaakumulasi,
 				'kodeakumulasi'   		=> $act->kodeakumulasi,
 				'namapenyusutan'   		=> $act->namapenyusutan,
+				'id_mst_metode_penyusutan' => $act->id_mst_metode_penyusutan,
 				'kodenamaakun'   		=> $act->kodeakun.' - '.$act->namaakun,
 				'kodenamaakumulasi'   	=> $act->kodeakumulasi.' - '.$act->namaakumulasi,
 				'nilai_ekonomis'   		=> $act->nilai_ekonomis,

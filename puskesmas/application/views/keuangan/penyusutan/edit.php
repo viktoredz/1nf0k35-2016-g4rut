@@ -56,6 +56,7 @@
             { name: 'harga',type: 'string'},
             { name: 'kodenamaakumulasi',type: 'string'},
             { name: 'kodenamaakun',type: 'string'},
+            { name: 'id_mst_metode_penyusutan',type: 'string'},
             { name: 'namapenyusutan',type: 'string'},
             { name: 'nilai_ekonomis',type: 'string'},
             { name: 'nilai_sisa',type: 'number'}
@@ -185,7 +186,6 @@
                        editor.jqxDropDownList('selectItem', cellvalue);
                    },
                    getEditorValue: function (row, cellvalue, editor) {
-                       editor.val();
                         if(editor.val() % 1 === 0){
                             var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
                            $.post( '<?php echo base_url()?>keuangan/penyusutan/updatestatuspenyusutan', {'idakunpenyusutan':editor.val(),'idinventarispenyusutan':datagrid.id_inventaris}, function( data ) {
@@ -203,26 +203,33 @@
                 },
                 { text: '<i class="fa fa-pencil-square-o"></i> Nilai Ekonomis (Tahun)', datafield: 'nilai_ekonomis', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '15%',
                   getEditorValue: function (row, cellvalue, editor) {
-                       editor.val();
-                        if(editor.val() % 1 === 0){
-                            var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
-                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatenilaiekonomis', {'nilaiekonomis':editor.val(),'id_inventaris':datagrid.id_inventaris}, function( data ) {
-                                if(data != 0){
-                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
-                                }else{
-                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
-                                }
-                            });
+                        var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
+                        if (datagrid.id_mst_metode_penyusutan=='5') {
+                          alert("Maaf Nilai Ekonomis tidak bisa di edit jika menggunakan Metode Tanpa Penyusutan");
+                          $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');  
                         }else{
-                           $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                          if(editor.val() % 1 === 0){
+                             $.post( '<?php echo base_url()?>keuangan/penyusutan/updatenilaiekonomis', {'nilaiekonomis':editor.val(),'id_inventaris':datagrid.id_inventaris}, function( data ) {
+                                  if(data != 0){
+                                    $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
+                                  }else{
+                                    $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                                  }
+                              });
+                          }else{
+                             $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                          }
                         }
                    },
                 },
                 { text: '<i class="fa fa-pencil-square-o"></i> Sisa', datafield: 'nilai_sisa', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '15%',
                     getEditorValue: function (row, cellvalue, editor) {
-                       editor.val();
+                      var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
+                      if (datagrid.id_mst_metode_penyusutan=='5' || datagrid.id_mst_metode_penyusutan=='3' || datagrid.id_mst_metode_penyusutan=='6d') {
+                          alert("Maaf Nilai Sisa tidak bisa di edit jika menggunakan Metode Tanpa Penyusutan,Manual dan Menurun");
+                          $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');  
+                      }else{
                         if(editor.val() % 1 === 0){
-                            var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
                            $.post( '<?php echo base_url()?>keuangan/penyusutan/updatenilaisisa', {'nilaisisa':editor.val(),'id_inventaris':datagrid.id_inventaris}, function( data ) {
                                 if(data != 0){
                                   $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
@@ -233,6 +240,7 @@
                         }else{
                            $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
                         }
+                      }
                    },
                 },
             ]

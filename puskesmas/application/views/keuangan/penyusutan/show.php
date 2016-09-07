@@ -126,9 +126,9 @@ $("#jqxgrid").jqxGrid(
         { text: 'Detail', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
             var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
             if(dataRecord.view==1){
-                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+dataRecord.id_inventaris+"\");'></a></div>";
+                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detaildata(\""+dataRecord.id_inventaris+"\");'></a></div>";
             }else{
-                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif'></a></div>";
+                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
             }
           }
         },
@@ -158,9 +158,9 @@ $("#jqxgrid").jqxGrid(
     ]
 });
 
-function detail(id){
+function detaildata(id){
 $("#popup_keuangan_penyusutan #popup_keuangan_penyusutan_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-$.get("<?php echo base_url().'keuangan/penyusutan/detail_penyusutan' ?>/", function(data) {
+$.get("<?php echo base_url().'keuangan/penyusutan/detail_penyusutan' ?>/"+id, function(data) {
   $("#popup_keuangan_penyusutan_content").html(data);
 });
 $("#popup_keuangan_penyusutan").jqxWindow({
@@ -195,9 +195,9 @@ $("#popup_keuangan_penyusutan").jqxWindow({
 });
 $("#popup_keuangan_penyusutan").jqxWindow('open');
 }
-function editdata(){
+function editdata(id){
 $("#popup_keuangan_penyusutan #popup_keuangan_penyusutan_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-$.get("<?php echo base_url().'keuangan/penyusutan/edit_penyusutan' ?>/", function(data) {
+$.get("<?php echo base_url().'keuangan/penyusutan/edit_penyusutan' ?>/"+id, function(data) {
   $("#popup_keuangan_penyusutan_content").html(data);
 });
 $("#popup_keuangan_penyusutan").jqxWindow({

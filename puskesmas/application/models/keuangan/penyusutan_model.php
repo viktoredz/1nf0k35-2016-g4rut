@@ -290,5 +290,33 @@ class Penyusutan_model extends CI_Model {
         $this->db->delete('keu_inventaris');
     }
 
+    function get_edit_row($id){
+        $this->db->join('get_all_inventaris2','get_all_inventaris2.id_inventaris_barang=keu_inventaris.id_inventaris_barang','left');
+        $this->db->where('id_inventaris',$id);
+        return $this->db->get('keu_inventaris')->row_array();
+    }
+    function editpenyusutan(){
+        $id_inventaris = $this->input->post('id_inventaris');
+        $id_mst_akun = $this->input->post('id_mst_akun');
+        $id_mst_akun_akumulasi = $this->input->post('id_mst_akun_akumulasi');
+        $id_mst_metode_penyusutan = $this->input->post('id_mst_metode_penyusutan');
+        $nilai_ekonomis = $this->input->post('nilai_ekonomis');
+        $nilai_sisa = $this->input->post('nilai_sisa');
 
+        $this->db->where('id_inventaris',$id_inventaris);
+        $this->db->set('id_mst_akun',$id_mst_akun);
+        $this->db->set('id_mst_akun_akumulasi',$id_mst_akun_akumulasi);
+        $this->db->set('id_mst_metode_penyusutan',$id_mst_metode_penyusutan);
+        if ($id_mst_metode_penyusutan!='5') {
+            $this->db->set('nilai_ekonomis',$nilai_ekonomis);
+        }else{
+            $this->db->set('nilai_ekonomis','0');
+        }
+        if ($id_mst_metode_penyusutan=='5' ||$id_mst_metode_penyusutan=='6'|| $id_mst_metode_penyusutan=='3') {
+            $this->db->set('nilai_sisa','0');
+        }else{
+            $this->db->set('nilai_sisa',$nilai_sisa);
+        }
+        return $this->db->update('keu_inventaris');
+    }
 }
