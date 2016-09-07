@@ -189,6 +189,9 @@ class Penyusutan extends CI_Controller {
 			}
 
 			if(!empty($ord)) {
+				if ($ord=='showid_inventaris_barang') {
+					$ord="id_inventaris_barang";
+				}
 				$this->db->order_by($ord, $this->input->post('sortorder'));
 			}
 		}
@@ -203,10 +206,16 @@ class Penyusutan extends CI_Controller {
 				$this->db->where("id_cl_phc",'P'.$this->session->userdata('puskesmas'));
 		}
 		if($this->session->userdata('filter_pengadaantahun')!=''){
-			$this->db->where("YEAR(tgl_pengadaan)",$this->session->userdata('filter_pengadaantahun'));
+			if ($this->session->userdata('filter_pengadaantahun')=='all') {
+			}else{
+				$this->db->where("YEAR(tgl_pengadaan)",$this->session->userdata('filter_pengadaantahun'));
+			}
 		}
 		if($this->session->userdata('filter_pengadaanbulan')!=''){
-			$this->db->where("MONTH(tgl_pengadaan)",$this->session->userdata('filter_pengadaanbulan'));
+			if ($this->session->userdata('filter_pengadaanbulan')=='all') {
+			}else{
+				$this->db->where("MONTH(tgl_pengadaan)",$this->session->userdata('filter_pengadaanbulan'));
+			}
 		}
 		if($this->session->userdata('filter_nomo_kontrak')!=''){
 			$this->db->like("nomor_kontrak",$this->session->userdata('filter_nomo_kontrak'));
@@ -234,6 +243,9 @@ class Penyusutan extends CI_Controller {
 			}
 
 			if(!empty($ord)) {
+				if ($ord=='showid_inventaris_barang') {
+					$ord="id_inventaris_barang";
+				}
 				$this->db->order_by($ord, $this->input->post('sortorder'));
 			}
 		}
@@ -248,10 +260,16 @@ class Penyusutan extends CI_Controller {
 				$this->db->where("id_cl_phc",'P'.$this->session->userdata('puskesmas'));
 		}
 		if($this->session->userdata('filter_pengadaantahun')!=''){
-			$this->db->where("YEAR(tgl_pengadaan)",$this->session->userdata('filter_pengadaantahun'));
+			if ($this->session->userdata('filter_pengadaantahun')=='all') {
+			}else{
+				$this->db->where("YEAR(tgl_pengadaan)",$this->session->userdata('filter_pengadaantahun'));
+			}
 		}
 		if($this->session->userdata('filter_pengadaanbulan')!=''){
-			$this->db->where("MONTH(tgl_pengadaan)",$this->session->userdata('filter_pengadaanbulan'));
+			if ($this->session->userdata('filter_pengadaanbulan')=='all') {
+			}else{
+				$this->db->where("MONTH(tgl_pengadaan)",$this->session->userdata('filter_pengadaanbulan'));
+			}
 		}
 		if($this->session->userdata('filter_nomo_kontrak')!=''){
 			$this->db->like("nomor_kontrak",$this->session->userdata('filter_nomo_kontrak'));
@@ -264,6 +282,7 @@ class Penyusutan extends CI_Controller {
 				'nama_barang'   		=> $act->nama_barang,
 				'id_mst_inv_barang'	   	=> $act->id_mst_inv_barang,
 				'id_inventaris_barang'	=> $act->id_inventaris_barang,
+				'showid_inventaris_barang'	=> substr($act->id_inventaris_barang, -14),
 				'register'    			=> $act->register,
 				'id_cl_phc'   			=> $act->id_cl_phc,
 				'harga'   				=> $act->harga,
@@ -335,7 +354,9 @@ class Penyusutan extends CI_Controller {
 				if ($ord=='kodenamaakumulasi') {
 					$ord='kodeakumulasi';
 				}
-
+				if ($ord=='showid_inventaris_barang') {
+					$ord='id_inventaris_barang';
+				}
 				if ($ord=='kodenamaakun') {
 					$ord='kodeakun';
 				}
@@ -378,7 +399,9 @@ class Penyusutan extends CI_Controller {
 				if ($ord=='kodenamaakumulasi') {
 					$ord='kodeakumulasi';
 				}
-
+				if ($ord=='showid_inventaris_barang') {
+					$ord='id_inventaris_barang';
+				}
 				if ($ord=='kodenamaakun') {
 					$ord='kodeakun';
 				}
@@ -404,6 +427,7 @@ class Penyusutan extends CI_Controller {
 				'nama_barang'   		=> $act->nama_barang,
 				'id_mst_inv_barang'	   	=> $act->id_mst_inv_barang,
 				'id_inventaris_barang'	=> $act->id_inventaris_barang,
+				'showid_inventaris_barang'	=> substr($act->id_inventaris_barang, -14),
 				'register'    			=> $act->register,
 				'id_cl_phc'   			=> $act->id_cl_phc,
 				'harga'   				=> $act->harga,

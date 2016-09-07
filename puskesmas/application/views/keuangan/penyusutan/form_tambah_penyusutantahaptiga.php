@@ -154,7 +154,8 @@
         data.append('id_transaksi',         "<?php echo $id_transaksi; ?>");
         data.append('tanggal',              $("#transaksi_tgl").val());
         data.append('uraian',               $("#uraian").val());
-        data.append('jumlahtotal',             "<?php echo $jumlahtotal; ?>");
+        data.append('jumlahtotal',          "<?php echo $jumlahtotal; ?>");
+        data.append('id_jurnalkredit',      "<?php echo $id_jurnalkredit; ?>");
         
         $.ajax({
             cache : false,

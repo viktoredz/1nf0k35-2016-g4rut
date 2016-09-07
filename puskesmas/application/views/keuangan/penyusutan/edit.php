@@ -50,6 +50,7 @@
             { name: 'nama_barang', type: 'string'},
             { name: 'id_mst_inv_barang', type: 'string'},
             { name: 'id_inventaris_barang', type: 'string'},
+            { name: 'showid_inventaris_barang', type: 'string'},
             { name: 'register',type: 'string'},   
             { name: 'id_inventaris',type: 'string'},   
             { name: 'id_cl_phc',type: 'string'}, 
@@ -127,7 +128,7 @@
                 return obj.data;    
             },
             columns: [
-                { text: 'ID Inventaris', datafield: 'id_inventaris_barang',editable:false, columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '8%',cellsalign: 'center'},
+                { text: 'ID Inventaris', datafield: 'showid_inventaris_barang',editable:false, columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '15%',cellsalign: 'center'},
                 { text: 'Nama Inventaris', datafield: 'nama_barang', editable:false, columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '17%'},
                 { text: '<i class="fa fa-pencil-square-o"></i> Akun Inventaris', datafield: 'kodenamaakun',  filtertype: 'textbox', align: 'center',  width: '15%', columntype: 'dropdownlist',
                     createEditor: function (row, cellvalue, editor, cellText, width, height) {
@@ -201,7 +202,7 @@
                    },
 
                 },
-                { text: '<i class="fa fa-pencil-square-o"></i> Nilai Ekonomis (Tahun)', datafield: 'nilai_ekonomis', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '15%',
+                { text: '<i class="fa fa-pencil-square-o"></i> Nilai Ekonomis (Tahun)', datafield: 'nilai_ekonomis', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '11%',
                   getEditorValue: function (row, cellvalue, editor) {
                         var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
                         if (datagrid.id_mst_metode_penyusutan=='5') {
@@ -222,7 +223,7 @@
                         }
                    },
                 },
-                { text: '<i class="fa fa-pencil-square-o"></i> Sisa', datafield: 'nilai_sisa', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '15%',
+                { text: '<i class="fa fa-pencil-square-o"></i> Sisa', datafield: 'nilai_sisa', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '12%',
                     getEditorValue: function (row, cellvalue, editor) {
                       var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
                       if (datagrid.id_mst_metode_penyusutan=='5' || datagrid.id_mst_metode_penyusutan=='3' || datagrid.id_mst_metode_penyusutan=='6d') {

@@ -58,7 +58,7 @@
       </div>
       <div class="row" style="margin: 5px">
         <div class="col-md-4" style="padding: 5px">
-         Nilai Saat Ini <?php  echo $totaldebetkredit; ?>
+         Nilai Saat Ini
         </div>
         <div class="col-md-8" style="padding: 5px">
           <?php  

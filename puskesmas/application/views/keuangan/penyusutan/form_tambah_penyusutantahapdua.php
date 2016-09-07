@@ -84,7 +84,7 @@
                 <div class="col-md-4" style="padding: 5px">
                  Nilai Ekonomis
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-4">
                   <input type="number" class="form-control" name="nilai_ekonomis" id="nilai_ekonomis<?php echo $i;?>" placeholder="Nilai Ekonomis" value="<?php 
                       if (isset($key['nilai_ekonomis']) && set_value('nilai_ekonomis')=='') {
                         echo $key['nilai_ekonomis'];
@@ -93,6 +93,7 @@
                       }
                     ?>">
                 </div>
+                <div class="col-md-4"> Tahun</div>
               </div>
               <div class="row" style="margin: 5px">
                 <div class="col-md-4" style="padding: 5px">

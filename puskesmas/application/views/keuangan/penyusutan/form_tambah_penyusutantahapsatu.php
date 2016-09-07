@@ -26,15 +26,19 @@
         </div>
         <div class="col-md-4">
           <select id="filterpengadaanbulan" class="form-control">
-            <?php foreach ($bulan as $key => $value) { ?>
-              <option value="<?php echo $key;?>"><?php echo $value;?></option>
+          <option value="all">Semua Bulan</option>
+            <?php foreach ($bulan as $key => $value) { 
+              $select = $key == $this->session->userdata('filter_pengadaanbulan') ? 'selected' :'';
+            ?>
+              <option value="<?php echo $key;?>" <?php echo $select;?>><?php echo $value;?></option>
             <?php } ?>
           </select>
         </div>
         <div class="col-md-4">
           <select id="filterpengadaantahun" class="form-control">
-            <?php for ($tahun=date("Y")-7; $tahun <= date("Y"); $tahun++) { 
-              $select = $tahun == date("Y") ? 'selected' :'';
+            <option value="all">Semua Tahun</option>
+            <?php for ($tahun=date("Y"); $tahun >= date("Y")-7; $tahun--) { 
+              $select = $tahun == $this->session->userdata('filter_pengadaantahun') ? 'selected' :'';
             ?>
               <option value="<?php echo $tahun;?>" <?php echo $select;?>><?php echo $tahun;?></option>
             <?php } ?>
@@ -93,6 +97,7 @@
       { name: 'nama_barang', type: 'string'},
       { name: 'id_mst_inv_barang', type: 'string'},
       { name: 'id_inventaris_barang', type: 'string'},
+      { name: 'showid_inventaris_barang', type: 'string'},
       { name: 'register',type: 'string'},   
       { name: 'id_cl_phc',type: 'string'},
       { name: 'nomor_kontrak',type: 'string'}, 
@@ -140,9 +145,9 @@
           return obj.data;    
       },
       columns: [
-          { text: 'ID Inventaris', datafield: 'id_inventaris_barang', columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '20%',cellsalign: 'center'},
+          { text: 'ID Inventaris', datafield: 'showid_inventaris_barang', columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '25%',cellsalign: 'center'},
           { text: 'Nama Inventaris', datafield: 'nama_barang', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '50%'},
-          { text: 'Status', columntype: 'textbox', filtertype: 'none', align: 'center', cellsalign: 'center', width: '30%', cellsrenderer: function (row) {
+          { text: 'Status', columntype: 'textbox', filtertype: 'none', align: 'center', cellsalign: 'center', width: '25%', cellsrenderer: function (row) {
               var dataRecord = $("#jqxgridPilih").jqxGrid('getrowdata', row);
               if (dataRecord.status!='1') {
                 return "<div style='width:100%;padding-top:2px;text-align:center'><input type='checkbox' name='idinv[]' value="+dataRecord.id_inventaris_barang+" ></div>";
