@@ -79,6 +79,7 @@ var source = {
     { name: 'register',type: 'string'},   
     { name: 'id_cl_phc',type: 'string'}, 
     { name: 'namametode',type: 'string'},
+    { name: 'nilai_sekarang',type: 'string'},
     { name: 'harga',type: 'string'}, 
     { name: 'edit', type: 'number'},
     { name: 'delete', type: 'number'},
@@ -144,7 +145,7 @@ $("#jqxgrid").jqxGrid(
         { text: 'Del', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
             var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
             if(dataRecord.delete==1){
-                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_del.gif' onclick='deldata(\""+dataRecord.id_inventaris+"\");'></a></div>";
+                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_del.gif' onclick='deldata(\""+dataRecord.id_inventaris+"\",\""+dataRecord.nilai_sekarang+"\");'></a></div>";
             }else{
                 return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
             }
@@ -153,7 +154,7 @@ $("#jqxgrid").jqxGrid(
         { text: 'ID Inventaris', datafield: 'id_inventaris', columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '15%',cellsalign: 'center'},
         { text: 'Nama Inventaris', datafield: 'nama_barang', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '22%'},
         { text: 'Nilai Awal', datafield: 'harga', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '15%',cellsalign: 'right' },
-        { text: 'Nilai Sekarang', datafield: 'nilai_akhir', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '15%',cellsalign: 'right' },
+        { text: 'Nilai Sekarang', datafield: 'nilai_sekarang', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '15%',cellsalign: 'right' },
         { text: 'Metode Penyusutan', datafield: 'namametode', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'center', width: '21%' }
     ]
 });
@@ -172,14 +173,18 @@ $("#popup_keuangan_penyusutan").jqxWindow({
 $("#popup_keuangan_penyusutan").jqxWindow('open');
 }
 
-function deldata(id){
-var confirms = confirm("Hapus Data ?");
-if(confirms == true){
-    $.post("<?php echo base_url().'keuangan/penyusutan/delete_data' ?>/" + id,  function(){
-        alert('Data berhasil dihapus');
-        $("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-    });
-}
+function deldata(id,nilai_sekarang){
+  if (nilai_sekarang > 0) {
+    alert("Maaf data tidak bisa dihapus karena nilai penyusutan masih diatas nol rupiah");
+  }else{
+    var confirms = confirm("Hapus Data ?");
+    if(confirms == true){
+        $.post("<?php echo base_url().'keuangan/penyusutan/delete_data' ?>/" + id,  function(){
+            alert('Data berhasil dihapus');
+            $("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+        });
+    }
+  }
 }
 
 function add_inventaris(){

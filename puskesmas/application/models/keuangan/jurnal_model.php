@@ -120,7 +120,7 @@ class Jurnal_model extends CI_Model {
     function get_detail_row($id=0){
         $this->db->select("keu_transaksi.*,mst_keu_kategori_transaksi.nama as kategori_transaksi,mst_keu_syarat_pembayaran.deskripsi as syarat,mst_inv_pbf.nama as instansi ",false);
         $this->db->where('id_transaksi',$id);
-        $this->db->join('mst_keu_kategori_transaksi','mst_keu_kategori_transaksi.id_mst_kategori_transaksi=keu_transaksi.id_kategori_transaksi');
+        $this->db->join('mst_keu_kategori_transaksi','mst_keu_kategori_transaksi.id_mst_kategori_transaksi=keu_transaksi.id_kategori_transaksi','left');
         $this->db->join('mst_keu_syarat_pembayaran','mst_keu_syarat_pembayaran.id_mst_syarat_pembayaran=keu_transaksi.id_mst_syarat_pembayaran','left');
         //$this->db->join('mst_keu_instansi','mst_keu_instansi.id_mst_instansi=keu_transaksi.id_instansi','left');
         $this->db->join('mst_inv_pbf','mst_inv_pbf.code=keu_transaksi.id_instansi','left');
@@ -288,7 +288,7 @@ class Jurnal_model extends CI_Model {
         $datakeu_transaksipen=array(
                         'id_transaksi'=>$this->idtrasaksi(),
                         'tanggal'=> date('Y-m-d'),
-                        'code_cl_phc'=>$kodpus,
+                        'code_cl_phc'=>'P'.$kodpus,
                         'tipe_jurnal'=>$dat['untuk_jurnal'],
                         'status'=>'draft',
                         'id_kategori_transaksi'=>$dat['id_mst_kategori_transaksi'],

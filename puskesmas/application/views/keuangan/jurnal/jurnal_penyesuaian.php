@@ -138,7 +138,7 @@ $(document).ready(function () {
     {
         dataType: "json",
         dataFields: [
-            { name: 'id_transaksi', type: 'number' },
+            { name: 'id_transaksi', type: 'doble' },
             { name: 'id_jurnal', type: 'number' },
             { name: 'tanggal', type: 'string' },
             { name: 'uraian', type: 'string' },

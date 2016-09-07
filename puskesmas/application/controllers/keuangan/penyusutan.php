@@ -113,6 +113,7 @@ class Penyusutan extends CI_Controller {
 				'harga'   				=> $act->harga,
 				'namametode'   			=> $act->namametode,
 				'id_inventaris'   		=> $act->id_inventaris,
+				'nilai_sekarang'   		=> $act->nilai_sekarang,
 				'edit'	   => 1,
 				'delete'   => 1,
 				'view'   => 1

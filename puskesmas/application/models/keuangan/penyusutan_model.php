@@ -9,7 +9,7 @@ class Penyusutan_model extends CI_Model {
     }
     
     function get_data($start=0,$limit=999999,$options=array()){
-        $this->db->select("mst_keu_metode_penyusutan.nama as namametode,get_all_inventaris2.id_mst_inv_barang,get_all_inventaris2.register,get_all_inventaris2.id_cl_phc,keu_inventaris.*,get_all_inventaris2.nama_barang,get_all_inventaris2.harga");
+        $this->db->select("mst_keu_metode_penyusutan.nama as namametode,get_all_inventaris2.id_mst_inv_barang,get_all_inventaris2.register,get_all_inventaris2.id_cl_phc,keu_inventaris.*,get_all_inventaris2.nama_barang,get_all_inventaris2.harga,(get_all_inventaris2.harga - IFNULL(keu_inventaris.akumulasi_beban,0)) as nilai_sekarang",false);
     	$this->db->join('mst_keu_metode_penyusutan','keu_inventaris.id_mst_metode_penyusutan=mst_keu_metode_penyusutan.id_mst_metode_penyusutan','left');
     	$this->db->join('get_all_inventaris2','get_all_inventaris2.id_inventaris_barang=keu_inventaris.id_inventaris_barang','left');
         return $this->db->get('keu_inventaris',$limit,$start)->result();
@@ -30,17 +30,28 @@ class Penyusutan_model extends CI_Model {
     function get_data_puskesmas(){
     	return $this->db->get('cl_phc')->result();
     }
+    function getakumlasi($id){
+        $this->db->select("sum(kredit) as totalkredit");
+        $this->db->where('keu_transaksi_inventaris.id_inventaris',$id);
+        $this->db->where('keu_transaksi.tanggal <=',date("Y-m-d"));
+        $this->db->where('keu_transaksi.tipe_jurnal','jurnal_penyesuaian');
+        $this->db->join('keu_transaksi_inventaris','keu_transaksi_inventaris.id_transaksi=keu_transaksi.id_transaksi','left');
+        $this->db->join('keu_jurnal','keu_jurnal.id_keu_transaksi_inventaris=keu_transaksi_inventaris.id_transaksi_inventaris','left');
+        $query = $this->db->get('keu_transaksi')->row_array();
+        return $query['totalkredit'];
+    }
     function addstepsatu(){
     	$datainv    = explode('_tr_', $this->input->post('dataceklis'));
     	$id_invbaru = '';
     	for ($i=0; $i <=count($datainv)-2 ; $i++) { 
     		$data = $id_invbaru;
+            $akumulasidata= $this->getakumlasi($datainv[$i]);
     		$datasave = array(
     		'id_inventaris'			=> $this->idinventaris(),
     		'id_inventaris_barang'	=> $datainv[$i],
     		'id_mst_akun'			=> '9',
     		'id_mst_akun_akumulasi'		=> '9',
-    		'akumulasi_beban'			=> '0',
+    		'akumulasi_beban'			=> $akumulasidata,
     		'nilai_ekonomis'			=> '0',
     		'nilai_sisa'				=> '0',
     		'id_mst_metode_penyusutan'	=> '1',
