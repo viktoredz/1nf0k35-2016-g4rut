@@ -13,8 +13,8 @@
         <div class="box-header">
           <h3 class="box-title">{title_form}</h3>
           <div class="pull-right">
-                <button type="button" class="btn btn-danger" id="editalldata">Edit All</button>
-            </div>
+            <button type="button" class="btn btn-danger" id="editalldata"><i class="glyphicon glyphicon-edit"></i> Edit All</button>
+          </div>
         </div>
           <div class="box-footer">
             <button type="button" class="btn btn-primary" onclick='add_inventaris()'><i class='fa fa-plus-square'></i> &nbsp;Tambah Inventaris</button> 
@@ -75,8 +75,10 @@ var source = {
     { name: 'nama_barang', type: 'string'},
     { name: 'id_mst_inv_barang', type: 'string'},
     { name: 'id_inventaris_barang', type: 'string'},
+    { name: 'id_inventaris', type: 'string'},
     { name: 'register',type: 'string'},   
     { name: 'id_cl_phc',type: 'string'}, 
+    { name: 'namametode',type: 'string'},
     { name: 'harga',type: 'string'}, 
     { name: 'edit', type: 'number'},
     { name: 'delete', type: 'number'},
@@ -124,7 +126,7 @@ $("#jqxgrid").jqxGrid(
         { text: 'Detail', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
             var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
             if(dataRecord.view==1){
-                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+dataRecord.id_inventaris_barang+"\");'></a></div>";
+                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+dataRecord.id_inventaris+"\");'></a></div>";
             }else{
                 return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif'></a></div>";
             }
@@ -133,7 +135,7 @@ $("#jqxgrid").jqxGrid(
         { text: 'Edit', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
             var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
             if(dataRecord.edit==1){
-                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit(\""+dataRecord.id_inventaris_barang+"\");'></a></div>";
+                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='editdata(\""+dataRecord.id_inventaris+"\");'></a></div>";
             }else{
                 return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
             }
@@ -142,17 +144,17 @@ $("#jqxgrid").jqxGrid(
         { text: 'Del', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
             var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
             if(dataRecord.delete==1){
-                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_del.gif' onclick='del(\""+dataRecord.id_inventaris_barang+"\");'></a></div>";
+                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_del.gif' onclick='deldata(\""+dataRecord.id_inventaris+"\");'></a></div>";
             }else{
                 return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
             }
          }
         },
-        { text: 'ID Inventaris', datafield: 'id_inventaris_barang', columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '15%',cellsalign: 'center'},
+        { text: 'ID Inventaris', datafield: 'id_inventaris', columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '15%',cellsalign: 'center'},
         { text: 'Nama Inventaris', datafield: 'nama_barang', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '22%'},
         { text: 'Nilai Awal', datafield: 'harga', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '15%',cellsalign: 'right' },
         { text: 'Nilai Sekarang', datafield: 'nilai_akhir', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '15%',cellsalign: 'right' },
-        { text: 'Metode Penyusutan', datafield: 'metode', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'center', width: '21%' }
+        { text: 'Metode Penyusutan', datafield: 'namametode', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'center', width: '21%' }
     ]
 });
 
@@ -170,14 +172,13 @@ $("#popup_keuangan_penyusutan").jqxWindow({
 $("#popup_keuangan_penyusutan").jqxWindow('open');
 }
 
-function del(id){
+function deldata(id){
 var confirms = confirm("Hapus Data ?");
 if(confirms == true){
-    // $.post("<?php echo base_url().'keuangan/penyusutan/delete_sts' ?>/" + id,  function(){
-    //     alert('Data berhasil dihapus');
-
-    //     $("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-    // });
+    $.post("<?php echo base_url().'keuangan/penyusutan/delete_data' ?>/" + id,  function(){
+        alert('Data berhasil dihapus');
+        $("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+    });
 }
 }
 
@@ -194,7 +195,7 @@ $("#popup_keuangan_penyusutan").jqxWindow({
 });
 $("#popup_keuangan_penyusutan").jqxWindow('open');
 }
-function edit(){
+function editdata(){
 $("#popup_keuangan_penyusutan #popup_keuangan_penyusutan_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
 $.get("<?php echo base_url().'keuangan/penyusutan/edit_penyusutan' ?>/", function(data) {
   $("#popup_keuangan_penyusutan_content").html(data);

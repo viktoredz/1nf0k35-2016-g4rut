@@ -111,6 +111,8 @@ class Penyusutan extends CI_Controller {
 				'register'    			=> $act->register,
 				'id_cl_phc'   			=> $act->id_cl_phc,
 				'harga'   				=> $act->harga,
+				'namametode'   			=> $act->namametode,
+				'id_inventaris'   		=> $act->id_inventaris,
 				'edit'	   => 1,
 				'delete'   => 1
 			);
@@ -125,13 +127,13 @@ class Penyusutan extends CI_Controller {
 		echo json_encode(array($json));
 	}
 
-	function delete_sts($id=0){
+	function delete_data($id=0){
 		$this->authentication->verify('keuangan','del');
 
-		if($this->penyusutan_model->delete_sts($id)){
-			$this->session->set_flashdata('alert', 'Delete data ('.$id.')');
+		if($this->penyusutan_model->delete_data($id)){
+			return true;
 		}else{
-			$this->session->set_flashdata('alert', 'Delete data error');
+			return false;
 		}
 	}
 
@@ -386,6 +388,7 @@ class Penyusutan extends CI_Controller {
 				'harga'   				=> $act->harga,
 				'namaakun'   			=> $act->namaakun,
 				'kodeakun'   			=> $act->kodeakun,
+				'id_inventaris'   		=> $act->id_inventaris,
 				'namaakumulasi'   		=> $act->namaakumulasi,
 				'kodeakumulasi'   		=> $act->kodeakumulasi,
 				'namapenyusutan'   		=> $act->namapenyusutan,
@@ -522,6 +525,24 @@ class Penyusutan extends CI_Controller {
 		}
 	}
 	function updatestatusakuninventaris(){
-
+		$this->authentication->verify('keuangan','edit');
+		$this->penyusutan_model->updatedata();
 	}
+	function updatestatusakunakumulasi(){
+		$this->authentication->verify('keuangan','edit');
+		$this->penyusutan_model->updatedataakumulasi();
+	}
+	function updatestatuspenyusutan(){
+		$this->authentication->verify('keuangan','edit');
+		$this->penyusutan_model->updatedatapenyusutan();
+	}
+	function updatenilaiekonomis(){
+		$this->authentication->verify('keuangan','edit');
+		$this->penyusutan_model->updatedatanilaiekonomis();
+	}
+	function updatenilaisisa(){
+		$this->authentication->verify('keuangan','edit');
+		$this->penyusutan_model->updatedatanilaisisa();
+	}
+	
 }

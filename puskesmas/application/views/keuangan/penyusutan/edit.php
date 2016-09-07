@@ -12,6 +12,9 @@
       <div class="box box-primary">
         <div class="box-header">
           <h3 class="box-title">{title_form}</h3>
+          <div class="pull-right">
+            <button type="button" class="btn btn-danger" id="backdata"><i class="glyphicon glyphicon-arrow-left"></i> Back</button>
+          </div>
         </div>
           <div class="box-footer">
             <button type="button" class="btn btn-success" id="btn-refresh-edit"><i class='fa fa-refresh'></i> &nbsp;Refresh</button>    
@@ -48,6 +51,7 @@
             { name: 'id_mst_inv_barang', type: 'string'},
             { name: 'id_inventaris_barang', type: 'string'},
             { name: 'register',type: 'string'},   
+            { name: 'id_inventaris',type: 'string'},   
             { name: 'id_cl_phc',type: 'string'}, 
             { name: 'harga',type: 'string'},
             { name: 'kodenamaakumulasi',type: 'string'},
@@ -102,10 +106,10 @@
              datatype: "json",
             type    : "POST",
              datafields: [
-                 { name: 'sds', type: 'string' },
-                 { name: 'sdsds', type: 'string' }
+                 { name: 'nama', type: 'string' },
+                 { name: 'id_mst_metode_penyusutan', type: 'string' }
              ],
-             url: "<?php echo site_url('keuangan/penyusutan/arraypenyusutan'); ?>",
+             url: "<?php echo site_url('keuangan/penyusutan/arraymetodepenyusutan'); ?>",
         };
         var penyusutanAdapter = new $.jqx.dataAdapter(penyusutan, {
             autoBind: true
@@ -133,10 +137,9 @@
                        editor.jqxDropDownList('selectItem', cellvalue);
                    },
                    getEditorValue: function (row, cellvalue, editor) {
-                       editor.val();
-                        if(editor.val() % 1 === 0){\
+                        if(editor.val() % 1 === 0){
                             var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
-                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatestatusakuninventaris', {id_jabatan:editor.val()}, function( data ) {
+                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatestatusakuninventaris', {'idakun':editor.val(),'tipe':'akuninventaris','idinventaris':datagrid.id_inventaris}, function( data ) {
                                 if(data != 0){
                                   $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
                                 }else{
@@ -158,10 +161,9 @@
                        editor.jqxDropDownList('selectItem', cellvalue);
                    },
                    getEditorValue: function (row, cellvalue, editor) {
-                       editor.val();
-                        if(editor.val() % 1 === 0){\
+                        if(editor.val() % 1 === 0){
                             var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
-                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatestatusakuninventaris', {id_jabatan:editor.val()}, function( data ) {
+                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatestatusakunakumulasi', {'idakunakumulasi':editor.val(),'idinventarisdata':datagrid.id_inventaris}, function( data ) {
                                 if(data != 0){
                                   $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
                                 }else{
@@ -176,7 +178,7 @@
                 },
                 { text: '<i class="fa fa-pencil-square-o"></i> Metode Penyusutan', datafield: 'namapenyusutan', columntype: 'textbox', filtertype: 'textbox', align: 'center', width: '15%', columntype: 'dropdownlist',
                     createEditor: function (row, cellvalue, editor, cellText, width, height) {
-                       editor.jqxDropDownList({autoDropDownHeight: true,source: penyusutanAdapter, displayMember: "nama_penyusutan", valueMember: "id_mst_metode_penyusutan"});
+                       editor.jqxDropDownList({autoDropDownHeight: true,source: penyusutanAdapter, displayMember: "nama", valueMember: "id_mst_metode_penyusutan"});
 
                    },
                    initEditor: function (row, cellvalue, editor, celltext, width, height) {
@@ -186,7 +188,7 @@
                        editor.val();
                         if(editor.val() % 1 === 0){
                             var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
-                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatestatusakuninventaris', {id_jabatan:editor.val()}, function( data ) {
+                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatestatuspenyusutan', {'idakunpenyusutan':editor.val(),'idinventarispenyusutan':datagrid.id_inventaris}, function( data ) {
                                 if(data != 0){
                                   $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
                                 }else{
@@ -199,11 +201,45 @@
                    },
 
                 },
-                { text: '<i class="fa fa-pencil-square-o"></i> Nilai Ekonomis (Tahun)', datafield: 'nilai_ekonomis', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '15%' },
-                { text: '<i class="fa fa-pencil-square-o"></i> Sisa', datafield: 'nilai_sisa', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '15%'
+                { text: '<i class="fa fa-pencil-square-o"></i> Nilai Ekonomis (Tahun)', datafield: 'nilai_ekonomis', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '15%',
+                  getEditorValue: function (row, cellvalue, editor) {
+                       editor.val();
+                        if(editor.val() % 1 === 0){
+                            var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
+                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatenilaiekonomis', {'nilaiekonomis':editor.val(),'id_inventaris':datagrid.id_inventaris}, function( data ) {
+                                if(data != 0){
+                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
+                                }else{
+                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                                }
+                            });
+                        }else{
+                           $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                        }
+                   },
+                },
+                { text: '<i class="fa fa-pencil-square-o"></i> Sisa', datafield: 'nilai_sisa', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '15%',
+                    getEditorValue: function (row, cellvalue, editor) {
+                       editor.val();
+                        if(editor.val() % 1 === 0){
+                            var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
+                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatenilaisisa', {'nilaisisa':editor.val(),'id_inventaris':datagrid.id_inventaris}, function( data ) {
+                                if(data != 0){
+                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
+                                }else{
+                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                                }
+                            });
+                        }else{
+                           $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                        }
+                   },
                 },
             ]
         });
+$("#backdata").click(function(){
+  window.location = "<?php echo base_url().'keuangan/penyusutan' ?>";
+});
 </script>
 
 

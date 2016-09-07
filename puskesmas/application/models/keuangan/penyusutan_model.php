@@ -9,7 +9,8 @@ class Penyusutan_model extends CI_Model {
     }
     
     function get_data($start=0,$limit=999999,$options=array()){
-    	$this->db->join('mst_keu_metode_penyusutan','keu_inventaris.id_inventaris_barang=mst_keu_metode_penyusutan.id_mst_metode_penyusutan','left');
+        $this->db->select("mst_keu_metode_penyusutan.nama as namametode,get_all_inventaris2.id_mst_inv_barang,get_all_inventaris2.register,get_all_inventaris2.id_cl_phc,keu_inventaris.*,get_all_inventaris2.nama_barang,get_all_inventaris2.harga");
+    	$this->db->join('mst_keu_metode_penyusutan','keu_inventaris.id_mst_metode_penyusutan=mst_keu_metode_penyusutan.id_mst_metode_penyusutan','left');
     	$this->db->join('get_all_inventaris2','get_all_inventaris2.id_inventaris_barang=keu_inventaris.id_inventaris_barang','left');
         return $this->db->get('keu_inventaris',$limit,$start)->result();
     }
@@ -248,4 +249,46 @@ class Penyusutan_model extends CI_Model {
     		);
     	return $this->db->insert('keu_jurnal',$datajurnal);
     }
+    function updatedata(){
+        $idakun =$this->input->post('idakun');
+        $id_inventaris =$this->input->post('idinventaris');
+        
+        $this->db->set('id_mst_akun',$idakun);
+        $this->db->where('id_inventaris',$id_inventaris);
+        $this->db->update('keu_inventaris');
+    }
+    function updatedataakumulasi(){
+        $idakun =$this->input->post('idakunakumulasi');
+        $id_inventaris =$this->input->post('idinventarisdata');
+        $this->db->set('id_mst_akun_akumulasi',$idakun);
+        $this->db->where('id_inventaris',$id_inventaris);
+        $this->db->update('keu_inventaris');
+    }
+    function updatedatapenyusutan(){
+        $idakun =$this->input->post('idakunpenyusutan');
+        $id_inventaris =$this->input->post('idinventarispenyusutan');
+        $this->db->set('id_mst_metode_penyusutan',$idakun);
+        $this->db->where('id_inventaris',$id_inventaris);
+        $this->db->update('keu_inventaris');
+    }
+    function updatedatanilaiekonomis(){
+        $nilaiekonomis =$this->input->post('nilaiekonomis');
+        $id_inventaris =$this->input->post('id_inventaris');
+        $this->db->set('nilai_ekonomis',$nilaiekonomis);
+        $this->db->where('id_inventaris',$id_inventaris);
+        $this->db->update('keu_inventaris');
+    }
+    function updatedatanilaisisa(){
+        $nilaisisa =$this->input->post('nilaisisa');
+        $id_inventaris =$this->input->post('id_inventaris');
+        $this->db->set('nilai_sisa',$nilaisisa);
+        $this->db->where('id_inventaris',$id_inventaris);
+        $this->db->update('keu_inventaris');
+    }
+    function delete_data($id_inventaris){
+        $this->db->where('id_inventaris',$id_inventaris);
+        $this->db->delete('keu_inventaris');
+    }
+
+
 }
