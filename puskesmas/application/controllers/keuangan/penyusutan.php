@@ -42,10 +42,10 @@ class Penyusutan extends CI_Controller {
 				$field = $this->input->post('filterdatafield'.$i);
 				$value = $this->input->post('filtervalue'.$i);
 
-				if($field == 'tgl' ) {
-					$value = date("Y-m-d",strtotime($value));
-
-					$this->db->where($field,$value);
+				if($field == 'nilai_sekarang') {
+					$this->db->like('((get_all_inventaris2.harga) - IFNULL((select sum(debet) from keu_jurnal join keu_transaksi_inventaris on keu_transaksi_inventaris.id_transaksi_inventaris=keu_jurnal.id_keu_transaksi_inventaris where keu_transaksi_inventaris.id_inventaris=keu_inventaris.id_inventaris_barang),0))',$value);
+				}else if($field == 'namametode'){
+					$this->db->like('mst_keu_metode_penyusutan.nama',$value);
 				}elseif($field != 'year') {
 					$this->db->like($field,$value);
 				}
@@ -76,10 +76,10 @@ class Penyusutan extends CI_Controller {
 				$field = $this->input->post('filterdatafield'.$i);
 				$value = $this->input->post('filtervalue'.$i);
 
-				if($field == 'tgl' ) {
-					$value = date("Y-m-d",strtotime($value));
-
-					$this->db->where($field,$value);
+				if($field == 'nilai_sekarang') {
+					$this->db->like('((get_all_inventaris2.harga) - IFNULL((select sum(debet) from keu_jurnal join keu_transaksi_inventaris on keu_transaksi_inventaris.id_transaksi_inventaris=keu_jurnal.id_keu_transaksi_inventaris where keu_transaksi_inventaris.id_inventaris=keu_inventaris.id_inventaris_barang),0))',$value);
+				}else if($field == 'namametode'){
+					$this->db->like('mst_keu_metode_penyusutan.nama',$value);
 				}elseif($field != 'year') {
 					$this->db->like($field,$value);
 				}
@@ -153,7 +153,7 @@ class Penyusutan extends CI_Controller {
 		$data['alert_form']		   	    = "";
 	    $data['action']					= "detail";	
 
-	    $data 							= array('id_inventaris' => '1','nama_inventaris' => 'Mobil Tesla - Model S','nilai_awal' => '800000000','nilai_akhir' => '500000000','metode_penyusutan' => 'Jumlah Angka Tahun','akun_inventaris'=>'21122 - Alat Angkutan Darat Bermotor','biaya_penyusutan' =>'62710 - Biaya Penyusutan','nilai_ekonomis' =>'5 Tahun','nilai_sisa' =>'0','mulai_pakai'=>'12 Desember 2015');
+	    $data 							= $this->penyusutan_model->get_edit_row($id);
 	    $data['title_form']				= "Detail Inventaris Penyusutan";	
 		if($this->form_validation->run()== FALSE){
 			die($this->parser->parse("keuangan/penyusutan/form_detail_penyusutan",$data));
@@ -267,7 +267,7 @@ class Penyusutan extends CI_Controller {
 				'register'    			=> $act->register,
 				'id_cl_phc'   			=> $act->id_cl_phc,
 				'harga'   				=> $act->harga,
-				'status'   				=> $act->status,
+				'status'   				=> ($act->status == 'ditambahkan' ? '1':'0'),
 				'nomor_kontrak'   		=> $act->nomor_kontrak,
 				'edit'	   => 1,
 				'delete'   => 1
@@ -320,16 +320,25 @@ class Penyusutan extends CI_Controller {
 				$field = $this->input->post('filterdatafield'.$i);
 				$value = $this->input->post('filtervalue'.$i);
 
-				if($field == 'tgl' ) {
-					$value = date("Y-m-d",strtotime($value));
-
-					$this->db->where($field,$value);
+				if($field == 'kodenamaakun' ) {
+					$this->db->like('mst_keu_akun.uraian',$value);
+				}elseif($field == 'kodenamaakumulasi') {
+					$this->db->like('akunakumulasi.uraian',$value);
+				}elseif($field == 'namapenyusutan') {
+					$this->db->like('mst_keu_metode_penyusutan.nama',$value);
 				}elseif($field != 'year') {
 					$this->db->like($field,$value);
 				}
 			}
 
 			if(!empty($ord)) {
+				if ($ord=='kodenamaakumulasi') {
+					$ord='kodeakumulasi';
+				}
+
+				if ($ord=='kodenamaakun') {
+					$ord='kodeakun';
+				}
 				$this->db->order_by($ord, $this->input->post('sortorder'));
 			}
 		}
@@ -354,16 +363,25 @@ class Penyusutan extends CI_Controller {
 				$field = $this->input->post('filterdatafield'.$i);
 				$value = $this->input->post('filtervalue'.$i);
 
-				if($field == 'tgl' ) {
-					$value = date("Y-m-d",strtotime($value));
-
-					$this->db->where($field,$value);
+				if($field == 'kodenamaakun' ) {
+					$this->db->like('mst_keu_akun.uraian',$value);
+				}elseif($field == 'kodenamaakumulasi') {
+					$this->db->like('akunakumulasi.uraian',$value);
+				}elseif($field == 'namapenyusutan') {
+					$this->db->like('mst_keu_metode_penyusutan.nama',$value);
 				}elseif($field != 'year') {
 					$this->db->like($field,$value);
 				}
 			}
 
 			if(!empty($ord)) {
+				if ($ord=='kodenamaakumulasi') {
+					$ord='kodeakumulasi';
+				}
+
+				if ($ord=='kodenamaakun') {
+					$ord='kodeakun';
+				}
 				$this->db->order_by($ord, $this->input->post('sortorder'));
 			}
 		}
@@ -548,5 +566,96 @@ class Penyusutan extends CI_Controller {
 		$this->authentication->verify('keuangan','edit');
 		$this->penyusutan_model->updatedatanilaisisa();
 	}
+	function json_detailinv($id=0){
+		$this->authentication->verify('keuangan','show');
+
+
+		if($_POST) {
+			$fil = $this->input->post('filterscount');
+			$ord = $this->input->post('sortdatafield');
+
+			for($i=0;$i<$fil;$i++) {
+				$field = $this->input->post('filterdatafield'.$i);
+				$value = $this->input->post('filtervalue'.$i);
+
+				if($field == 'tanggal' ) {
+					$value = date("Y-m-d",strtotime($value));
+					$this->db->where($field,$value);
+				}elseif($field == 'debet') {
+					$this->db->like("(select debet from keu_jurnal where id_keu_transaksi_inventaris=keu_transaksi_inventaris.id_transaksi_inventaris and status='debet')",$value);
+				}elseif($field == 'kredit') {
+					$this->db->like("(select debet from keu_jurnal where id_keu_transaksi_inventaris=keu_transaksi_inventaris.id_transaksi_inventaris and status='kredit')",$value);
+				}elseif($field == 'uraian') {
+					$this->db->like("keu_transaksi_inventaris.uraian",$value);
+				}elseif($field != 'year') {
+					$this->db->like($field,$value);
+				}
+			}
+
+			if(!empty($ord)) {
+				$this->db->order_by($ord, $this->input->post('sortorder'));
+			}
+		}
 	
+	
+		$rows_all = $this->penyusutan_model->get_dataallinv($id);
+
+		if($_POST) {
+			$fil = $this->input->post('filterscount');
+			$ord = $this->input->post('sortdatafield');
+
+			for($i=0;$i<$fil;$i++) {
+				$field = $this->input->post('filterdatafield'.$i);
+				$value = $this->input->post('filtervalue'.$i);
+
+				if($field == 'tanggal' ) {
+					$value = date("Y-m-d",strtotime($value));
+					$this->db->where($field,$value);
+				}elseif($field == 'debet') {
+					$this->db->like("(select debet from keu_jurnal where id_keu_transaksi_inventaris=keu_transaksi_inventaris.id_transaksi_inventaris and status='debet')",$value);
+				}elseif($field == 'kredit') {
+					$this->db->like("(select debet from keu_jurnal where id_keu_transaksi_inventaris=keu_transaksi_inventaris.id_transaksi_inventaris and status='kredit')",$value);
+				}elseif($field == 'uraian') {
+					$this->db->like("keu_transaksi_inventaris.uraian",$value);
+				}elseif($field != 'year') {
+					$this->db->like($field,$value);
+				}
+			}
+
+			if(!empty($ord)) {
+				$this->db->order_by($ord, $this->input->post('sortorder'));
+			}
+		}
+		
+		$rows = $this->penyusutan_model->get_dataallinv($id,$this->input->post('recordstartindex'), $this->input->post('pagesize'));
+		$data = array();
+
+			foreach($rows as $act) {
+	 		$data[] = array(
+				'id_transaksi_inventaris'   	=> $act->id_transaksi_inventaris,
+				'id_inventaris'	   				=> $act->id_inventaris,
+				'id_transaksi'					=> $act->id_transaksi,
+				'periode_penyusutan_awal'    	=> $act->periode_penyusutan_awal,
+				'periode_penyusutan_akhir'   	=> $act->periode_penyusutan_akhir,
+				'uraian'   						=> $act->uraian,
+				'pemakaian_period'   			=> $act->pemakaian_period,
+				'tanggal'   					=> $act->tanggal,
+				'id_kategori_transaksi'   		=> $act->id_kategori_transaksi,
+				'code_cl_phc'   				=> $act->code_cl_phc,
+				'id_mst_keu_transaksi'   		=> $act->id_mst_keu_transaksi,
+				'kredit'   						=> $act->kredit,
+				'debet'   						=> $act->debet,
+				'edit'	   => 1,
+				'delete'   => 1
+			);
+		}
+
+		$size = sizeof($rows_all);
+		$json = array(
+			'TotalRows' => (int) $size,
+			'Rows' => $data
+		);
+
+		echo json_encode(array($json));
+	}
 }
