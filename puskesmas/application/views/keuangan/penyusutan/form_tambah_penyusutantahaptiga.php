@@ -5,7 +5,7 @@
     </div>
     <div class="col-sm-6" style="text-align: right">
       <button type="button" name="btn_keuangan_add_steptiga" class="btn btn-warning" onclick="addsteptiga(3)"><i class='glyphicon glyphicon-floppy-save'></i> &nbsp; Simpan</button>
-      <button type="button" name="btn_keuangan_close" class="btn btn-primary"><i class='fa fa-close'></i> &nbsp; Batal</button>
+      <!-- <button type="button" name="btn_keuangan_close" class="btn btn-primary"><i class='fa fa-close'></i> &nbsp; Batal</button> -->
     </div>
   </div>
 
@@ -49,7 +49,7 @@
             </div>
             <div class="col-md-8">
               <div name="transaksi_tgl" id="transaksi_tgl" value="<?php
-               if(set_value('transaksi_tgl')=="" && isset($tanggal)){
+               if(set_value('transaksi_tgl')=="" && isset($tanggal)==''){
                   echo $tanggal;
                 }else{
                   echo  set_value('transaksi_tgl');
@@ -103,15 +103,17 @@
           <div class="row" style="margin: 5px">
             <div class="col-md-4" style="padding: 5px">
               <select id="jurnaltransaksi" name="jurnaltransaksi" class="form-control">
-                <?php foreach ($getakun as $keyakun): ?>
-                  <option value="<?php echo $keyakun['id_mst_akun'] ?>"><?php echo $keyakun['nama_akun'] ?></option>
+                <?php foreach ($getakun as $keyakun): 
+                $select = $keyakun['id_mst_akun']==$idakunkredittotal ?'selected' : '';
+                ?>
+                  <option value="<?php echo $keyakun['id_mst_akun'] ?>" <?php echo $select; ?>><?php echo $keyakun['nama_akun'] ?></option>
                 <?php endforeach ?>
               </select>
             </div>
             <div class="col-md-4">
             </div>
             <div class="col-md-4">
-                <?php echo $jumlahtotal; ?>
+                <?php echo $kredittot; ?>
             </div>
           </div>
           <div class="row" style="margin: 5px">

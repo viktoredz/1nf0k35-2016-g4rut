@@ -6,7 +6,7 @@
     </div>
     <div class="col-sm-6" style="text-align: right">
       <button type="button" name="btn_keuangan_add_stepdua" class="btn btn-warning""><i class='glyphicon glyphicon-arrow-right'></i> &nbsp; Selanjutnya</button>
-      <button type="button" name="btn_keuangan_close" class="btn btn-primary"><i class='fa fa-close'></i> &nbsp; Batal</button>
+      <!-- <button type="button" name="btn_keuangan_close" class="btn btn-primary"><i class='fa fa-close'></i> &nbsp; Batal</button> -->
     </div>
   </div>
 
@@ -71,7 +71,7 @@
                  Metode penyusutan
                 </div>
                 <div class="col-md-8">
-                  <select name='metode_penyusustan' id='metode_penyusustan<?php echo $i;?>' class="form-control">
+                  <select name='metode_penyusustan' onchange="showekonomissia(<?php echo $i;?>)" id='metode_penyusustan<?php echo $i;?>' class="form-control">
                     <?php  foreach ($nilaimetode_penyusustan as $datametode) { 
                         $select = $datametode['id_mst_metode_penyusutan'] == $key['id_mst_metode_penyusutan'] ? 'selected' :'';
                     ?>
@@ -86,10 +86,24 @@
                 </div>
                 <div class="col-md-8">
                   <input type="number" class="form-control" name="nilai_ekonomis" id="nilai_ekonomis<?php echo $i;?>" placeholder="Nilai Ekonomis" value="<?php 
-                      if (isset($key['nilai_ekonomis']) && set_value('nilai_ekonomis')) {
+                      if (isset($key['nilai_ekonomis']) && set_value('nilai_ekonomis')=='') {
                         echo $key['nilai_ekonomis'];
                       }else{
                         echo set_value('nilai_ekonomis');
+                      }
+                    ?>">
+                </div>
+              </div>
+              <div class="row" style="margin: 5px">
+                <div class="col-md-4" style="padding: 5px">
+                 Nilai Sisa
+                </div>
+                <div class="col-md-8">
+                  <input type="number" class="form-control" name="nilai_sisa" id="nilai_sisa<?php echo $i;?>" placeholder="Nilai Sisa" value="<?php 
+                      if (isset($key['nilai_sisa']) && set_value('nilai_sisa')=='') {
+                        echo $key['nilai_sisa'];
+                      }else{
+                        echo set_value('nilai_sisa');
                       }
                     ?>">
                 </div>
@@ -123,6 +137,7 @@
           data.append('id_mst_akun_akumulasi<?php echo $no;?>', $("#akun_bebanpenyusustan<?php echo $no;?>").val());
           data.append('id_mst_metode_penyusutan<?php echo $no;?>', $("#metode_penyusustan<?php echo $no;?>").val());
           data.append('nilai_ekonomis<?php echo $no;?>', $("#nilai_ekonomis<?php echo $no;?>").val());
+          data.append('nilai_sisa<?php echo $no;?>', $("#nilai_sisa<?php echo $no;?>").val());
           data.append('nama_barang<?php echo $no;?>', "<?php echo $datain['nama_barang']?>");
         <?php $no++;} ?>
           data.append('jumlahdata', "<?php echo count($datainventaris) ?>");
@@ -151,5 +166,19 @@
         return false;
     });
   });
+  function showekonomissia(no){
+    pilihmetode = $("#metode_penyusustan"+no).val();
+    if (pilihmetode=='5') {
+      $("#nilai_ekonomis"+no).hide();
+    }else{
+      $("#nilai_ekonomis"+no).show();
+    }
+    if (pilihmetode=='5' || pilihmetode=='5' || pilihmetode=='3') {
+      $("#nilai_sisa"+no).hide();
+    }else{
+      $("#nilai_sisa"+no).show();
+    }
 
+
+  }
 </script>

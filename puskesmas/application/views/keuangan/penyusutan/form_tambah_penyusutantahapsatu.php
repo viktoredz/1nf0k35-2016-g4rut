@@ -140,14 +140,17 @@
           return obj.data;    
       },
       columns: [
-          { text: 'Pilih', align: 'center', filtertype: 'none', sortable: false, width: '8%', cellsrenderer: function (row) {
-            var dataRecord = $("#jqxgridPilih").jqxGrid('getrowdata', row);
-          return "<div style='width:100%;padding-top:2px;text-align:center'><input type='checkbox' name='idinv[]' value="+dataRecord.id_inventaris_barang+" ></div>";
-                 }
-                },
-          { text: 'ID Inventaris', datafield: 'id_inventaris_barang', columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '15%',cellsalign: 'center'},
-          { text: 'Nama Inventaris', datafield: 'nama_barang', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '47%'},
-          { text: 'Status', datafield: 'status', columntype: 'textbox', filtertype: 'none', align: 'center', cellsalign: 'center', width: '30%' }
+          { text: 'ID Inventaris', datafield: 'id_inventaris_barang', columntype: 'textbox', filtertype: 'none',align: 'center', cellsalign: 'center', width: '20%',cellsalign: 'center'},
+          { text: 'Nama Inventaris', datafield: 'nama_barang', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '50%'},
+          { text: 'Status', columntype: 'textbox', filtertype: 'none', align: 'center', cellsalign: 'center', width: '30%', cellsrenderer: function (row) {
+              var dataRecord = $("#jqxgridPilih").jqxGrid('getrowdata', row);
+              if (dataRecord.status!='1') {
+                return "<div style='width:100%;padding-top:2px;text-align:center'><input type='checkbox' name='idinv[]' value="+dataRecord.id_inventaris_barang+" ></div>";
+              }else{
+                return "<div style='width:100%;padding-top:2px;text-align:center'> Sudah ditambahkan</div>";
+              }
+            } 
+          }
       ]
   });
 function addsteplanjut(id) {

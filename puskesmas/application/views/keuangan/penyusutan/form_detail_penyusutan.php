@@ -24,7 +24,7 @@
         <div class="col-md-4" style="padding: 5px">
          Nomor
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8" style="padding: 5px">
           <?php 
           if (isset($id_inventaris)) {
           	echo $id_inventaris;
@@ -36,10 +36,10 @@
         <div class="col-md-4" style="padding: 5px">
          Nama Inventaris
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8" style="padding: 5px">
           <?php 
-          if (isset($nama_inventaris)) {
-          	echo $nama_inventaris;
+          if (isset($nama_barang)) {
+          	echo $nama_barang;
           }
           ?>
         </div>
@@ -48,22 +48,22 @@
         <div class="col-md-4" style="padding: 5px">
          Nilai Awal
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8" style="padding: 5px">
           <?php 
-          if (isset($nilai_awal)) {
-          	echo $nilai_awal;
+          if (isset($harga)) {
+          	echo $harga;
           }
           ?>
         </div>
       </div>
       <div class="row" style="margin: 5px">
         <div class="col-md-4" style="padding: 5px">
-         Nilai Saat Ini
+         Nilai Saat Ini <?php  echo $totaldebetkredit; ?>
         </div>
-        <div class="col-md-8">
-          <?php 
-          if (isset($nilai_akhir)) {
-          	echo $nilai_akhir;
+        <div class="col-md-8" style="padding: 5px">
+          <?php  
+          if (isset($harga)) {
+          	echo $harga-$totaldebetkredit;
           }
           ?>
         </div>
@@ -72,10 +72,10 @@
         <div class="col-md-4" style="padding: 5px">
          Akun inventaris
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8" style="padding: 5px">
           <?php 
-          if (isset($akun_inventarsi)) {
-          	echo $akun_inventarsi;
+          if (isset($kodeakun)) {
+          	echo $kodeakun.' - '.$namaakun;
           }
           ?>
         </div>
@@ -84,10 +84,10 @@
         <div class="col-md-4" style="padding: 5px">
          Akun Biaya Penyusutan
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8" style="padding: 5px">
           <?php 
-          if (isset($biaya_penyusutan)) {
-          	echo $biaya_penyusutan;
+          if (isset($kodeakumulasi)) {
+          	echo $kodeakumulasi.' - '.$namaakumulasi;
           }
           ?>
         </div>
@@ -96,10 +96,10 @@
         <div class="col-md-4" style="padding: 5px">
          Metode Penyusutan
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8" style="padding: 5px">
           <?php 
-          if (isset($metode_penyusutan)) {
-          	echo $metode_penyusutan;
+          if (isset($namapenyusutan)) {
+          	echo $namapenyusutan;
           }
           ?>
         </div>
@@ -108,7 +108,7 @@
         <div class="col-md-4" style="padding: 5px">
          Nilai Ekonomis
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8" style="padding: 5px">
           <?php 
           if (isset($nilai_ekonomis)) {
           	echo $nilai_ekonomis;
@@ -120,7 +120,7 @@
         <div class="col-md-4" style="padding: 5px">
          Umur Sisa
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8" style="padding: 5px">
           <?php 
           if (isset($nilai_sisa)) {
           	echo $nilai_sisa;
@@ -132,10 +132,10 @@
         <div class="col-md-4" style="padding: 5px">
          Mulai Pemakaian
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8" style="padding: 5px">
           <?php 
-          if (isset($mulai_pakai)) {
-          	echo $mulai_pakai;
+          if (isset($tanggal_pembelian)) {
+          	echo date("d-m-Y",strtotime($tanggal_pembelian));
           }
           ?>
         </div>
@@ -200,22 +200,28 @@
         return false;
     });
   });
-
-
-
  var source = {
     datatype: "json",
     type    : "POST",
     datafields: [
+    { name: 'id_transaksi_inventaris', type: 'string'},
     { name: 'id_inventaris', type: 'string'},
-    { name: 'tanggal', type: 'date'},
-    { name: 'metode', type: 'string'},
-    { name: 'kredit', type: 'string'},
-    { name: 'nilai_inventaris',type: 'string'},   
-    { name: 'debit', type: 'number'},
+    { name: 'id_transaksi', type: 'string'},
+    { name: 'periode_penyusutan_awal', type: 'date'},
+    { name: 'periode_penyusutan_akhir',type: 'date'},   
+    { name: 'uraian',type: 'string'},  
+    { name: 'pemakaian_period',type: 'date'},  
+    { name: 'tanggal',type: 'date'},  
+    { name: 'id_kategori_transaksi',type: 'string'},  
+    { name: 'code_cl_phc',type: 'string'},  
+    { name: 'id_mst_keu_transaksi',type: 'string'},  
+    { name: 'kredit',type: 'string'},  
+    { name: 'debet',type: 'string'},  
+    { name: 'edit',type: 'string'},  
+    { name: 'delete', type: 'number'},
     { name: 'view', type: 'number'},
 ],
-	url: "<?php echo site_url('keuangan/penyusutan/json_detail'); ?>",
+	url: "<?php echo base_url().'keuangan/penyusutan/json_detailinv/'.$id_inventaris_barang; ?>",
 	cache: false,
 	updaterow: function (rowid, rowdata, commit) {
 	    },
@@ -257,16 +263,16 @@
 	        { text: 'Detail', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
 	            var dataRecord = $("#jqxgreeddetail").jqxGrid('getrowdata', row);
 	            if(dataRecord.view==1){
-	                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+dataRecord.id_sts+"\");'></a></div>";
+	                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+dataRecord.id_inventaris+"\");'></a></div>";
 	            }else{
 	                return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif'></a></div>";
 	            }
 	          }
 	        },
 	        { text: 'Tanggal', datafield: 'tanggal', columntype: 'date', filtertype: 'date', cellsformat: 'dd-MM-yyyy',align: 'center', cellsalign: 'center', width: '15%',cellsalign: 'center'},
-	        { text: 'Debit', datafield: 'debit', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '25%',cellsalign: 'right'},
+	        { text: 'Debit', datafield: 'debet', columntype: 'textbox', filtertype: 'textbox',align: 'center', width: '25%',cellsalign: 'right'},
 	        { text: 'Kredit', datafield: 'kredit', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '25%',cellsalign: 'right' },
-	        { text: 'Nilai Inventaris', datafield: 'nilai_inventaris', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '30%',cellsalign: 'right' },
+	        { text: 'Nilai Inventaris', datafield: 'uraian', columntype: 'textbox', filtertype: 'textbox', align: 'center',  width: '30%',cellsalign: 'right' },
 	    ]
 	});
 </script>
