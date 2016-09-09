@@ -859,6 +859,7 @@ class Jurnal extends CI_Controller {
 		}	
 	}
 	function delete_junal_penyesuaian($id=0){
+		$this->jurnal_model->updatekembaliuang($id);
 		$this->db->set('status','dihapus');
 		$this->db->where('id_transaksi',$id);
 		$this->db->update('keu_transaksi');
