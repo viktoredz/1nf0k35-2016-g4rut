@@ -614,14 +614,28 @@ class Jurnal_model extends CI_Model {
    }
    function updatekembaliuang($id){
         $this->db->where('id_transaksi',$id);
-        $this->db->select('keu_transaksi_inventaris.*,(select sum(debet) from  keu_jurnal where id_keu_transaksi_inventaris=keu_transaksi_inventaris.id_transaksi_inventaris) as totaldebet',false);
+        $this->db->select("keu_transaksi_inventaris.*,(select sum(debet) from  keu_jurnal where id_keu_transaksi_inventaris=keu_transaksi_inventaris.id_transaksi_inventaris) as totaldebet");
         $query = $this->db->get('keu_transaksi_inventaris');
         foreach ($query->result_array() as $key){
+            $this->db->select("keu_inventaris.*");
             $this->db->where('id_inventaris_barang',$key['id_inventaris']);
             $dataquery = $this->db->get('keu_inventaris')->row_array();
+
             $this->db->set('nilai_sisa',$dataquery['nilai_sisa'] + $key['totaldebet']);
             $this->db->where('id_inventaris_barang',$key['id_inventaris']);
             $this->db->update('keu_inventaris');
         }
+   }
+   function updatesisanilai(){
+            $this->db->select("keu_transaksi_inventaris.*,(select sum(debet) from  keu_jurnal where id_keu_transaksi_inventaris=keu_transaksi_inventaris.id_transaksi_inventaris) as totaldebet");
+            $this->db->where('id_transaksi_inventaris',$this->input->post('id_transaksi_inv'));
+            $dataquery = $this->db->get('keu_transaksi_inventaris')->row_array();
+
+            $this->db->where('id_inventaris_barang',$dataquery['id_inventaris']);
+            $query = $this->db->get('keu_inventaris')->row_array();
+
+            $this->db->set('nilai_sisa',$query['nilai_sisa'] + $dataquery['totaldebet']);
+            $this->db->where('id_inventaris_barang',$dataquery['id_inventaris']);
+            $this->db->update('keu_inventaris');
    }
 }

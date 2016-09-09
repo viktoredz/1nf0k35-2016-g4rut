@@ -919,6 +919,7 @@ class Jurnal extends CI_Controller {
 	}
 	function delete_penyusutan_transaksi(){
 		$this->authentication->verify('keuangan','del');
+		$this->jurnal_model->updatesisanilai();
 		if ($this->jurnal_model->delete_penyusutan_trans()) {
 			die('OK');
 		}else{

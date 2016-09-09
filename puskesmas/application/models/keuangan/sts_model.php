@@ -405,7 +405,8 @@ class Sts_model extends CI_Model {
         {
             $nourut = "0001";
         }
-        return $kodpus.date("Y").date('m').$nourut;
+        $kodpuskes = $this->session->userdata('puskesmas');
+        return $kodpuskes.date("Y").date('m').$nourut;
     }
     function idjurnal($id='0'){
         $q = $this->db->query("select RIGHT(MAX(id_jurnal),4) as kd_max from keu_jurnal");
@@ -422,7 +423,7 @@ class Sts_model extends CI_Model {
         {
             $nourut = "0001";
         }
-        $kodpus ="P".$this->session->userdata('puskesmas');
+        $kodpus = $this->session->userdata('puskesmas');
         return $kodpus.date("Y").date('m').$nourut;
     }
 	function tutup_sts(){
