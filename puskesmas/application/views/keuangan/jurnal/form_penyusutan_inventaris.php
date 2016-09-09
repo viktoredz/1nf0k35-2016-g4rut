@@ -202,7 +202,7 @@
                       <div class="col-md-1" style="padding: 5px"> </div>
                       <div class="col-md-5" style="padding: 5px"> 
                     <?php } ?>
-                      <select  onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","id_mst_akun","id_mst_akun","keu_jurnal")' id="id_mst_akun<?php echo $keydetail['id_jurnal'];?>" name="id_mst_akun" class="form-control">
+                      <select  onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","id_mst_akun","id_mst_akun","keu_jurnal",<?php echo $keyinv['id_transaksi_inventaris'];?>)' id="id_mst_akun<?php echo $keydetail['id_jurnal'];?>" name="id_mst_akun" class="form-control">
                         <?php  foreach ($getdataakun as $dataakun) { 
                           $select = $dataakun->id_mst_akun == $keydetail['id_mst_akun'] ? 'selected' : '';
                         ?>
@@ -213,22 +213,36 @@
 
                     <div class="col-md-3" >
                       <?php if ($keydetail['status']=='debet') { ?>
-                      <input onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","jml_debit","debet","keu_jurnal")' type="number" id="jml_debit<?php echo $keydetail['id_jurnal'];?>" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="<?php 
+                      <input onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","jml_debit","debet","keu_jurnal",<?php echo $keyinv['id_transaksi_inventaris'];?>)' type="number" id="jml_debit<?php echo $keydetail['id_jurnal'];?>" name="jml_debit<?php echo $keyinv['id_transaksi_inventaris'];?>" placeholder="Jumlah Debit"  class="form-control" value="<?php 
                         if(set_value('jml_debit')=="" && isset($keydetail['debet'])){
                           echo $keydetail['debet'];
                         }else{
                           echo  set_value('jml_debit');
                         }
                         ?>" />
+                        <input type="number" id="jml_debithidden<?php echo $keydetail['id_jurnal'];?>" name="jml_debithidden<?php echo $keyinv['id_transaksi_inventaris'];?>" placeholder="Jumlah Debit"  class="form-control" value="<?php 
+                        if(set_value('jml_debithidden')=="" && isset($keydetail['debet'])){
+                          echo $keydetail['debet'];
+                        }else{
+                          echo  set_value('jml_debithidden');
+                        }
+                        ?>" />
                       <?php }?>
                     </div>
                     <div class="col-md-3">
                       <?php if ($keydetail['status']=='kredit') { ?>
-                      <input onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","jml_kredit","kredit","keu_jurnal")'  type="number" id="jml_kredit<?php echo $keydetail['id_jurnal'];?>" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="<?php 
+                      <input onchange='updatedatadetailtransaksi("<?php echo $keydetail['id_jurnal'];?>","jml_kredit","kredit","keu_jurnal",<?php echo $keyinv['id_transaksi_inventaris'];?>)'  type="number" id="jml_kredit<?php echo $keydetail['id_jurnal'];?>" name="jml_kredit<?php echo $keyinv['id_transaksi_inventaris'];?>" placeholder="Jumlah Kredit Hidden"  class="form-control" value="<?php 
                         if(set_value('jml_kredit')=="" && isset($keydetail['kredit'])){
                           echo $keydetail['kredit'];
                         }else{
                           echo  set_value('jml_kredit');
+                        }
+                        ?>" />
+                        <input type="number" id="jml_kredithidden<?php echo $keydetail['id_jurnal'];?>" name="jml_kredithidden<?php echo $keyinv['id_transaksi_inventaris'];?>" placeholder="Jumlah Kredit HIdden"  class="form-control" value="<?php 
+                        if(set_value('jml_kredithidden')=="" && isset($keydetail['kredit'])){
+                          echo $keydetail['kredit'];
+                        }else{
+                          echo  set_value('jml_kredithidden');
                         }
                         ?>" />
                       <?php }?>
@@ -309,7 +323,7 @@ function showupdata(id){
 function add_datainventaris(){
   // var id=0;
   $("#popup_inventaris #popup_content_inventaris").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-  $.get("<?php echo base_url().'keuangan/jurnal/add_penyusutan_inventaris/'.$id; ?>", function(data) {
+  $.get("<?php echo base_url().'keuangan/jurnal/add_penyusutan_inventaris/'.$id.'/'.$id_mst_keu_transaksi; ?>", function(data) {
     $("#popup_content_inventaris").html(data);
   });
   $("#popup_inventaris").jqxWindow({
@@ -388,22 +402,22 @@ function addinventaris(data){
                   form_create_data+='<div class="col-md-1" style="padding: 5px"> </div>\
                       <div class="col-md-5" style="padding: 5px">';
                   }
-                  form_create_data+='<select onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'id_mst_akun\',\'id_mst_akun\',\'keu_jurnal\')" id="id_mst_akun'+valuechildern.id_jurnal+'" name="id_mst_akun" class="form-control">\
+                  form_create_data+='<select onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'id_mst_akun\',\'id_mst_akun\',\'keu_jurnal\',\''+value.id_transaksi_inventaris+'\')" id="id_mst_akun'+valuechildern.id_jurnal+'" name="id_mst_akun" class="form-control">\
                       </select>\
                     </div>\
                     <div class="col-md-3" >';
                   if (valuechildern.status=='debet') {
-                    form_create_data+='<input  onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'jml_debit\',\'debet\',\'keu_jurnal\')" type="number" id="jml_debit'+valuechildern.id_jurnal+'" name="jml_debit" placeholder="Jumlah Debit"  class="form-control" value="'+valuechildern.debet+'" />';
+                    form_create_data+='<input  onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'jml_debit\',\'debet\',\'keu_jurnal\',\''+value.id_transaksi_inventaris+'\')" type="number" id="jml_debit'+valuechildern.id_jurnal+'" name="jml_debit'+value.id_transaksi_inventaris+'" placeholder="Jumlah Debit"  class="form-control" value="'+valuechildern.debet+'" /><input  type="number" id="jml_debithidden'+valuechildern.id_jurnal+'" name="jml_debithidden'+value.id_transaksi_inventaris+'" placeholder="Jumlah Debit"  class="form-control" value="'+valuechildern.debet+'" />';
                   }
                   form_create_data+='</div>\
                         <div class="col-md-3">';
 
                   if (valuechildern.status=='kredit') {
-                      form_create_data+='<input onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'jml_kredit\',\'kredit\',\'keu_jurnal\')" type="number" id="jml_kredit'+valuechildern.id_jurnal+'" name="jml_kredit" placeholder="Jumlah Kredit"  class="form-control" value="'+valuechildern.kredit+'" />';
+                      form_create_data+='<input onchange="updatedatadetailtransaksi(\''+valuechildern.id_jurnal+'\',\'jml_kredit\',\'kredit\',\'keu_jurnal\',\''+value.id_transaksi_inventaris+'\')" type="number" id="jml_kredit'+valuechildern.id_jurnal+'" name="jml_kredit'+value.id_transaksi_inventaris+'" placeholder="Jumlah Kredit"  class="form-control" value="'+valuechildern.kredit+'" /><input type="number" id="jml_kredithidden'+valuechildern.id_jurnal+'" name="jml_kredithidden'+value.id_transaksi_inventaris+'" placeholder="Jumlah Kredit Hidden"  class="form-control" value="'+valuechildern.kredit+'" />';
                   }
                   form_create_data+='</div>\
                   </div>';
-                  mengisiselectcreate(valuechildern.id_jurnal);
+                  mengisiselectcreate(valuechildern.id_jurnal,valuechildern.status);
         });
     form_create_data +='</div>\
                     <div class="row" style="margin: 5px">\
@@ -427,12 +441,27 @@ function addinventaris(data){
   $("[name='tgl_periode_penyusutan_awal']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
   $("[name='tgl_periode_penyusutan_akhir']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
 }
-function mengisiselectcreate(key){
-  $.get("<?php echo base_url()."keuangan/jurnal/getdataakun/" ?>",function(data){
+function mengisiselectcreate(key,tipe){
+  $.get("<?php echo base_url()."keuangan/jurnal/getdataakun/".$id_mst_keu_transaksi ?>",function(data){
       var objda = $.parseJSON(data);
       var options = [];
       $.each(objda, function(idx, obj) {
-        options.push('<option value="'+obj.id_mst_akun+'">'+ obj.uraian +'</option>');
+        if (tipe=='kredit') {
+            if (objda.datapilihaakunkredit==obj.id_mst_akun) {
+              selec ='selected';
+              
+            }else{
+              selec ='';
+            }
+            options.push('<option value="'+obj.id_mst_akun+'" '+selec+'>'+ obj.uraian +'</option>');
+        }else{
+            if (objda.datapilihaakundebit==obj.id_mst_akun) {
+              selec ='selected';
+            }else{
+              selec ='';
+            }
+            options.push('<option value="'+obj.id_mst_akun+'" '+selec+'>'+ obj.uraian +'</option>');
+        }
       });
       $('#id_mst_akun'+key+'').html(options);
   });
@@ -467,19 +496,65 @@ function updatedatadetail(idinv,namahtml,dataubah,namatable){
           },  function(data){
   });
 }
-function updatedatadetailtransaksi(idjurnal,namahtml,dataubah,namatable){
-  values = $("#"+namahtml+idjurnal).val();
-  $.post("<?php echo base_url().'keuangan/jurnal/ubahdatadetail/'?>",{
-            'id_transaksi':"<?php echo $id?>",
-            'idjurnal':idjurnal,
-            'dataubah':dataubah,
-            'values':values,
-            'table':namatable,
-          },  function(data){
-            if (dataubah=='debet' || dataubah=='kredit') {
-              updatetotal(idjurnal,namahtml,dataubah,namatable);
-            }
-  });
+function updatedatadetailtransaksi(idjurnal,namahtml,dataubah,namatable,idinv){
+  if (dataubah=='kredit' || dataubah=='debet') {
+    values = $("#"+namahtml+idjurnal).val();
+    if (dataubah=='kredit') {
+      namatambah = $("#jml_debithidden"+idjurnal).val();
+      $("[name='jml_debit"+idinv+"']").val(values);
+      $("#totaljml_debit"+idinv+"").val(values);
+    }else{
+      namatambah = $("#jml_kredithidden"+idjurnal).val();
+      $("[name='jml_kredit"+idinv+"']").val(values);
+      $("#totaljml_kredit"+idinv+"").val(values);
+    }
+    $.post("<?php echo base_url().'keuangan/jurnal/getmaksimalpenyusutan/'?>",{
+      'id_transaksi':"<?php echo $id?>",
+      'idjurnal':idjurnal,
+      'dataubah':dataubah,
+      'values':values,
+      'table':namatable,
+      'idinv':idinv,
+    },  function(resdata){
+        values = $("#"+namahtml+idjurnal).val();
+        namatambah = $("#jml_debithidden"+idjurnal).val();
+        if (parseInt(values) > (parseInt(resdata)+parseInt(namatambah))) {
+          alert("Maaf Penyusutan maksimal sebesar "+ ((parseInt(resdata)+parseInt(namatambah))/1000).toFixed(3));
+          $("#"+namahtml+idjurnal).val(parseInt(resdata)+parseInt(namatambah));
+        }else{
+          $.post("<?php echo base_url().'keuangan/jurnal/ubahdatadetail/'?>",{
+                'id_transaksi':"<?php echo $id?>",
+                'idjurnal':idjurnal,
+                'dataubah':dataubah,
+                'values':values,
+                'table':namatable,
+                'idinv':idinv,
+                'datatambah':namatambah,
+              },  function(data){
+              if (dataubah=='debet' || dataubah=='kredit') {
+                
+                updatetotal(idjurnal,namahtml,dataubah,namatable);
+                $("[name='jml_kredithidden"+idinv+"']").val(values);
+                $("[name='jml_debithidden"+idinv+"']").val(values);
+              }
+          });
+        }
+    });
+  }else{
+    values = $("#"+namahtml+idjurnal).val();
+    $.post("<?php echo base_url().'keuangan/jurnal/ubahdatadetail/'?>",{
+          'id_transaksi':"<?php echo $id?>",
+          'idjurnal':idjurnal,
+          'dataubah':dataubah,
+          'values':values,
+          'table':namatable,
+          'idinv':idinv,
+        },  function(data){
+        if (dataubah=='debet' || dataubah=='kredit') {
+          updatetotal(idjurnal,namahtml,dataubah,namatable);
+        }
+    });
+  }
 }
 function updatetotal(idjurnal,namahtml,dataubah,namatable){
   values = $("#"+namahtml+idjurnal).val();

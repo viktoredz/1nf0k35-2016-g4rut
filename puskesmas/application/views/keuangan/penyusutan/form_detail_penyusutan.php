@@ -12,7 +12,7 @@
         <h4>{title_form}</h4> 
     </div>
     <div class="col-sm-6" style="text-align: right">
-      <button type="button" name="btn_keuangan_detail_penyusutan" class="btn btn-warning"><i class='glyphicon glyphicon-list-alt'></i> &nbsp; Lebih Detail</button>
+      <!-- <button type="button" name="btn_keuangan_detail_penyusutan" class="btn btn-warning"><i class='glyphicon glyphicon-list-alt'></i> &nbsp; Lebih Detail</button> -->
       <button type="button" name="btn_keuangan_penyusutan_close" id="btn_keuangan_penyusutan_close" class="btn btn-primary"><i class='fa fa-close'></i> &nbsp; Close</button>
     </div>
   </div>
@@ -51,7 +51,7 @@
         <div class="col-md-8" style="padding: 5px">
           <?php 
           if (isset($harga)) {
-          	echo $harga;
+          	echo number_format($harga,2);
           }
           ?>
         </div>
@@ -62,8 +62,8 @@
         </div>
         <div class="col-md-8" style="padding: 5px">
           <?php  
-          if (isset($harga)) {
-          	echo $harga-$totaldebetkredit;
+          if (isset($nilai_sisa)) {
+          	echo number_format($nilai_sisa,2);
           }
           ?>
         </div>
@@ -111,7 +111,9 @@
         <div class="col-md-8" style="padding: 5px">
           <?php 
           if (isset($nilai_ekonomis)) {
-          	echo $nilai_ekonomis;
+          	echo $nilai_ekonomis.' Tahun';
+          }else{
+            echo '0 Tahun';
           }
           ?>
         </div>
@@ -122,8 +124,8 @@
         </div>
         <div class="col-md-8" style="padding: 5px">
           <?php 
-          if (isset($nilai_sisa)) {
-          	echo $nilai_sisa;
+          if (isset($tanggal_pembelian)) {
+          	echo date('Y', strtotime("+$nilai_ekonomis year", strtotime($tanggal_pembelian)))-date("Y").' Tahun';
           }
           ?>
         </div>

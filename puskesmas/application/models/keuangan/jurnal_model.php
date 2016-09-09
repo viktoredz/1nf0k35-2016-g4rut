@@ -180,9 +180,28 @@ class Jurnal_model extends CI_Model {
         return $query->result();
     }
     function getdataakun(){
-        $this->db->where('mst_keu_akun.kode !=""');
+        // $this->db->where('mst_keu_akun.kode !=""');
         $query =$this->db->get('mst_keu_akun');
         return $query->result();   
+    }
+    function masterakun($id,$tipe='debit'){
+        $this->db->where('id_mst_transaksi',$id);
+        $this->db->where('type',$tipe);
+        $query = $this->db->get('mst_keu_transaksi_item')->row_array();
+        return $query['id_mst_akun'];
+    }
+    function getdataakunselect($id){
+        $query =$this->db->get('mst_keu_akun');
+        $data['datapilihaakunkredit']      = $this->masterakun($id,'kredit');
+        $data['datapilihaakundebit']      = $this->masterakun($id,'debit');
+        $i=0;
+        foreach ($query->result_array() as $key) {
+            $data[$i]['id_mst_akun'] = $key['id_mst_akun'];
+            $data[$i]['uraian']      = $key['uraian'];
+            $i++;
+        }
+        
+        return $data;
     }
     function add_kredit_debit($tipe){
         $data = array(
@@ -282,7 +301,7 @@ class Jurnal_model extends CI_Model {
         $this->db->where('id_mst_transaksi',$id);
         return $this->db->get('mst_keu_transaksi_item')->result_array();
     }
-    function addjurnal($id){
+    function addjurnal($id,$tipetransaksi){
         $kodpus = $this->session->userdata('puskesmas');
         $dat = $this->mst_keu_tran($id);
         $datakeu_transaksipen=array(
@@ -295,29 +314,32 @@ class Jurnal_model extends CI_Model {
                         'id_mst_keu_transaksi'=> $dat['id_mst_transaksi'],
                         );
         $this->db->insert('keu_transaksi',$datakeu_transaksipen);
-        $datajurnal = $this->mst_keujurnal($id);
-        foreach ($datajurnal as $key) {
+        if ($tipetransaksi=='jurnal_penyesuaian') {
+        }else{
+            $datajurnal = $this->mst_keujurnal($id);
+            foreach ($datajurnal as $key) {
 
-            if ($key['type']=='kredit') {
-                $datakredit=array(
-                        'id_jurnal'=>$this->idjurnal(),
-                        'id_transaksi'=> $datakeu_transaksipen['id_transaksi'],
-                        'id_mst_akun'=>$key['id_mst_akun'],
-                        'debet'=>'0',
-                        'kredit'=>$key['value'],
-                        'status'=> 'kredit',
-                        );
-                $this->db->insert('keu_jurnal',$datakredit);
-            }else{
-                $datadebet=array(
-                        'id_jurnal'=>$this->idjurnal(),
-                        'id_transaksi'=> $datakeu_transaksipen['id_transaksi'],
-                        'id_mst_akun'=>$key['id_mst_akun'],
-                        'debet'=>$key['value'],
-                        'kredit'=>'0',
-                        'status'=> 'debet',
-                        );
-                $this->db->insert('keu_jurnal',$datadebet);
+                if ($key['type']=='kredit') {
+                    $datakredit=array(
+                            'id_jurnal'=>$this->idjurnal(),
+                            'id_transaksi'=> $datakeu_transaksipen['id_transaksi'],
+                            'id_mst_akun'=>$key['id_mst_akun'],
+                            'debet'=>'0',
+                            'kredit'=>$key['value'],
+                            'status'=> 'kredit',
+                            );
+                    $this->db->insert('keu_jurnal',$datakredit);
+                }else{
+                    $datadebet=array(
+                            'id_jurnal'=>$this->idjurnal(),
+                            'id_transaksi'=> $datakeu_transaksipen['id_transaksi'],
+                            'id_mst_akun'=>$key['id_mst_akun'],
+                            'debet'=>$key['value'],
+                            'kredit'=>'0',
+                            'status'=> 'debet',
+                            );
+                    $this->db->insert('keu_jurnal',$datadebet);
+                }
             }
         }
         return $datakeu_transaksipen['id_transaksi'];
@@ -336,13 +358,34 @@ class Jurnal_model extends CI_Model {
         $data = $this->db->get('get_all_inventaris2')->row_array();
         return $data;
     }
-    function addInventaris($idtransaksi){
+    function hargapenyusutan($id=0){
+        $this->db->where('id_inventaris_barang',$id);
+        $query = $this->db->get('keu_inventaris');
+        if ($query->num_rows() > 0) {
+            $harga = $query->row_array();
+            $data  = ((isset($harga['nilai_sisa']) || $harga['nilai_sisa']!='') ? $harga['nilai_sisa'] : '0');
+        }else{
+            $this->db->where('id_inventaris_barang',$id);
+            $harga = $this->db->get('get_all_inventaris2')->row_array();    
+            $data = ((isset($harga['harga']) || $harga['harga']!='') ? $harga['harga'] : '0');
+        }
+        
+        return $data;   
+    }
+    function getdatakaunpenyusutan($id=0,$tipe='debit'){
+        $this->db->where('id_mst_transaksi',$id);
+        $this->db->where('type',$tipe);
+        $query = $this->db->get('mst_keu_transaksi_item')->row_array();
+        return $query['id_mst_akun'];
+    }
+    function addInventaris($idtransaksi,$idjenis){
         $db = explode('_tr_',$this->input->post('data_barang'));
         $tempid='';
         $dataid='';
         for($i=0; $i<(count($db))-1; $i++){
            $tempid = $dataid;
            $getdat = $this->namabarang($db[$i]);
+           $getharga = $this->hargapenyusutan($db[$i]);
             $valuesdata = array(
                 'id_inventaris'=>$db[$i],
                 'id_transaksi' => $idtransaksi,
@@ -357,9 +400,9 @@ class Jurnal_model extends CI_Model {
             $datakredit=array(
                         'id_jurnal'=>$this->idjurnal(),
                         'id_transaksi'=> $idtransaksi,
-                        'id_mst_akun'=>'0',
+                        'id_mst_akun'=>$this->getdatakaunpenyusutan($idjenis,'kredit'),
                         'debet'=>'0',
-                        'kredit'=>$getdat['harga'],
+                        'kredit'=>$getharga,
                         'status'=> 'kredit',
                         'id_keu_transaksi_inventaris'=> $id,
                         );
@@ -367,15 +410,32 @@ class Jurnal_model extends CI_Model {
             $datadebet=array(
                         'id_jurnal'=>$this->idjurnal(),
                         'id_transaksi'=> $idtransaksi,
-                        'id_mst_akun'=>'0',
-                        'debet'=>$getdat['harga'],
+                        'id_mst_akun'=>$this->getdatakaunpenyusutan($idjenis,'debit'),
+                        'debet'=>$getharga,
                         'kredit'=>'0',
                         'status'=> 'debet',
                         'id_keu_transaksi_inventaris'=> $id,
                         );
                 $this->db->insert('keu_jurnal',$datadebet);
+            $this->updatenilaisisa($db[$i]);
         }
         return $this->getdatajson($dataid);
+    }
+    function updatenilaisisa($id=0){
+        $this->db->where('id_inventaris_barang',$id);
+        $this->db->set('nilai_sisa','0');
+        $this->db->update('keu_inventaris');
+
+        $this->db->where('id_inventaris_barang',$id);
+        $databarang = $this->db->get('get_all_inventaris2')->row_array();
+
+        $this->db->where('id_inventaris_barang',$id);
+        $dataakumulasi = $this->db->get('keu_inventaris')->row_array();
+
+        $data = ($this->getakumlasi($id)!=0 ? $this->getakumlasi($id) : $databarang['harga']) - $dataakumulasi['nilai_sisa'];
+        $this->db->where('id_inventaris_barang',$id);
+        $this->db->set('akumulasi_beban',$data);
+        $this->db->update('keu_inventaris');
     }
     function getdatajson($data){
         $getdata = explode("####", $data);
@@ -471,17 +531,74 @@ class Jurnal_model extends CI_Model {
         $this->db->where('id_transaksi_inventaris',$id_transaksi_inventaris);
         return $this->db->update($table);
    }
+   function getakumlasi($id){
+        $this->db->select("sum(kredit) as totalkredit");
+        $this->db->where('keu_transaksi_inventaris.id_inventaris',$id);
+        $this->db->where('keu_transaksi.tanggal <=',date("Y-m-d"));
+        $this->db->where('keu_transaksi.tipe_jurnal','jurnal_penyesuaian');
+        $this->db->join('keu_transaksi_inventaris','keu_transaksi_inventaris.id_transaksi=keu_transaksi.id_transaksi','left');
+        $this->db->join('keu_jurnal','keu_jurnal.id_keu_transaksi_inventaris=keu_transaksi_inventaris.id_transaksi_inventaris','left');
+        $query = $this->db->get('keu_transaksi')->row_array();
+        return $query['totalkredit'];
+    }
+   function ubahnilai_sisa($idinvbarang,$idinv,$variabel,$value,$datatambah){
+        $this->db->where('id_inventaris_barang',$idinvbarang);
+        $akumulasi=$this->db->get('get_all_inventaris2')->row_array();
+        $this->db->where("id_inventaris_barang",$idinvbarang);
+        $keu_inv = $this->db->get('keu_inventaris');
 
+        if ($keu_inv->num_rows() > 0) {
+            $data = $keu_inv->row_array();
+
+            $harga = (($data['nilai_sisa'] + $datatambah)-$value);
+            $hargaakumulasi  = $akumulasi['harga'] - $harga;
+            $this->db->set('akumulasi_beban',$hargaakumulasi);
+            $this->db->set('nilai_sisa',$harga);
+            $this->db->where('id_inventaris_barang',$idinvbarang);
+            $this->db->update('keu_inventaris');
+        }
+   }
+   
    function ubahdatadetailtransaksi(){
         $variabel = $this->input->post('dataubah');
         $id_transaksi = $this->input->post('id_transaksi');
         $idjurnal = $this->input->post('idjurnal');
         $values = $this->input->post('values');
         $table = $this->input->post('table');
+        $idinv = $this->input->post('idinv');
+
+
+        if ($variabel=='kredit' || $variabel=='debet') {
+            $datatambah = $this->input->post('datatambah');
+            $this->db->where('id_transaksi_inventaris',$idinv);
+            $this->db->where('id_transaksi',$id_transaksi);
+            $dataquery = $this->db->get('keu_transaksi_inventaris')->row_array();
+            $this->updatedebitkredit($id_transaksi,$idinv,$variabel,$values);
+
+
+            $this->ubahnilai_sisa($dataquery['id_inventaris'],$idinv,$variabel,$values,$datatambah);
+
+            
+        }
         $this->db->set($variabel, $values);
         $this->db->where('id_transaksi',$id_transaksi);
         $this->db->where('id_jurnal',$idjurnal);
         return $this->db->update($table);
+   }
+   function updatedebitkredit($id_transaksi=0,$idinv=0,$variabel=0,$values=0){
+        $this->db->where('id_transaksi',$id_transaksi);
+        $this->db->where('id_keu_transaksi_inventaris',$idinv);
+        $query = $this->db->get('keu_jurnal');
+        foreach ($query->result() as $key) {
+            if ($key->status=='kredit') {
+                $this->db->set('kredit',$values);
+            }else{
+                $this->db->set('debet',$values);
+            }
+            $this->db->where('id_jurnal',$key->id_jurnal);
+            $this->db->update('keu_jurnal');
+        }
+        return true;
    }
    function gettotaldetail(){
         $variabel = $this->input->post('dataubah');

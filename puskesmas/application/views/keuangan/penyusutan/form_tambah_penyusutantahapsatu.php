@@ -193,4 +193,37 @@ $("#nomo_kontrak").change(function(){
           $("#jqxgridPilih").jqxGrid('updateBoundData','cell');
     });
 });
+$("#nomo_kontrak").jqxInput(
+  {
+  placeHolder: " Nomor Kontrak",
+  theme: 'classic',
+  width: '100%',
+  height: '30px',
+  minLength: 2,
+  source: function (query, response) {
+    var dataAdapter = new $.jqx.dataAdapter
+    (
+      {
+        datatype: "json",
+          datafields: [
+          { name: 'nomor_kontrak', type: 'string'},
+        ],
+        url: '<?php echo base_url().'keuangan/penyusutan/autocomplite_nomorkontrak'; ?>'
+      },
+      {
+        autoBind: true,
+        formatData: function (data) {
+          data.query = query;
+          return data;
+        },
+        loadComplete: function (data) {
+          if (data.length > 0) {
+            response($.map(data, function (item) {
+              return item.nomor_kontrak;
+            }));
+          }
+        }
+      });
+  }
+});
 </script>

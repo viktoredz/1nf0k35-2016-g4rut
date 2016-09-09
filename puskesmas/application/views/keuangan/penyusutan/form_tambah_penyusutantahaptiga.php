@@ -27,7 +27,7 @@
           </div> -->
           <div class="row" style="margin: 5px">
             <div class="col-md-12" style="padding: 5px">
-             <font size="3"><b>#TransaksI</b></font>
+             <font size="3"><b>#Transaksi</b></font>
             </div>
           </div>
           <div class="row" style="margin: 5px">
@@ -93,7 +93,9 @@
               <?php echo $datajurnal->kode.' - '.$datajurnal->namaakun;?>
             </div>
             <div class="col-md-4">
-              <?php echo $datajurnal->debet;?>
+              <div class='pull-right'>
+              <?php echo number_format($datajurnal->debet,2);?>
+              </div>
             </div>
             <div class="col-md-4">
               
@@ -113,7 +115,9 @@
             <div class="col-md-4">
             </div>
             <div class="col-md-4">
-                <?php echo $kredittot; ?>
+              <div class="pull-right">
+                <?php echo number_format($kredittot,2); ?>
+              </div>
             </div>
           </div>
           <div class="row" style="margin: 5px">
@@ -121,10 +125,14 @@
               <b>Total</b>
             </div>
             <div class="col-md-4">
-              <b><?php echo $jumlahtotal; ?></b>
+              <div class="pull-right">
+              <b><?php echo number_format($jumlahtotal,2); ?></b>
+              </div>
             </div>
             <div class="col-md-4">
-              <b><?php echo $jumlahtotal; ?></b>
+              <div class="pull-right">
+              <b><?php echo number_format($jumlahtotal,2); ?></b>
+              </div>
             </div>
           </div>
 

@@ -93,7 +93,7 @@
                       }
                     ?>">
                 </div>
-                <div class="col-md-4"> Tahun</div>
+                <div class="col-md-4" style="padding: 8px"> Tahun</div>
               </div>
               <div class="row" style="margin: 5px">
                 <div class="col-md-4" style="padding: 5px">

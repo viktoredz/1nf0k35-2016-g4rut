@@ -347,7 +347,7 @@ class Jurnal extends CI_Controller {
 	}
 	function add_junal_umum($id='0',$tipetransaksi='jurnal_umum'){
 		$this->authentication->verify('keuangan','edit');
-		$iddata = $this->jurnal_model->addjurnal($id);
+		$iddata = $this->jurnal_model->addjurnal($id,$tipetransaksi);
 		if ($tipetransaksi=='jurnal_penyesuaian') {
 			$this->edit_junal_penyesuaian($iddata);
 		}else{
@@ -588,17 +588,17 @@ class Jurnal extends CI_Controller {
 					$field = $this->input->post('filterdatafield'.$i);
 					$value = $this->input->post('filtervalue'.$i);
 
-					if($field == 'tanggal_permohonan') {
-						$value = date("Y-m-d",strtotime($value));
-						$this->db->where($field,$value);
-					}elseif($field == 'namakategori') {
-						$this->db->like('mst_keu_kategori_transaksi.nama',$value);
+					if($field == 'showid_inventaris_barang') {
+						$this->db->like('id_inventaris_barang',$value);
 					}elseif($field != 'year') {
 						$this->db->like($field,$value);
 					}
 				}
 
 				if(!empty($ord)) {
+					if ($ord=='showid_inventaris_barang') {
+						$ord="id_inventaris_barang";
+					}
 					$this->db->order_by($ord, $this->input->post('sortorder'));
 				}
 			}
@@ -619,17 +619,17 @@ class Jurnal extends CI_Controller {
 					$field = $this->input->post('filterdatafield'.$i);
 					$value = $this->input->post('filtervalue'.$i);
 
-					if($field == 'tanggal_permohonan') {
-						$value = date("Y-m-d",strtotime($value));
-						$this->db->where($field,$value);
-					}elseif($field == 'namakategori') {
-						$this->db->like('mst_keu_kategori_transaksi.nama',$value);
+					if($field == 'showid_inventaris_barang') {
+						$this->db->like('id_inventaris_barang',$value);
 					}elseif($field != 'year') {
 						$this->db->like($field,$value);
 					}
 				}
 
 				if(!empty($ord)) {
+					if ($ord=='showid_inventaris_barang') {
+						$ord="id_inventaris_barang";
+					}
 					$this->db->order_by($ord, $this->input->post('sortorder'));
 				}
 			}
@@ -645,6 +645,7 @@ class Jurnal extends CI_Controller {
 			foreach($rows as $act) {
 				$data[] = array(
 					'id_inventaris_barang' 		=> $act->id_inventaris_barang,
+					'showid_inventaris_barang' 	=> substr($act->id_inventaris_barang, -14),
 					'register' 					=> $act->register,
 					'id_mst_inv_barang' 		=> $act->id_mst_inv_barang,
 					'nama_barang'				=> $act->nama_barang,
@@ -879,7 +880,7 @@ class Jurnal extends CI_Controller {
 		$query = $this->db->get('keu_jurnal')->result_array();
 		echo json_encode($query);
 	}
-	function add_penyusutan_inventaris($id){
+	function add_penyusutan_inventaris($id,$id_mst_keu_transaksi=0){
 		$this->session->set_userdata('filter_kibdata','');
 		$this->authentication->verify('keuangan','add');
 
@@ -893,6 +894,7 @@ class Jurnal extends CI_Controller {
 			$data['notice']			= validation_errors();
 			$data['action']			= "add";
 			$data['id']				= $id;
+			$data['id_mst_keu_transaksi']				= $id_mst_keu_transaksi;
 			$data['title_form']		= "Tambah Instansi";
 			$data['datakateg']		= $this->jurnal_model->pilihan_enums('mst_inv_pbf','kategori');
 			die($this->parser->parse('keuangan/jurnal/add_penyusutan',$data));
@@ -901,9 +903,9 @@ class Jurnal extends CI_Controller {
 			
 		}
 	}
-	function add_inventaris($id=''){
+	function add_inventaris($id='',$idjenis=0){
 		$this->authentication->verify('keuangan','add');
-		$data = $this->jurnal_model->addInventaris($id);
+		$data = $this->jurnal_model->addInventaris($id,$idjenis);
 		// $data = $this->jurnal_model->getdatajson("1####2####3####4####5####6");
 		die(json_encode($data));
 	}
@@ -922,9 +924,9 @@ class Jurnal extends CI_Controller {
 			die('error');
 		}
 	}
-	function getdataakun(){
+	function getdataakun($id=0){
 		$this->authentication->verify('keuangan','show');
-		$data = $this->jurnal_model->getdataakun();
+		$data = $this->jurnal_model->getdataakunselect($id);
 		die(json_encode($data));
 	}
 	function ubahdata(){
@@ -1000,6 +1002,13 @@ class Jurnal extends CI_Controller {
 		$this->db->where('keu_transaksi_inventaris.id_transaksi_inventaris',$id_inv);
 		$query = $this->db->get('keu_transaksi_inventaris')->row_array();
 		return $query['nama_barang'];
+	}
+
+	function getmaksimalpenyusutan(){
+		$this->db->where('id_transaksi_inventaris',$this->input->post('idinv'));
+		$this->db->where('id_transaksi',$this->input->post('id_transaksi'));
+		$query = $this->db->get('keu_transaksi_inventaris')->row_array();
+		echo $this->jurnal_model->hargapenyusutan($query['id_inventaris']);
 	}
 }
 

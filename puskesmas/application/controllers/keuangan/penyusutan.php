@@ -111,6 +111,7 @@ class Penyusutan extends CI_Controller {
 				'register'    			=> $act->register,
 				'id_cl_phc'   			=> $act->id_cl_phc,
 				'harga'   				=> $act->harga,
+				'nilai_sisa'   			=> $act->nilai_sisa,
 				'namametode'   			=> $act->namametode,
 				'id_inventaris'   		=> $act->id_inventaris,
 				'nilai_sekarang'   		=> $act->nilai_sekarang,
@@ -681,5 +682,21 @@ class Penyusutan extends CI_Controller {
 		);
 
 		echo json_encode(array($json));
+	}
+	function autocomplite_nomorkontrak(){
+		$search = explode("&",$this->input->server('QUERY_STRING'));
+		$search = str_replace("query=","",$search[0]);
+		$search = str_replace("+"," ",$search);
+
+		$this->db->where("nomor_kontrak like '%".$search."%'");
+		$this->db->where("pilihan_status_pengadaan",'4');
+		$this->db->limit(10,0);
+		$query= $this->db->get("inv_pengadaan")->result();
+		foreach ($query as $q) {
+			$nomor[] = array(
+				'nomor_kontrak' => $q->nomor_kontrak , 
+			);
+		}
+		echo json_encode($nomor);
 	}
 }

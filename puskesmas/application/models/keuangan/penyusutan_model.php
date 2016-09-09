@@ -54,7 +54,7 @@ class Penyusutan_model extends CI_Model {
     		'id_mst_akun_akumulasi'		=> '251',
     		'akumulasi_beban'			=> $akumulasidata,
     		'nilai_ekonomis'			=> '0',
-    		'nilai_sisa'				=> $hargabarang,
+    		'nilai_sisa'				=> $hargabarang-$akumulasidata,
     		'id_mst_metode_penyusutan'	=> '1',
     		);
     		$this->db->insert('keu_inventaris',$datasave);

@@ -223,25 +223,25 @@
                         }
                    },
                 },
-                { text: '<i class="fa fa-pencil-square-o"></i> Sisa', datafield: 'nilai_sisa', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '12%',
-                    getEditorValue: function (row, cellvalue, editor) {
-                      var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
-                      if (datagrid.id_mst_metode_penyusutan=='5' || datagrid.id_mst_metode_penyusutan=='3' || datagrid.id_mst_metode_penyusutan=='6d') {
-                          alert("Maaf Nilai Sisa tidak bisa di edit jika menggunakan Metode Tanpa Penyusutan,Manual dan Menurun");
+                { text: '<i class="fa fa-pencil-square-o"></i> Sisa',datafield: 'nilai_sisa', columntype: 'textbox', filtertype: 'textbox', align: 'center', cellsalign: 'right', width: '12%',
+                  getEditorValue: function (row, cellvalue, editor) {
+                        var datagrid = $("#jqxgridEdit").jqxGrid('getrowdata', row);
+                        if (datagrid.id_mst_metode_penyusutan=='5' || datagrid.id_mst_metode_penyusutan=='6' || datagrid.id_mst_metode_penyusutan=='3') {
+                          alert("Maaf Nilai Sisa tidak bisa di edit jika menggunakan Metode Tanpa Penyusutan,Manual & Saldo Menurun");
                           $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');  
-                      }else{
-                        if(editor.val() % 1 === 0){
-                           $.post( '<?php echo base_url()?>keuangan/penyusutan/updatenilaisisa', {'nilaisisa':editor.val(),'id_inventaris':datagrid.id_inventaris}, function( data ) {
-                                if(data != 0){
-                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
-                                }else{
-                                  $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
-                                }
-                            });
                         }else{
-                           $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                          if(editor.val() % 1 === 0){
+                             $.post( '<?php echo base_url()?>keuangan/penyusutan/updatenilaisisa', {'nilaisisa':editor.val(),'id_inventaris':datagrid.id_inventaris}, function( data ) {
+                                  if(data != 0){
+                                    $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');      
+                                  }else{
+                                    $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                                  }
+                              });
+                          }else{
+                             $("#jqxgridEdit").jqxGrid('updatebounddata', 'cells');                 
+                          }
                         }
-                      }
                    },
                 },
             ]

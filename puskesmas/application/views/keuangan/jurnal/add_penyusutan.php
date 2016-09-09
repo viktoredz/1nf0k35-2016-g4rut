@@ -44,6 +44,7 @@ var source = {
 	{ name: 'id_mst_inv_barang', type: 'string'},
 	{ name: 'nama_barang', type: 'string'},
 	{ name: 'harga', type: 'string'},
+	{ name: 'showid_inventaris_barang', type: 'string'},
 	{ name: 'edit', type: 'string'},
 ],
 url: "<?php echo base_url().'keuangan/jurnal/json_penyusutan/'.$id; ?>",		
@@ -91,9 +92,9 @@ $("#jqxgridinventaris").jqxGrid(
 			return "<div style='width:100%;padding-top:2px;text-align:center'><input type='checkbox' name='aset[]' value=\""+dataRecord.id_inventaris_barang+"\" ></div>";
          }
         },
-		{ text: 'Id Inventaris', align: 'center', cellsalign: 'center' , sortable: false,editable:false , datafield: 'id_mst_inv_barang', columntype: 'textbox', filtertype: 'textbox', width: '20%' },
+		{ text: 'Id Inventaris', align: 'center', cellsalign: 'center' , sortable: false,editable:false , datafield: 'showid_inventaris_barang', columntype: 'textbox', filtertype: 'textbox', width: '30%' },
 		{ text: 'Register', align: 'center', cellsalign: 'center' , sortable: false,editable:false , datafield: 'register', columntype: 'textbox', filtertype: 'textbox', width: '10%' },
-		{ text: 'Nama', align: 'center', editable:true ,datafield: 'nama_barang', columntype: 'textbox', filtertype: 'textbox', width: '62%' },
+		{ text: 'Nama', align: 'center', editable:true ,datafield: 'nama_barang', columntype: 'textbox', filtertype: 'textbox', width: '52%' },
     ]
 });
 
@@ -115,7 +116,7 @@ function dolist(){
 		for(i=0; i<values.length; i++){
 			data_barang = data_barang+values[i]+"_tr_";
 		}
-		$.post("<?php echo base_url().'keuangan/jurnal/add_inventaris/'.$id; ?>",{'data_barang': data_barang},  function(data) {
+		$.post("<?php echo base_url().'keuangan/jurnal/add_inventaris/'.$id.'/'.$id_mst_keu_transaksi; ?>",{'data_barang': data_barang},  function(data) {
 			$("#popup_inventaris").jqxWindow('close');
 			addinventaris(data);
 		});
