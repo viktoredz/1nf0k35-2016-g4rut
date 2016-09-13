@@ -184,19 +184,19 @@ $("#ubahdetailjurum").click(function(){
             <a href=""><?php echo (isset($instansi) && $instansi!='' ? $instansi :'-');?></a>
           </div>
         </div>
-        <div class="row" style="margin: 5px">
+        <!-- <div class="row" style="margin: 5px">
           <div class="col-md-12" style="padding: 5px"><h3>Data untuk Cetak</h3></div>
         </div>
         <div class="row" style="margin: 5px">
           <div class="col-md-4" style="padding: 5px">Kode Kegiatan</div>
           <div class="col-md-8" style="padding: 6px">
-            <?php echo (isset($kode_kegiatan) && $kode_kegiatan!='' ? $kode_kegiatan :'-');?>
+            <?php /* echo (isset($kode_kegiatan) && $kode_kegiatan!='' ? $kode_kegiatan :'-');?>
           </div>
         </div>
         <div class="row" style="margin: 5px">
           <div class="col-md-4" style="padding: 5px">Sub Kegiatan</div>
           <div class="col-md-8" style="padding: 6px">
-            <?php echo (isset($sub_kegaitan) && $sub_kegaitan!='' ? $sub_kegaitan :'-');?>
+            <?php echo (isset($sub_kegaitan) && $sub_kegaitan!='' ? $sub_kegaitan :'-');*/?>
           </div>
         </div>
         <div class="row" style="margin: 5px">
@@ -204,7 +204,7 @@ $("#ubahdetailjurum").click(function(){
         </div>
         <div class="row" style="margin: 5px; float:right">
           <div class="col-md-12" style="padding: 6px"><b><i>diubah 3 kali</i></b> <a>lihat versi lama</a></div>
-        </div>
+        </div> -->
     </div>
         <div class="box-footer">
             <div style="float:left">
@@ -224,3 +224,4 @@ $("#ubahdetailjurum").click(function(){
   <div id="popup_mastertitle">Data master Barang</div>
   <div id="popup_mastercontent">&nbsp;</div>
 </div>
+

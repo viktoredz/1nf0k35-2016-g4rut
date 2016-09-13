@@ -432,7 +432,7 @@ class Jurnal_model extends CI_Model {
         $this->db->where('id_inventaris_barang',$id);
         $dataakumulasi = $this->db->get('keu_inventaris')->row_array();
 
-        $data = ($this->getakumlasi($id)!=0 ? $this->getakumlasi($id) : $databarang['harga']) - $dataakumulasi['nilai_sisa'];
+        $data = ($this->getakumlasi($id)!=0 ? $this->getakumlasi($id) : $databarang['harga']) - (isset($dataakumulasi['nilai_sisa']) ? $dataakumulasi['nilai_sisa'] : 0);
         $this->db->where('id_inventaris_barang',$id);
         $this->db->set('akumulasi_beban',$data);
         $this->db->update('keu_inventaris');
@@ -621,7 +621,7 @@ class Jurnal_model extends CI_Model {
             $this->db->where('id_inventaris_barang',$key['id_inventaris']);
             $dataquery = $this->db->get('keu_inventaris')->row_array();
 
-            $this->db->set('nilai_sisa',$dataquery['nilai_sisa'] + $key['totaldebet']);
+            $this->db->set('nilai_sisa',isset($dataquery['nilai_sisa']) ? $dataquery['nilai_sisa'] : '0'  + $key['totaldebet']);
             $this->db->where('id_inventaris_barang',$key['id_inventaris']);
             $this->db->update('keu_inventaris');
         }
