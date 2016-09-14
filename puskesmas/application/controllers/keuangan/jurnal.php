@@ -10,7 +10,9 @@ class Jurnal extends CI_Controller {
 		$this->authentication->verify('keuangan','edit');
 		$data['title_group']   = "Keuangan";
 		$data['title_form']    = "Jurnal";
+
 		$this->jurnal_model->settingconfig();
+
 		$this->session->set_userdata('filter_kategori','');
 		$this->session->set_userdata('filter_bulan','');
 		$this->session->set_userdata('filter_tahun','');
@@ -31,7 +33,7 @@ class Jurnal extends CI_Controller {
 		$this->session->set_userdata('filter_kibdata','');
 
 		$data = array();
-
+		$data['tgldatabejalan']  = $this->jurnal_model->getdataberjalan();
 		switch ($pageIndex) {
 			case 1:
 				$data['title_group']   = "Keuangan";
@@ -68,8 +70,6 @@ class Jurnal extends CI_Controller {
 				$data['title_form']    = "Jurnal Umum";
 				$data['bulan'] =array(1=>"Januari","Februari","Maret","April","Mei","Juni","July","Agustus","September","Oktober","November","Desember");
 				$data['filekategori'] =$this->jurnal_model->getallkategori();//array('all'=>"Semua Kategori","penerimaankas" => 'Penerimaan Kas',"Pembelian" => 'pembelian',"Biaya" => 'biaya',"penjualan" => 'Penjualan',"pembukuan"=>'Pembukuan');
-				$data['tambahtransaksi'] =array('pendapatanumum'=>"Pendapatan Umum","pendapatanbpjs" => 'Pendapatan BPJS Kapasitas',"pembelian" => 'Pembelian Persediaan');
-				$data['tambahtransaksiotomatis'] =array('transaksiotomatis'=>"Transaksi Otomatis");
 				
 				$this->db->where('code','P'.$this->session->userdata('puskesmas'));
 				$data['datapuskes'] 	= $this->jurnal_model->getallpuskesmas();
@@ -270,7 +270,7 @@ class Jurnal extends CI_Controller {
 	}
 
 	
-	function detail_jurnal_umum($id=0){
+	function detail_jurnal_umum($id=0,$tipeeditjurnal='jurnal_umum'){
 		$this->authentication->verify('keuangan','show');
 
 	    $this->form_validation->set_rules('jumlahdistribusi', 'Jumlah Distribusi', 'trim|required');
@@ -285,6 +285,7 @@ class Jurnal extends CI_Controller {
 			$data['notice']			= validation_errors();
 			$data['id']				= $id;
 			$data['action']			= "detail";
+			$data['tipeeditjurnal']	= $tipeeditjurnal;
 			$data['title']			= "Detail Transaksi";
 			$data['datadraft']		= array('cetak' => 'Cetak','kuitansi'=>'Kuitansi');
 
@@ -428,6 +429,7 @@ class Jurnal extends CI_Controller {
 			$data['getkredit']		= $this->jurnal_model->getkredit($id);
 			$data['getsyarat']		= $this->jurnal_model->getsyarat();
 			$data['getdataakun']	= $this->jurnal_model->getdataakun();
+			$data['tgldatabejalan']  = $this->jurnal_model->getdataberjalan();
 			// if (!empty($data['alert_form'])) {
 			// 	$datas['err_msg'] = validation_errors();
 			// 	die('Err|'.json_encode($datas));
@@ -510,6 +512,7 @@ class Jurnal extends CI_Controller {
 			$data['filterkategori_transaksi'] =$this->jurnal_model->filterkategori_transaksi();
 			$data['getallinventaris']=$this->jurnal_model->get_allinventaris($id);
 			$data['getdataakun']	= $this->jurnal_model->getdataakun();
+			$data['tgldatabejalan']  = $this->jurnal_model->getdataberjalan();
 
 			die($this->parser->parse('keuangan/jurnal/form_penyusutan_inventaris',$data));
 
@@ -876,7 +879,7 @@ class Jurnal extends CI_Controller {
 	}
 	function delete_junal_umum($id=0){
 		$tipedel = $this->cekstatus($id);
-		if ($tipedel=='draft') {
+		if ($tipedel=='draft'||$tipedel=='dihapus') {
 			$this->dodelselamanya($id);
 			$this->tab('1');
 		}else{
@@ -1039,6 +1042,10 @@ class Jurnal extends CI_Controller {
 		$this->db->where('id_transaksi',$this->input->post('id_transaksi'));
 		$query = $this->db->get('keu_transaksi_inventaris')->row_array();
 		echo $this->jurnal_model->hargapenyusutan($query['id_inventaris']);
+	}
+	function jurnaltutupbuku(){
+		$this->authentication->verify('keuangan','edit');
+		echo $data = $this->jurnal_model->jurnaltutupbuku();
 	}
 }
 

@@ -87,7 +87,7 @@
                 </div>
                 <div class="col-md-4">
                   <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="glyphicon glyphicon-plus-sign"></i> Tambah Transaksi Otomatis
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="add_jurnal_umum_otomatis"><i class="glyphicon glyphicon-plus-sign"></i> Tambah Transaksi Otomatis
                     <span class="caret"></span></button>
                     <ul class="dropdown-menu">
                       <?php foreach ($tambahtransaksiotomatis as $key => $value) {?>
@@ -129,6 +129,7 @@
 
 <script type="text/javascript">
 $(document).ready(function () {
+    hidebukututupumum();
     $('#btnexpandall').click(function () {
         $("#jqxgrid_jurnal_umum").jqxTreeGrid('expandAll');
     });
@@ -279,9 +280,21 @@ function penyusutaninventaris(id){
     $("#content1").html(data);
   });
 }
-function close_popup(){
-  $("#popup_jurnal").jqxWindow('close');
-  $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');
+function close_popup(tipe){
+  if (tipe=='jurnal_umum') {
+    $("#popup_jurnal").jqxWindow('close');
+    $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');  
+  }else if (tipe=='jurnal_penyesuaian') {
+    $("#popup_jurnal_penyesuaian").jqxWindow('close');
+    $("#jqxgrid_jurnal_penyesuaian").jqxTreeGrid('updateBoundData');  
+  }else if (tipe=='jurnal_penutup') {
+    $("#popup_jurnal_penutup").jqxWindow('close');
+    $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');  
+  }else if (tipe=='jurnal_hapus') {
+    $("#popup_jurnal_hapuss").jqxWindow('close');
+    $("#jqxgrid_jurnal_hapus").jqxTreeGrid('updateBoundData');  
+  }
+  
 }
 function tambahotomatis(id){
   $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
@@ -337,4 +350,22 @@ $("#add_jurnal_umum").click(function(){
   });
   $("#popup_jurnal").jqxWindow('open');
 });
+function hidebukututupumum(databaru){
+  blnbuku = $("#periodebulanumum").val();
+  thnbuku = $("#periodetahunumum").val();
+  if (databaru=='undefined' || databaru==null) {
+    tgldatabejalan = "<?php echo $tgldatabejalan ?>".split("-");
+  }else{
+    tgldatabejalan = databaru.split("-");
+  }
+  blnberjalan = parseInt(tgldatabejalan[1]);
+  thnberjalan = tgldatabejalan[0];
+  if (blnbuku==blnberjalan && thnbuku==thnberjalan) {
+    $("#add_jurnal_umum").show();
+    $("#add_jurnal_umum_otomatis").show();
+  }else{
+    $("#add_jurnal_umum").hide();
+    $("#add_jurnal_umum_otomatis").hide();
+  }
+}
 </script>

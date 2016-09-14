@@ -186,7 +186,7 @@ if($alert_form!=""){ ?>
                           </select>
                       </div>
                       <div class="col-md-3">
-                        <input  onchange='inputvalueakunas("<?php echo $keydebet->id_jurnal;?>","debet")' type="text" id="debit_debet<?php echo $keydebet->id_jurnal;?>" name="debit_debet" placeholder="Debit Akun"  class="form-control" value="<?php 
+                        <input  onchange='inputvalueakunas("<?php echo $keydebet->id_jurnal;?>","debet")' type="number" id="debit_debet<?php echo $keydebet->id_jurnal;?>" name="debit_debet" placeholder="Debit Akun"  class="form-control" value="<?php 
                             if(set_value('debit_debet')=="" && isset($keydebet->debet)){
                               echo $keydebet->debet;
                             }else{
@@ -235,7 +235,7 @@ if($alert_form!=""){ ?>
                         
                       </div>
                       <div class="col-md-3">
-                        <input onchange='inputvalueakunas("<?php echo $keykredit->id_jurnal;?>","kredit")' type="text" id="debit_akun_kredit<?php echo $keykredit->id_jurnal;?>" name="debit_akun_kredit" placeholder="Debit Akun"  class="form-control" value="<?php 
+                        <input onchange='inputvalueakunas("<?php echo $keykredit->id_jurnal;?>","kredit")' type="number" id="debit_akun_kredit<?php echo $keykredit->id_jurnal;?>" name="debit_akun_kredit" placeholder="Debit Akun"  class="form-control" value="<?php 
                             if(set_value('debit_akun_kredit')=="" && isset($keykredit->kredit)){
                               echo $keykredit->kredit;
                             }else{
@@ -389,6 +389,7 @@ if($alert_form!=""){ ?>
 </div>
 <script type="text/javascript">
 $(function(){
+  hidebukututupumumedit();
   <?php if ($status=='draft' || $status=='ditutup') {?>
     $("#btn-draf_jurum").hide();
         <?php if ($status=='ditutup') { ?>
@@ -494,7 +495,7 @@ function add_jurnaltransaksi(id_transaksi,id_jurnal,tipe,$code){
                       <div class="col-md-3">\
                       </div>\
                       <div class="col-md-3">\
-                        <input type="text" onchange="inputvalueakunas(\''+a[2]+'\',\'kredit\')" id="debit_akun_kredit'+a[2]+'" name="debit_akun_kredit" placeholder="Debit Akun"  class="form-control" value="0" />\
+                        <input type="number" onchange="inputvalueakunas(\''+a[2]+'\',\'kredit\')" id="debit_akun_kredit'+a[2]+'" name="debit_akun_kredit" placeholder="Debit Akun"  class="form-control" value="0" />\
                       </div>\
                     </div>\
                   </div>\
@@ -523,7 +524,7 @@ function add_jurnaltransaksi(id_transaksi,id_jurnal,tipe,$code){
                           </select>\
                       </div>\
                       <div class="col-md-3">\
-                        <input onchange="inputvalueakunas(\''+a[2]+'\',\'debet\')" type="text" id="debit_debet'+a[2]+'" name="debit_debet" placeholder="Debit Akun"  class="form-control" value="0" />\
+                        <input onchange="inputvalueakunas(\''+a[2]+'\',\'debet\')" type="number" id="debit_debet'+a[2]+'" name="debit_debet" placeholder="Debit Akun"  class="form-control" value="0" />\
                       </div>\
                       <div class="col-md-3">\
                       </div>\
@@ -671,6 +672,25 @@ function simpandatajurum(tipesimpan){
     }
  });
 }
- 
+function hidebukututupumumedit(databaru){
+  blnbuku = $("#periodebulanumum_penyesuaian").val();
+  thnbuku = $("#periodetahunumum_penyesuaian").val();
+  if (databaru=='undefined' || databaru==null) {
+    tgldatabejalan = "<?php echo $tgldatabejalan ?>".split("-");
+  }else{
+    tgldatabejalan = databaru.split("-");
+  }
+  blnberjalan = parseInt(tgldatabejalan[1]);
+  thnberjalan = tgldatabejalan[0];
+  if (blnbuku==blnberjalan && thnbuku==thnberjalan) {
+  }else{
+    $("input").attr('disabled','disabled');
+    $("textarea").attr('disabled','disabled');
+    $("select").attr('disabled','disabled');
+    $("#tambahinstansi").hide();
+    $("[name='create_jurnal_transaksi_debet']").hide();
+    $("[name='delete_jurnal_transaksi_debet']").hide();
+  }
+}
 
 </script>

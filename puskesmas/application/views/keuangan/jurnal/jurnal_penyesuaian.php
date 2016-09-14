@@ -84,7 +84,7 @@
                 </div>
                 <div class="col-md-4">
                   <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="glyphicon glyphicon-plus-sign"></i> Tambah Transaksi Otomatis
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="add_jurnal_umum_penyesuaian_otomatis"><i class="glyphicon glyphicon-plus-sign"></i> Tambah Transaksi Otomatis
                     <span class="caret"></span></button>
                     <ul class="dropdown-menu">
                       <?php foreach ($tambahtransaksiotomatis as $key => $value) {?>
@@ -125,6 +125,7 @@
 
 <script type="text/javascript">
 $(document).ready(function () {
+    hidebukututuppenyesuaian();
     $('#btnexpandall_penyesuaian').click(function () {
         $("#jqxgrid_jurnal_penyesuaian").jqxTreeGrid('expandAll');
     });
@@ -254,7 +255,7 @@ $(document).ready(function () {
 });
 function detailpenyesuaian(id){   
   $("#popup_jurnal_penyesuaian #popup_content_penyesuaian").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-  $.get("<?php echo base_url().'keuangan/jurnal/detail_jurnal_umum/'; ?>"+id, function(data) {
+  $.get("<?php echo base_url().'keuangan/jurnal/detail_jurnal_umum/'; ?>"+id+'/jurnal_penyesuaian', function(data) {
     $("#popup_content_penyesuaian").html(data);
   });
   $("#popup_jurnal_penyesuaian").jqxWindow({
@@ -275,9 +276,21 @@ function penyusutaninventaris(id){
     $("#content2").html(data);
   });
 }
-function close_popup(){
-  $("#popup_jurnal_penyesuaian").jqxWindow('close');
-  $("#jqxgrid_jurnal_penyesuaian").jqxTreeGrid('updateBoundData');
+function close_popup(tipe){
+  if (tipe=='jurnal_umum') {
+    $("#popup_jurnal").jqxWindow('close');
+    $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');  
+  }else if (tipe=='jurnal_penyesuaian') {
+    $("#popup_jurnal_penyesuaian").jqxWindow('close');
+    $("#jqxgrid_jurnal_penyesuaian").jqxTreeGrid('updateBoundData');  
+  }else if (tipe=='jurnal_penutup') {
+    $("#popup_jurnal_penutup").jqxWindow('close');
+    $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');  
+  }else if (tipe=='jurnal_hapus') {
+    $("#popup_jurnal_hapuss").jqxWindow('close');
+    $("#jqxgrid_jurnal_hapus").jqxTreeGrid('updateBoundData');  
+  }
+  
 }
 function tambahotomatis(id){
   $("#popup_jurnal_penyesuaian #popup_content_penyesuaian").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
@@ -333,4 +346,22 @@ $("#add_jurnal_umum_penyesuaian").click(function(){
   });
   $("#popup_jurnal_penyesuaian").jqxWindow('open');
 });
+function hidebukututuppenyesuaian(databaru){
+  blnbuku = $("#periodebulanumum_penyesuaian").val();
+  thnbuku = $("#periodetahunumum_penyesuaian").val();
+  if (databaru=='undefined' || databaru==null) {
+    tgldatabejalan = "<?php echo $tgldatabejalan ?>".split("-");
+  }else{
+    tgldatabejalan = databaru.split("-");
+  }
+  blnberjalan = parseInt(tgldatabejalan[1]);
+  thnberjalan = tgldatabejalan[0];
+  if (blnbuku==blnberjalan && thnbuku==thnberjalan) {
+    $("#add_jurnal_umum_penyesuaian").show();
+    $("#add_jurnal_umum_penyesuaian_otomatis").show();
+  }else{
+    $("#add_jurnal_umum_penyesuaian").hide();
+    $("#add_jurnal_umum_penyesuaian_otomatis").hide();
+  }
+}
 </script>

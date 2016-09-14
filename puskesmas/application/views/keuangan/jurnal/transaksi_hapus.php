@@ -1,6 +1,6 @@
-<div id="popup_jurnal" style="display:none">
-  <div id="popup_title">Data Jurnal</div>
-  <div id="popup_content">&nbsp;</div>
+<div id="popup_jurnal_hapuss" style="display:none">
+  <div id="popup_title_hapuss">Data Jurnal</div>
+  <div id="popup_content_hapuss">&nbsp;</div>
 </div>
 <section class="content">
 <form action="<?php echo base_url()?>kepegawaian/drh/dodel_multi" method="POST" name="">
@@ -150,17 +150,17 @@ $(document).ready(function () {
 
 });
 function detailhapus(id){   
-  $("#popup_jurnal #popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-  $.get("<?php echo base_url().'keuangan/jurnal/detail_jurnal_umum/'; ?>"+id, function(data) {
-    $("#popup_content").html(data);
+  $("#popup_jurnal_hapuss #popup_content_hapuss").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
+  $.get("<?php echo base_url().'keuangan/jurnal/detail_jurnal_umum/'; ?>"+id+'/jurnal_hapus', function(data) {
+    $("#popup_content_hapuss").html(data);
   });
-  $("#popup_jurnal").jqxWindow({
+  $("#popup_jurnal_hapuss").jqxWindow({
     theme: theme, resizable: false,
     width: 600,
     height: 800,
     isModal: true, autoOpen: false, modalOpacity: 0.2
   });
-  $("#popup_jurnal").jqxWindow('open');
+  $("#popup_jurnal_hapuss").jqxWindow('open');
 }
 function edit(id){   
   $.get("<?php echo base_url().'keuangan/jurnal/edit_junal_umum/'; ?>"+id, function(data) {

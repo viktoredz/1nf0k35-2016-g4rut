@@ -3,8 +3,8 @@
 
   $(function(){
    
-    $('#btn-close').click(function(){
-      close_popup();
+    $("#btn-close<?php echo $tipeeditjurnal;?>").click(function(){
+      close_popup("<?php echo $tipeeditjurnal;?>");
     }); 
 
       $('#form-ss-jurnal_umum').submit(function(){
@@ -32,7 +32,7 @@
                     $('#notice-content').html('<div class="alert">'+res[1]+'</div>');
                     $('#notice').show();
                     $("#jqxgrid_barang").jqxGrid('updatebounddata', 'cells');
-                    close_popup();
+                    close_popup("<?php echo $tipeeditjurnal;?>");
                 }
                 else if(res[0]=="Error"){
                     $('#notice').hide();
@@ -48,20 +48,27 @@
           return false;
       });
     });
-$("#btn_hapus_detail_jurum").click(function(){
+$("#btn_hapus_detail_jurum<?php echo $tipeeditjurnal;?>").click(function(){
   var r = confirm("Apakah anda yakin akan menghapus data?");
     if (r == true) {
-        $.get("<?php echo base_url().'keuangan/jurnal/hapusdetailjurum/'.$id?>",function(data){
-          close_popup();
+        $.get("<?php echo base_url().'keuangan/jurnal/delete_junal_umum/'.$id?>",function(data){
+          close_popup("<?php echo $tipeeditjurnal;?>");
         });
     } else {
     }
 });
-$("#ubahdetailjurum").click(function(){
-   $.get("<?php echo base_url().'keuangan/jurnal/edit_junal_umum/'.$id; ?>", function(data) {
-    $("#content1").html(data);
-      $("#popup_jurnal").jqxWindow('close');
-  });
+$("#ubahdetailjurum<?php echo $tipeeditjurnal;?>").click(function(){
+  <?php if ($tipeeditjurnal=='jurnal_umum') { ?>
+    $.get("<?php echo base_url().'keuangan/jurnal/edit_junal_umum/'.$id.'/'.$tipeeditjurnal; ?>", function(data) {
+        $("#content1").html(data);
+        $("#popup_jurnal").jqxWindow('close');
+    });
+    <?php }else if ($tipeeditjurnal=='jurnal_penyesuaian') {?>
+       $.get("<?php echo base_url().'keuangan/jurnal/edit_junal_penyesuaian/'.$id.'/'.$tipeeditjurnal; ?>", function(data) {
+          $("#content2").html(data);
+          $("#popup_jurnal_penyesuaian").jqxWindow('close');
+        });
+    <?php }?>
 });
 
 </script>
@@ -209,12 +216,14 @@ $("#ubahdetailjurum").click(function(){
         <div class="box-footer">
             <div style="float:left">
               <?php if ($status !='ditutup') { ?>
-              <button type="button" class="btn btn-danger" id="btn_hapus_detail_jurum"><i class="glyphicon glyphicon-trash"></i> Hapus Transaksi</button>
+              <button type="button" class="btn btn-danger" id="btn_hapus_detail_jurum<?php echo $tipeeditjurnal;?>"><i class="glyphicon glyphicon-trash"></i> Hapus Transaksi</button>
               <?php } ?>
             </div>
             <div style="float:right">
-              <button type="button" class="btn btn-primary" id="ubahdetailjurum"><i class="glyphicon glyphicon-edit"></i> Ubah</button>
-              <button type="button" id="btn-close" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Tutup</button>
+              <?php if ($tipeeditjurnal =='jurnal_umum' || $tipeeditjurnal =='jurnal_penyesuaian') { ?>
+              <button type="button" class="btn btn-primary" id="ubahdetailjurum<?php echo $tipeeditjurnal;?>"><i class="glyphicon glyphicon-edit"></i> Ubah</button>
+              <?php } ?>
+              <button type="button" id="btn-close<?php echo $tipeeditjurnal;?>" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Tutup</button>
             </div>
         </div>
     </div>

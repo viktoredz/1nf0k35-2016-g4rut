@@ -30,7 +30,21 @@
                       <?php }?>
                     </select>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-5">
+                    <div class="row">
+                      <div class="col-md-4" style="padding:5px;">
+                        <div class="pull-right"><b>Puskesmas</b></div>
+                      </div>
+                      <div class="col-md-8">
+                          <select class="form-control" id="filterpuskesmas_penutup" name="filterpuskesmas_penutup"> 
+                          <?php foreach ($datapuskes as $datpus) { 
+                            $select = ($datpus->code=='P'.$this->session->userdata('puskesmas') ? 'selected' : '');
+                          ?>  
+                            <option value="<?php echo $datpus->code;?>" <?php echo $select?>><?php echo $datpus->value;?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -68,20 +82,7 @@
             <div class="col-md-8">
             </div>
             <div class="col-md-4">
-              <div class="row">
-                <div class="col-md-5" style="padding:5px;">
-                  <div class="pull-right"><b>Puskesmas</b></div>
-                </div>
-                <div class="col-md-7">
-                    <select class="form-control" id="filterpuskesmas_penutup" name="filterpuskesmas_penutup"> 
-                    <?php foreach ($datapuskes as $datpus) { 
-                      $select = ($datpus->code=='P'.$this->session->userdata('puskesmas') ? 'selected' : '');
-                    ?>  
-                      <option value="<?php echo $datpus->code;?>" <?php echo $select?>><?php echo $datpus->value;?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
+              
             </div>
           </div>
         </div>
@@ -97,6 +98,7 @@
 
 <script type="text/javascript">
 $(document).ready(function () {
+    hidebukututup();
     $('#btnexpandall_penutup').click(function () {
         $("#jqxgrid_jurnal_penutup").jqxTreeGrid('expandAll');
     });
@@ -226,7 +228,7 @@ $(document).ready(function () {
 });
 function detail_penutup(id){   
   $("#popup_jurnal_penutup #popup_content_penutup").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
-  $.get("<?php echo base_url().'keuangan/jurnal/detail_jurnal_umum/'; ?>"+id, function(data) {
+  $.get("<?php echo base_url().'keuangan/jurnal/detail_jurnal_umum/'; ?>"+id+'/jurnal_penutup', function(data) {
     $("#popup_content_penutup").html(data);
   });
   $("#popup_jurnal_penutup").jqxWindow({
@@ -237,11 +239,22 @@ function detail_penutup(id){
   });
   $("#popup_jurnal_penutup").jqxWindow('open');
 }
-function close_popup(){
-  $("#popup_jurnal_penutup").jqxWindow('close');
-  $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');
+function close_popup(tipe){
+  if (tipe=='jurnal_umum') {
+    $("#popup_jurnal").jqxWindow('close');
+    $("#jqxgrid_jurnal_umum").jqxTreeGrid('updateBoundData');  
+  }else if (tipe=='jurnal_penyesuaian') {
+    $("#popup_jurnal_penyesuaian").jqxWindow('close');
+    $("#jqxgrid_jurnal_penyesuaian").jqxTreeGrid('updateBoundData');  
+  }else if (tipe=='jurnal_penutup') {
+    $("#popup_jurnal_penutup").jqxWindow('close');
+    $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');  
+  }else if (tipe=='jurnal_hapus') {
+    $("#popup_jurnal_hapuss").jqxWindow('close');
+    $("#jqxgrid_jurnal_hapus").jqxTreeGrid('updateBoundData');  
+  }
+  
 }
-
 $("#filekategori_penutup").change(function(){
 
   $.post("<?php echo base_url().'keuangan/jurnal/filterkategori' ?>", 'kategori='+$(this).val(),  function(){
@@ -250,18 +263,41 @@ $("#filekategori_penutup").change(function(){
 });
 $("#periodetahunumum_penutup").change(function(){
     $.post("<?php echo base_url().'keuangan/jurnal/filtertahun' ?>", 'tahundata='+$(this).val(),  function(){
+          hidebukututup();
           $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');
     });
 });
 $("#periodebulanumum_penutup").change(function(){
   $.post("<?php echo base_url().'keuangan/jurnal/filterbulan' ?>", 'bulandata='+$(this).val(),  function(){
+          hidebukututup();
           $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');
     });
 });
 $("#filterpuskesmas_penutup").change(function(){
-  $.post("<?php echo base_url().'keuangan/jurnal/filterpuskesmas_penutup' ?>", 'puskes='+$(this).val(),  function(){
+    $.post("<?php echo base_url().'keuangan/jurnal/filterpuskesmas_penutup' ?>", 'puskes='+$(this).val(),  function(){
           $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');
     });
 });
-
+$("#btn_jurnal_penutup").click(function(){
+    $.post("<?php echo base_url().'keuangan/jurnal/jurnaltutupbuku' ?>",{'bulan' : $("#periodebulanumum_penutup").val(),'tahun' : $("#periodetahunumum_penutup").val()},  function(data){
+          $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');
+          hidebukututup(data);
+    });
+});
+function hidebukututup(databaru){
+  blnbuku = $("#periodebulanumum_penutup").val();
+  thnbuku = $("#periodetahunumum_penutup").val();
+  if (databaru=='undefined' || databaru==null) {
+    tgldatabejalan = "<?php echo $tgldatabejalan ?>".split("-");
+  }else{
+    tgldatabejalan = databaru.split("-");
+  }
+  blnberjalan = parseInt(tgldatabejalan[1]);
+  thnberjalan = tgldatabejalan[0];
+  if (blnbuku==blnberjalan && thnbuku==thnberjalan) {
+    $("#btn_jurnal_penutup").show();
+  }else{
+    $("#btn_jurnal_penutup").hide();
+  }
+}
 </script>

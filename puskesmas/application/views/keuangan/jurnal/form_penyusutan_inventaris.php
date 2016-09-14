@@ -110,7 +110,7 @@
         <div class="panel panel-default" id="createtransaksiinventaris<?php echo $keyinv['id_transaksi_inventaris'];?>" name="createtransaksiinventaris">
           <div class="panel-heading" role="tab" id="heading<?php echo $keyinv['id_transaksi_inventaris'];?>">
             <h4 class="panel-title">
-              <i class="glyphicon glyphicon-trash" onclick='delete_jurnalpenyesuaian("<?php echo $keyinv['id_transaksi_inventaris'];?>")'></i> 
+              <i class="glyphicon glyphicon-trash" name="delete_jurnalpenyesuaian" onclick='delete_jurnalpenyesuaian("<?php echo $keyinv['id_transaksi_inventaris'];?>")'></i> 
               <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $keyinv['id_transaksi_inventaris'];?>" aria-expanded="false" aria-controls="collapse<?php echo $keyinv['id_transaksi_inventaris'];?>">
                 <font size="4"><b><?php echo $keyinv['nama_barang'] ?></b></font>
               </a>
@@ -295,11 +295,21 @@
 </div>
 <script type="text/javascript">
 $(function(){
+  hidebukututuppenyusustanedit();
   $('.collapse').collapse()
   <?php if (count($getallinventaris) > 0) { ?>
     $("[name='tgl_periode_penyusutan_awal']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
     $("[name='tgl_periode_penyusutan_akhir']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
   <?php }?>
+  <?php if ($status=='ditutup') {?>
+        <?php if ($status=='ditutup') { ?>
+          $("#btn-reset_penyusutan_jurum").hide();
+          $("#btn-simpan_penyusutan_jurum").hide();
+          $("#btn-delete_penyusutan_jurum").hide();
+        <?php } ?>
+  <?php }else{?>
+  <?php }?>
+   
   $('#btn-close_penyusutan_jurum').click(function(){
      $.get("<?php echo base_url().'keuangan/jurnal/tab/2' ?>",  function(data) {
          $("#content2").html(data);
@@ -349,7 +359,7 @@ function addinventaris(data){
     form_create_data += '<div class="panel panel-default" id="createtransaksiinventaris'+value.id_transaksi_inventaris+'" name="createtransaksiinventaris">\
               <div class="panel-heading" role="tab" id="heading'+value.id_transaksi_inventaris+'">\
                 <h4 class="panel-title">\
-                <i class="glyphicon glyphicon-trash" onclick="delete_jurnalpenyesuaian(\''+value.id_transaksi_inventaris+'\')"></i>\
+                <i class="glyphicon glyphicon-trash" name="delete_jurnalpenyesuaian" onclick="delete_jurnalpenyesuaian(\''+value.id_transaksi_inventaris+'\')"></i>\
                   <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse'+value.id_transaksi_inventaris+'" aria-expanded="false" aria-controls="collapse'+value.id_transaksi_inventaris+'">\
                     <font size="4"><b>'+value.nama_barang+'</b></font>\
                   </a>\
@@ -629,4 +639,31 @@ $("#btn-delete_penyusutan_jurum").click(function(){
       });
     }
 });
+function hidebukututuppenyusustanedit(databaru){
+  blnbuku = $("#periodebulanumum_penyesuaian").val();
+  thnbuku = $("#periodetahunumum_penyesuaian").val();
+  if (databaru=='undefined' || databaru==null) {
+    tgldatabejalan = "<?php echo $tgldatabejalan ?>".split("-");
+  }else{
+    tgldatabejalan = databaru.split("-");
+  }
+  blnberjalan = parseInt(tgldatabejalan[1]);
+  thnberjalan = tgldatabejalan[0];
+  if (blnbuku==blnberjalan && thnbuku==thnberjalan) {
+  }else{
+    $("input").attr('disabled','disabled');
+    $("textarea").attr('disabled','disabled');
+    $("select").attr('disabled','disabled');
+    $("#add_inventaris").hide();
+    $("[name='delete_jurnalpenyesuaian']").hide();
+
+    $("#tgl_transaksipenyesuaian").jqxDateTimeInput({ disabled: true });
+    <?php foreach($getallinventaris as $keyinv) { ?>
+      $("#tgl_periode_penyusutan_awal<?php echo $keyinv['id_transaksi_inventaris'];?>").jqxDateTimeInput({ disabled: true });
+      $("#tgl_periode_penyusutan_akhir<?php echo $keyinv['id_transaksi_inventaris'];?>").jqxDateTimeInput({ disabled: true });
+    <?php } ?>
+    
+  }
+}
+
 </script>

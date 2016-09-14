@@ -647,35 +647,95 @@ class Jurnal_model extends CI_Model {
             $this->db->where('id_inventaris_barang',$dataquery['id_inventaris']);
             $this->db->update('keu_inventaris');
    }
-    function idperiode($id='0'){
+   function settingconfig(){
         $kodpus=$this->session->userdata('puskesmas');
         $kodedata = $kodpus.date("Y").date('m');
-        $q = $this->db->query("select RIGHT(MAX(id_periode),4) as kd_max from keu_periode where id_periode like "."'".$kodedata."%'"."");
-        $nourut="";
-        if($q->num_rows()>0)
-        {
-            foreach($q->result() as $k)
-            {
-                $tmp = ((int)$k->kd_max)+1;
-                $nourut = sprintf("%04s", $tmp);
-            }
-        }
-        else
-        {
-            $nourut = "0001";
-        }
-        return $kodpus.date("Y").date('m').$nourut;
-    }
-   function settingconfig(){
         $id=$kodpus.date("Y").date('m');
         $this->db->like('id_periode',$id,'after');
         $query = $this->db->get('keu_periode');
         if ($query->num_rows < 1) {
-            for ($i=1; $i <=12 ; $i++) { 
+            for ($i=0; $i <=11 ; $i++) { 
+                $tmp = ((int)$i)+1;
+                $nourut = sprintf("%02s", $tmp);
                 $data = array(
-                    'id_periode'=>$this->idperiode(),
+                    'id_periode'        => $kodedata.date("Y").$nourut,
+                    'start'             => date("Y").'-'.$nourut.'-01',
+                    'end'               => date("Y").'-'.$nourut.'-'.$this->lastdate((int)$i+1, date("Y")),
+                    'status'            => (((int)$i+1 < (int)date("m")) ? 'ditutup' : (((int)$i+1 > (int)date("m")) ? 'belum_berjalan':'berjalan')),
+                    'code_cl_phc'       => 'P'.$this->session->userdata('puskesmas'),
                     );
+                $this->db->insert('keu_periode',$data);
             }
         }
    }
+   function lastdate($bulan, $tahun){
+      $tanggal =  date('Y-m-d',strtotime('-1 second',strtotime('+1 month',strtotime(date($bulan).'/01/'.date($tahun).' 00:00:00'))));
+      $tgl = explode("-", $tanggal);
+      return $tgl[2];
+    }
+    function getdataberjalan(){
+        $this->db->where('status','berjalan');
+        $query = $this->db->get('keu_periode');
+        if ($query->num_rows() > 0) {
+            $dat = $query->row_array();
+            $data = $dat['start'];
+        }else{
+            $data = '0000-00-00';
+        }
+
+        return $data;
+    }
+    function updatesisanilaidata($id=0){
+            $this->db->select("keu_transaksi_inventaris.*,(select sum(debet) from  keu_jurnal where id_keu_transaksi_inventaris=keu_transaksi_inventaris.id_transaksi_inventaris) as totaldebet");
+            $this->db->where('id_transaksi_inventaris',$id);
+            $dataquery = $this->db->get('keu_transaksi_inventaris')->row_array();
+
+            $this->db->where('id_inventaris_barang',$dataquery['id_inventaris']);
+            $query = $this->db->get('keu_inventaris')->row_array();
+
+            $this->db->set('nilai_sisa',$query['nilai_sisa'] + $dataquery['totaldebet']);
+            $this->db->where('id_inventaris_barang',$dataquery['id_inventaris']);
+            $this->db->update('keu_inventaris');
+   }
+    function jurnaltutupbuku(){
+
+        $bulan = sprintf("%02s", $this->input->post('bulan'));
+        $this->db->where('MONTH(tanggal)',$bulan);
+        $this->db->where("YEAR(tanggal)",$this->input->post('tahun'));
+        $query = $this->db->get('keu_transaksi')->result_array();
+        foreach ($query as $key) {
+            if ($key['status']=='disimpan' || $key['status']=='ditutup') {
+                $this->db->where('id_transaksi',$key['id_transaksi']);
+                $this->db->set('status','ditutup');
+                $this->db->update('keu_transaksi');
+            }else{
+                $this->db->where('id_transaksi',$key['id_transaksi']);
+                $dat = $this->db->get('keu_transaksi_inventaris')->row_array();
+                $this->updatesisanilaidata($dat['id_inventaris']);
+
+                $this->db->where('id_transaksi',$key['id_transaksi']);
+                $this->db->delete('keu_transaksi_inventaris');
+
+                $this->db->where('id_transaksi',$key['id_transaksi']);
+                $this->db->delete('keu_jurnal');
+
+                $this->db->where('id_transaksi',$key['id_transaksi']);
+                $this->db->delete('keu_transaksi');
+            }
+        }
+        $this->db->set('user_penutup',$this->session->userdata('username'));
+        $this->db->set('status','ditutup');
+        $this->db->where('MONTH(start)',$bulan);
+        $this->db->where("YEAR(start)",$this->input->post('tahun'));
+        $this->db->update('keu_periode');
+
+        $bulanbaru = sprintf("%02s", $this->input->post('bulan')+1);
+        if ($bulanbaru !='13') {
+            $this->db->set('status','berjalan');
+            $this->db->where('MONTH(start)',$bulanbaru);
+            $this->db->where("YEAR(start)",$this->input->post('tahun'));
+            $this->db->update('keu_periode');
+        }
+        $this->getdataberjalan();
+    }
 }
