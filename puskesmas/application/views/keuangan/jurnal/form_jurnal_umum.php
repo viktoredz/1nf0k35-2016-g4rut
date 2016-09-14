@@ -400,7 +400,10 @@ $(function(){
     $("#btn-draf_jurum").show();
   <?php }?>
   $('#btn-close_jurum').click(function(){
-      window.location.href="<?php echo base_url()?>keuangan/jurnal";
+      // window.location.href="<?php echo base_url()?>keuangan/jurnal";
+       $.get("<?php echo base_url().'keuangan/jurnal/tab/1' ?>",  function(data) {
+         $("#content1").html(data);
+      });
   });
   $('#btn-delete_jurum').click(function(){
       var con = confirm("Anda yakin akan menghapus data ini?");

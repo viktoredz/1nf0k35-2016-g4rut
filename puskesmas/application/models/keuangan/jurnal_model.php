@@ -51,7 +51,7 @@ class Jurnal_model extends CI_Model {
         if ($type=='jurnal_umum') {
             $this->db->order_by("debet",'desc');
         }else{
-            $this->db->order_by("kredit",'desc');
+            // $this->db->order_by("kredit",'desc');
         }
         
         $query = $this->db->get("keu_jurnal");
@@ -315,6 +315,9 @@ class Jurnal_model extends CI_Model {
                         );
         $this->db->insert('keu_transaksi',$datakeu_transaksipen);
         if ($tipetransaksi=='jurnal_penyesuaian') {
+            $this->db->where('id_transaksi',$datakeu_transaksipen['id_transaksi']);
+            $this->db->set('uraian',$dat['nama']);
+            $this->db->update('keu_transaksi');
         }else{
             $datajurnal = $this->mst_keujurnal($id);
             foreach ($datajurnal as $key) {

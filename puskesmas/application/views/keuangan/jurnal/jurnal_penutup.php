@@ -145,7 +145,7 @@ $(document).ready(function () {
     {
         dataType: "json",
         dataFields: [
-            { name: 'id_jurnal', type: 'number' },
+            { name: 'id_jurnal', type: 'double' },
             { name: 'tanggal', type: 'string' },
             { name: 'uraian', type: 'string' },
             { name: 'status', type: 'string' },

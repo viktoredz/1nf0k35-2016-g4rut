@@ -23,7 +23,7 @@
           <button type="reset" id="btn-reset_penyusutan_jurum" class="btn btn-success"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
           <button type="button" id="btn-simpan_penyusutan_jurum" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-saved"></i> Simpan Perubahan</button>
           <button type="button" id="btn-delete_penyusutan_jurum" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> Hapus</button>
-          <button type="button" id="btn-close_penyusutan_jurum" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Batal</button>
+          <button type="button" id="btn-close_penyusutan_jurum" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Kembali</button>
         </div>
       </div>
         <div class="box-body">
@@ -301,7 +301,9 @@ $(function(){
     $("[name='tgl_periode_penyusutan_akhir']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
   <?php }?>
   $('#btn-close_penyusutan_jurum').click(function(){
-      window.location.href="<?php echo base_url()?>keuangan/jurnal";
+     $.get("<?php echo base_url().'keuangan/jurnal/tab/2' ?>",  function(data) {
+         $("#content2").html(data);
+     });
   });
   
   $("#tgl_transaksipenyesuaian").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
