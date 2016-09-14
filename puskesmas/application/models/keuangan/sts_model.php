@@ -391,7 +391,9 @@ class Sts_model extends CI_Model {
 		
 	}	
 	 function idtrasaksi($kodpus=''){
-        $q = $this->db->query("select MAX(RIGHT(id_transaksi,4)) as kd_max from keu_transaksi");
+	 	$kodpuskes = $this->session->userdata('puskesmas');
+	 	$kodedata = $kodpuskes.date("Y").date('m');
+        $q = $this->db->query("select MAX(RIGHT(id_transaksi,4)) as kd_max from keu_transaksi  where id_transaksi like "."'".$kodedata."%'"."");
         $nourut="";
         if($q->num_rows()>0)
         {
@@ -405,11 +407,13 @@ class Sts_model extends CI_Model {
         {
             $nourut = "0001";
         }
-        $kodpuskes = $this->session->userdata('puskesmas');
+        
         return $kodpuskes.date("Y").date('m').$nourut;
     }
     function idjurnal($id='0'){
-        $q = $this->db->query("select RIGHT(MAX(id_jurnal),4) as kd_max from keu_jurnal");
+    	$kodpus = $this->session->userdata('puskesmas');
+    	$kodedata = $kodpuskes.date("Y").date('m');
+        $q = $this->db->query("select RIGHT(MAX(id_jurnal),4) as kd_max from keu_jurnal where id_jurnal like "."'".$kodedata."%'"."");
         $nourut="";
         if($q->num_rows()>0)
         {
@@ -423,7 +427,7 @@ class Sts_model extends CI_Model {
         {
             $nourut = "0001";
         }
-        $kodpus = $this->session->userdata('puskesmas');
+        
         return $kodpus.date("Y").date('m').$nourut;
     }
 	function tutup_sts(){

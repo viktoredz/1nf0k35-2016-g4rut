@@ -150,7 +150,8 @@ class Penyusutan_model extends CI_Model {
     }
     function idtransaksi(){
         $kodpus = $this->session->userdata('puskesmas');
-        $q = $this->db->query("select MAX(RIGHT(id_transaksi,4)) as kd_max from keu_transaksi");
+        $kodedata =$kodpus.date("Y").date('m');
+        $q = $this->db->query("select MAX(RIGHT(id_transaksi,4)) as kd_max from keu_transaksi where id_transaksi like "."'".$kodedata."%'"."");
         $nourut="";
         if($q->num_rows()>0)
         {
@@ -172,7 +173,9 @@ class Penyusutan_model extends CI_Model {
     	return $query['harga'];
     }
      function idinventaris($id='0'){
-        $q = $this->db->query("select RIGHT(MAX(id_inventaris),4) as kd_max from keu_inventaris");
+        $kodpus=$this->session->userdata('puskesmas');
+        $kodedata =$kodpus.date("Y").date('m');
+        $q = $this->db->query("select RIGHT(MAX(id_inventaris),4) as kd_max from keu_inventaris  where id_inventaris like "."'".$kodedata."%'"."");
         $nourut="";
         if($q->num_rows()>0)
         {
@@ -186,11 +189,13 @@ class Penyusutan_model extends CI_Model {
         {
             $nourut = "0001";
         }
-        $kodpus=$this->session->userdata('puskesmas');
+        
         return $kodpus.date("Y").date('m').$nourut;
     }
     function idjurnal($id='0'){
-        $q = $this->db->query("select RIGHT(MAX(id_jurnal),4) as kd_max from keu_jurnal");
+        $kodpus=$this->session->userdata('puskesmas');
+        $kodedata = $kodpus.date("Y").date('m');
+        $q = $this->db->query("select RIGHT(MAX(id_jurnal),4) as kd_max from keu_jurnal where id_jurnal like "."'".$kodedata."%'"."");
         $nourut="";
         if($q->num_rows()>0)
         {
@@ -204,7 +209,7 @@ class Penyusutan_model extends CI_Model {
         {
             $nourut = "0001";
         }
-        $kodpus=$this->session->userdata('puskesmas');
+        
         return $kodpus.date("Y").date('m').$nourut;
     }
     function getalldatainv($id=0){

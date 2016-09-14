@@ -78,13 +78,17 @@ class Jurnal_model extends CI_Model {
     }
     function get_datajurnalumum($type='jurnal_umum',$status='0'){
         if ($status!='0') {
-            $this->db->where('status', 'dihapus');
+            $this->db->where('status','dihapus');
         }else{
-            $this->db->where('status !=', 'dihapus');
+            $this->db->where('status !=','dihapus');
         }
         $this->db->select("*");
         if ($type!='semuajurnal') {
-            $this->db->where("tipe_jurnal",$type);
+            if ($type=='jurnal_penutup') {
+                # code...
+            }else{
+                $this->db->where("tipe_jurnal",$type);
+            }
         }
         $query = $this->db->get("keu_transaksi");
         $i=0;
@@ -221,7 +225,9 @@ class Jurnal_model extends CI_Model {
         }
     }
      function idjurnal($id='0'){
-        $q = $this->db->query("select RIGHT(MAX(id_jurnal),4) as kd_max from keu_jurnal");
+        $kodpus=$this->session->userdata('puskesmas');
+        $kodedata = $kodpus.date("Y").date('m');
+        $q = $this->db->query("select RIGHT(MAX(id_jurnal),4) as kd_max from keu_jurnal where id_jurnal like "."'".$kodedata."%'"."");
         $nourut="";
         if($q->num_rows()>0)
         {
@@ -235,7 +241,6 @@ class Jurnal_model extends CI_Model {
         {
             $nourut = "0001";
         }
-        $kodpus=$this->session->userdata('puskesmas');
         return $kodpus.date("Y").date('m').$nourut;
     }
     function delete_kreditdebet($tipe){
@@ -277,7 +282,8 @@ class Jurnal_model extends CI_Model {
     }
     function idtrasaksi(){
         $kodpus = $this->session->userdata('puskesmas');
-        $q = $this->db->query("select MAX(RIGHT(id_transaksi,4)) as kd_max from keu_transaksi");
+        $kodedata =$kodpus.date("Y").date('m');
+        $q = $this->db->query("select MAX(RIGHT(id_transaksi,4)) as kd_max from keu_transaksi where id_transaksi like "."'".$kodedata."%'"."");
         $nourut="";
         if($q->num_rows()>0)
         {
@@ -640,5 +646,36 @@ class Jurnal_model extends CI_Model {
             $this->db->set('nilai_sisa',$query['nilai_sisa'] + $dataquery['totaldebet']);
             $this->db->where('id_inventaris_barang',$dataquery['id_inventaris']);
             $this->db->update('keu_inventaris');
+   }
+    function idperiode($id='0'){
+        $kodpus=$this->session->userdata('puskesmas');
+        $kodedata = $kodpus.date("Y").date('m');
+        $q = $this->db->query("select RIGHT(MAX(id_periode),4) as kd_max from keu_periode where id_periode like "."'".$kodedata."%'"."");
+        $nourut="";
+        if($q->num_rows()>0)
+        {
+            foreach($q->result() as $k)
+            {
+                $tmp = ((int)$k->kd_max)+1;
+                $nourut = sprintf("%04s", $tmp);
+            }
+        }
+        else
+        {
+            $nourut = "0001";
+        }
+        return $kodpus.date("Y").date('m').$nourut;
+    }
+   function settingconfig(){
+        $id=$kodpus.date("Y").date('m');
+        $this->db->like('id_periode',$id,'after');
+        $query = $this->db->get('keu_periode');
+        if ($query->num_rows < 1) {
+            for ($i=1; $i <=12 ; $i++) { 
+                $data = array(
+                    'id_periode'=>$this->idperiode(),
+                    );
+            }
+        }
    }
 }

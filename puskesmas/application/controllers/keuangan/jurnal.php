@@ -10,6 +10,7 @@ class Jurnal extends CI_Controller {
 		$this->authentication->verify('keuangan','edit');
 		$data['title_group']   = "Keuangan";
 		$data['title_form']    = "Jurnal";
+		$this->jurnal_model->settingconfig();
 		$this->session->set_userdata('filter_kategori','');
 		$this->session->set_userdata('filter_bulan','');
 		$this->session->set_userdata('filter_tahun','');
@@ -67,12 +68,11 @@ class Jurnal extends CI_Controller {
 				$data['title_form']    = "Jurnal Umum";
 				$data['bulan'] =array(1=>"Januari","Februari","Maret","April","Mei","Juni","July","Agustus","September","Oktober","November","Desember");
 				$data['filekategori'] =$this->jurnal_model->getallkategori();//array('all'=>"Semua Kategori","penerimaankas" => 'Penerimaan Kas',"Pembelian" => 'pembelian',"Biaya" => 'biaya',"penjualan" => 'Penjualan',"pembukuan"=>'Pembukuan');
-				$data['filetransaksi'] =$this->jurnal_model->pilihan_enums('keu_transaksi','status');//array('all'=>"Semua Transaksi","transaksidisimpan" => 'Transaksi Disimpan',"transaksidraf" => 'Transaksi Draf');
 				$data['tambahtransaksi'] =array('pendapatanumum'=>"Pendapatan Umum","pendapatanbpjs" => 'Pendapatan BPJS Kapasitas',"pembelian" => 'Pembelian Persediaan');
 				$data['tambahtransaksiotomatis'] =array('transaksiotomatis'=>"Transaksi Otomatis");
 				
 				$this->db->where('code','P'.$this->session->userdata('puskesmas'));
-				$data['datapuskespe'] 	= $this->jurnal_model->getallpuskesmas();
+				$data['datapuskes'] 	= $this->jurnal_model->getallpuskesmas();
 				die($this->parser->parse("keuangan/jurnal/jurnal_penutup",$data));
 
 				break;
@@ -141,6 +141,33 @@ class Jurnal extends CI_Controller {
 		}
 		$data = $this->jurnal_model->get_datajurnalumum($type);
 
+		echo json_encode($data);
+	}
+	function json_jurnal_penutup($type='jurnal_penutup'){
+		$this->authentication->verify('keuangan','show');
+		if ($this->session->userdata('filter_kategori')!='') {
+			if ($this->session->userdata('filter_kategori')=='all') {
+			}else{
+				$this->db->where('id_kategori_transaksi',$this->session->userdata('filter_kategori'));
+			}
+		}
+		if ($this->session->userdata('filter_tahun')!='') {
+			$this->db->where('YEAR(tanggal)',$this->session->userdata('filter_tahun'));
+		}else{
+			$this->db->where('YEAR(tanggal)',date("Y"));
+		}
+		if ($this->session->userdata('filter_bulan')!='') {
+			$this->db->where('MONTH(tanggal)',$this->session->userdata('filter_bulan'));
+		}else{
+			$this->db->where('MONTH(tanggal)',date("m"));
+		}
+		if ($this->session->userdata('filter_puskesmas')!='') {
+			$this->db->where('keu_transaksi.code_cl_phc',$this->session->userdata('filter_puskesmas'));
+		}else{
+			$this->db->where('keu_transaksi.code_cl_phc','P'.$this->session->userdata('puskesmas'));
+		}
+		$data = $this->jurnal_model->get_datajurnalumum($type);
+	
 		echo json_encode($data);
 	}
 	function json_jurnal_hapus($type='jurnal_umum'){
@@ -356,7 +383,8 @@ class Jurnal extends CI_Controller {
 	}
 	function idtrasaksi(){
 			$kodpus = 'P'.$this->session->userdata('puskesmas');
-	        $q = $this->db->query("select MAX(RIGHT(id_transaksi,4)) as kd_max from keu_transaksi");
+			$kodedata = $kodpus.date("Y").date('m');
+	        $q = $this->db->query("select MAX(RIGHT(id_transaksi,4)) as kd_max from keu_transaksi where id_transaksi like "."'".$kodedata."%'"."");
 	        $nourut="";
 	        if($q->num_rows()>0)
 	        {
