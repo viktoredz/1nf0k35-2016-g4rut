@@ -319,12 +319,14 @@ $("#filetransaksiumum_penyesuaian").change(function(){
     });
 });
 $("#periodetahunumum_penyesuaian").change(function(){
-    $.post("<?php echo base_url().'keuangan/jurnal/filtertahun' ?>", 'tahundata='+$(this).val(),  function(){
+    $.post("<?php echo base_url().'keuangan/jurnal/filtertahun' ?>", 'tahundata='+$(this).val(),  function(data){
+          hidebukututuppenyesuaian(data);
           $("#jqxgrid_jurnal_penyesuaian").jqxTreeGrid('updateBoundData');
     });
 });
 $("#periodebulanumum_penyesuaian").change(function(){
-  $.post("<?php echo base_url().'keuangan/jurnal/filterbulan' ?>", 'bulandata='+$(this).val(),  function(){
+  $.post("<?php echo base_url().'keuangan/jurnal/filterbulan' ?>", 'bulandata='+$(this).val(),  function(data){
+          hidebukututuppenyesuaian(data);
           $("#jqxgrid_jurnal_penyesuaian").jqxTreeGrid('updateBoundData');
     });
 });
