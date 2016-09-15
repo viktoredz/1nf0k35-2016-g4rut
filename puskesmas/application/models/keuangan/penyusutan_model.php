@@ -66,7 +66,8 @@ class Penyusutan_model extends CI_Model {
     	$jmldata    = $this->input->post('jumlahdata');
     	$id_invbaru = '';
     	$uraian ='';
-    	for ($i=1; $i <=$jmldata ; $i++) { 
+    	for ($i=1; $i <=$jmldata ; $i++) {
+            
     		$data = $id_invbaru;
     		$datauraian = $uraian;
             $dataakumulasi = $this->input->post("id_mst_akun_akumulasi$i");
@@ -100,12 +101,18 @@ class Penyusutan_model extends CI_Model {
     			);
     	$this->db->insert('keu_transaksi',$datatransaksi);
     	for ($x=1; $x <=$jmldata ; $x++) { 
-    		$harga = $this->getharga($this->input->post("id_inventaris_barang$x"));
+            $harga = $this->getharga($this->input->post("id_inventaris_barang$x"));
+            $pilihmetod = $this->input->post("id_mst_akun_akumulasi$i");
+            if ($pilihmetod=='5' || $pilihmetod=='6' || $pilihmetod=='3') {
+                $hargadaftar = $harga;
+            }else{
+                $hargadaftar = $this->input->post("nilai_sisa$x");
+            }
     		$datatransaksi = array(
     			'id_jurnal'				=> $this->idjurnal(),
     			'id_transaksi'			=> $datatransaksi['id_transaksi'],
     			'id_mst_akun'			=> $this->input->post("id_mst_akun$x"),
-    			'debet'					=> $harga,
+    			'debet'					=> $hargadaftar,
     			'kredit'				=> '0',
     			'status'				=> 'debet',
     			);

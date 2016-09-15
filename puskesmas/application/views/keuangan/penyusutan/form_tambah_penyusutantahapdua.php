@@ -80,7 +80,7 @@
                   </select>
                 </div>
               </div>
-              <div class="row" style="margin: 5px">
+              <div class="row" style="margin: 5px" id="datanilai_ekonomis<?php echo $i;?>">
                 <div class="col-md-4" style="padding: 5px">
                  Nilai Ekonomis
                 </div>
@@ -95,7 +95,7 @@
                 </div>
                 <div class="col-md-4" style="padding: 8px"> Tahun</div>
               </div>
-              <div class="row" style="margin: 5px">
+              <div class="row" style="margin: 5px" id="datanilai_sisa<?php echo $i;?>">
                 <div class="col-md-4" style="padding: 5px">
                  Nilai Sisa
                 </div>
@@ -168,16 +168,17 @@
     });
   });
   function showekonomissia(no){
+    
     pilihmetode = $("#metode_penyusustan"+no).val();
     if (pilihmetode=='5') {
-      $("#nilai_ekonomis"+no).hide();
+      $("#datanilai_ekonomis"+no).hide();
     }else{
-      $("#nilai_ekonomis"+no).show();
+      $("#datanilai_ekonomis"+no).show();
     }
-    if (pilihmetode=='5' || pilihmetode=='5' || pilihmetode=='3') {
-      $("#nilai_sisa"+no).hide();
+    if (pilihmetode=='5' || pilihmetode=='6' || pilihmetode=='3') {
+      $("#datanilai_sisa"+no).hide();
     }else{
-      $("#nilai_sisa"+no).show();
+      $("#datanilai_sisa"+no).show();
     }
 
 

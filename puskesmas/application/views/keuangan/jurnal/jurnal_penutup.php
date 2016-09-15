@@ -11,7 +11,7 @@
          <button type="button" class="btn btn-warning" id="btncollapseall_penutup"><i class='icon fa fa-minus-square-o'></i> &nbsp; Collapse All</button>
          <button type="button" class="btn btn-primary" id="jqxgrid_refresh_penutup"><i class='fa fa-refresh'></i> &nbsp; Refresh</button> 
          <button type="button" class="btn btn-success" onclick='export(1)'><i class='glyphicon glyphicon-floppy-disk'></i> &nbsp; Export</button> 
-         <button type="button" class="btn btn-info" id="btn_jurnal_penutup"><i class='glyphicon glyphicon-folder-close'></i> &nbsp; Penutup</button> 
+         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal" id="btn_jurnal_penutup"><i class='glyphicon glyphicon-folder-close'></i> &nbsp; Penutup</button> 
         </div>
         <div class="row">
         <div class="box-body">
@@ -95,7 +95,67 @@
     </div>
   </div>
 </section>
-
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+  
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"><b>Tutup Buku</b></h4>
+      </div>
+      <div class="modal-body">
+        <?php $tglpisah = explode("-", $tgldatabejalan); ?>
+        <p><b>Konfirmasi tutup buku periode <?php echo $tglpisah[2].' '.namabulan($tglpisah[1]).' - '.lastdate($tglpisah[1],$tglpisah[0]).' '.namabulan($tglpisah[1]).' '.$tglpisah[0]; ?></b></p>
+        <p>Sebelum tutup buku, pastikan transaksi periode ini dan transaksi untuk tutup buku sudah dimasukan. Jurnal yang sudah ditutup tidak bisa dirubah lagi.</p>
+        <p><b>Yakin akan menutup buku periode ini ?</b></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" onclick="tutupbukujurnal()" data-dismiss="modal">Penutup</button>
+      </div>
+    </div>
+    
+  </div>
+</div>
+<?php
+function lastdate($bulan, $tahun){
+  $tanggal =  date('Y-m-d',strtotime('-1 second',strtotime('+1 month',strtotime(date($bulan).'/01/'.date($tahun).' 00:00:00'))));
+  $tgl = explode("-", $tanggal);
+  return $tgl[2];
+}
+function namabulan($bulan)
+{
+Switch ($bulan){
+    case 1 : $bulan="Januari";
+        Break;
+    case 2 : $bulan="Februari";
+        Break;
+    case 3 : $bulan="Maret";
+        Break;
+    case 4 : $bulan="April";
+        Break;
+    case 5 : $bulan="Mei";
+        Break;
+    case 6 : $bulan="Juni";
+        Break;
+    case 7 : $bulan="Juli";
+        Break;
+    case 8 : $bulan="Agustus";
+        Break;
+    case 9 : $bulan="September";
+        Break;
+    case 10 : $bulan="Oktober";
+        Break;
+    case 11 : $bulan="November";
+        Break;
+    case 12 : $bulan="Desember";
+        Break;
+    }
+return $bulan;
+}
+?>
 <script type="text/javascript">
 $(document).ready(function () {
     hidebukututup();
@@ -262,14 +322,14 @@ $("#filekategori_penutup").change(function(){
     });
 });
 $("#periodetahunumum_penutup").change(function(){
-    $.post("<?php echo base_url().'keuangan/jurnal/filtertahun' ?>", 'tahundata='+$(this).val(),  function(){
-          hidebukututup();
+    $.post("<?php echo base_url().'keuangan/jurnal/filtertahun' ?>", 'tahundata='+$(this).val(),  function(data){
+          hidebukututup(data);
           $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');
     });
 });
 $("#periodebulanumum_penutup").change(function(){
-  $.post("<?php echo base_url().'keuangan/jurnal/filterbulan' ?>", 'bulandata='+$(this).val(),  function(){
-          hidebukututup();
+  $.post("<?php echo base_url().'keuangan/jurnal/filterbulan' ?>", 'bulandata='+$(this).val(),  function(data){
+          hidebukututup(data);
           $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');
     });
 });
@@ -278,12 +338,12 @@ $("#filterpuskesmas_penutup").change(function(){
           $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');
     });
 });
-$("#btn_jurnal_penutup").click(function(){
+function tutupbukujurnal(){
     $.post("<?php echo base_url().'keuangan/jurnal/jurnaltutupbuku' ?>",{'bulan' : $("#periodebulanumum_penutup").val(),'tahun' : $("#periodetahunumum_penutup").val()},  function(data){
           $("#jqxgrid_jurnal_penutup").jqxTreeGrid('updateBoundData');
           hidebukututup(data);
     });
-});
+}
 function hidebukututup(databaru){
   blnbuku = $("#periodebulanumum_penutup").val();
   thnbuku = $("#periodetahunumum_penutup").val();

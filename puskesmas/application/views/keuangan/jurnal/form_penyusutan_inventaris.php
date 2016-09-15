@@ -295,7 +295,7 @@
 </div>
 <script type="text/javascript">
 $(function(){
-  hidebukututuppenyusustanedit();
+  
   $('.collapse').collapse()
   <?php if (count($getallinventaris) > 0) { ?>
     $("[name='tgl_periode_penyusutan_awal']").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
@@ -320,6 +320,7 @@ $(function(){
   $("[name='showhide']").hide();
   $("[name='showdown']").hide();
   $("[name='showup']").show();
+  hidebukututuppenyusustanedit();
 });
 
 function showdowndata(id){
@@ -640,8 +641,9 @@ $("#btn-delete_penyusutan_jurum").click(function(){
     }
 });
 function hidebukututuppenyusustanedit(databaru){
-  blnbuku = $("#periodebulanumum_penyesuaian").val();
-  thnbuku = $("#periodetahunumum_penyesuaian").val();
+  datatgl_transaksid = $("#tgl_transaksipenyesuaian").val().split("-");
+  blnbuku = datatgl_transaksid[1];
+  thnbuku = datatgl_transaksid[2];
   if (databaru=='undefined' || databaru==null) {
     tgldatabejalan = "<?php echo $tgldatabejalan ?>".split("-");
   }else{

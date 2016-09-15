@@ -341,7 +341,7 @@ class Jurnal extends CI_Controller {
 			}
 			
 		}
-	}	
+	}
 	function pilih_tipe_transaksijurum($tipetrans='jurnal_umum'){
 		$this->authentication->verify('keuangan','show');
 
@@ -738,6 +738,7 @@ class Jurnal extends CI_Controller {
 		if($_POST) {
 			if($this->input->post('tahundata') != '') {
 				$this->session->set_userdata('filter_tahun',$this->input->post('tahundata'));
+				echo $this->jurnal_model->getdataberjalan();
 			}
 		}
 	}
@@ -745,6 +746,7 @@ class Jurnal extends CI_Controller {
 		if($_POST) {
 			if($this->input->post('bulandata') != '') {
 				$this->session->set_userdata('filter_bulan',$this->input->post('bulandata'));
+				echo $this->jurnal_model->getdataberjalan();
 			}
 		}
 	}

@@ -389,7 +389,7 @@ if($alert_form!=""){ ?>
 </div>
 <script type="text/javascript">
 $(function(){
-  hidebukututupumumedit();
+  
   <?php if ($status=='draft' || $status=='ditutup') {?>
     $("#btn-draf_jurum").hide();
         <?php if ($status=='ditutup') { ?>
@@ -419,6 +419,7 @@ $(function(){
  
   $("#tgl_transaksi").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
   $("#tgl_jatuhtempo").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
+  hidebukututupumumedit();
 });
 $("#btncls").click(function(){
   $("#error_mssg").hide();
@@ -673,8 +674,9 @@ function simpandatajurum(tipesimpan){
  });
 }
 function hidebukututupumumedit(databaru){
-  blnbuku = $("#periodebulanumum_penyesuaian").val();
-  thnbuku = $("#periodetahunumum_penyesuaian").val();
+  datatgl_transaksi = $("#tgl_transaksi").val().split("-");
+  blnbuku = datatgl_transaksi[1];
+  thnbuku = datatgl_transaksi[2];
   if (databaru=='undefined' || databaru==null) {
     tgldatabejalan = "<?php echo $tgldatabejalan ?>".split("-");
   }else{

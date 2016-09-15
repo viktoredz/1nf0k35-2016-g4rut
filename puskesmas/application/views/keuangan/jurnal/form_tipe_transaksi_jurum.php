@@ -1,8 +1,8 @@
 <script type="text/javascript">
   $(function(){
    
-    $('#btn-close<?php echo $tipetrans?>').click(function(){
-      close_popup();
+    $("#btn-close<?php echo $tipetrans?>").click(function(){
+      close_popup("<?php echo $tipetrans?>");
     }); 
 
       $('#form-ss-jurnal_umum').submit(function(){
@@ -30,7 +30,7 @@
                     $('#notice-content').html('<div class="alert">'+res[1]+'</div>');
                     $('#notice').show();
                     $("#jqxgridpilihtipe<?php echo $tipetrans?>").jqxGrid('updatebounddata', 'cells');
-                    close_popup();
+                    close_popup("<?php echo $tipetrans?>");
                 }
                 else if(res[0]=="Error"){
                     $('#notice').hide();
@@ -115,7 +115,7 @@ var source = {
     });
     function pilihjurnal(id){
       if(confirm("Anda yakin akan membuat jurnal ini?")){
-        close_popup();
+        close_popup("<?php echo $tipetrans?>");
         $.get("<?php echo base_url().'keuangan/jurnal/add_junal_umum/'; ?>"+id+'/'+"<?php echo $tipetrans;?>", function(data) {
           <?php if ($tipetrans=='jurnal_umum') {?>
             $("#content1").html(data);
