@@ -11,7 +11,7 @@
          <button type="button" class="btn btn-warning" id="btncollapseall_penutup"><i class='icon fa fa-minus-square-o'></i> &nbsp; Collapse All</button>
          <button type="button" class="btn btn-primary" id="jqxgrid_refresh_penutup"><i class='fa fa-refresh'></i> &nbsp; Refresh</button> 
          <button type="button" class="btn btn-success" onclick='export(1)'><i class='glyphicon glyphicon-floppy-disk'></i> &nbsp; Export</button> 
-         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal" id="btn_jurnal_penutup"><i class='glyphicon glyphicon-folder-close'></i> &nbsp; Penutup</button> 
+         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal" id="btn_jurnal_penutup"><i class='glyphicon glyphicon-folder-close'></i> &nbsp; Tutup Buku</button> 
         </div>
         <div class="row">
         <div class="box-body">
