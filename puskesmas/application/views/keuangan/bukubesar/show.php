@@ -99,8 +99,8 @@
 <script type="text/javascript">
 $(function () {	
 	
-	$("#menu_eprokesga").addClass("active");
-	$("#menu_eform_laporan_kpldh").addClass("active");
+	$("#menu_ekeuangan").addClass("active");
+	$("#menu_keuangan_bukubesar").addClass("active");
 
 	$("#hilangdata").hide(); 
 	$("#loading").hide(); 
