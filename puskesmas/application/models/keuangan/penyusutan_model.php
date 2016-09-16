@@ -235,7 +235,7 @@ class Penyusutan_model extends CI_Model {
     	
 	    $category_data = array();
 	    if ($idparent==0) {
-	    	$this->db->where("id_mst_akun_parent IS NOT NULL", null, false);
+	    	$this->db->where("id_mst_akun_parent IS NULL", null, false);
 	    }else{
 	    	$this->db->where("id_mst_akun_parent",(int)$idparent);
 	    }
