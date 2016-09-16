@@ -61,8 +61,8 @@
                 <div class="col-md-11">
                   <select  name="pilihakun" id="pilihakun" class="form-control">
                     <?php foreach($datanilaiakun as $datnil) : ?>
-                      <?php $select = $datnil['id_mst_akun'] == set_value('pilihakun') ? 'selected' : '' ?>
-                      <option value="<?php echo $datnil['id_mst_akun'] ?>" <?php echo $select ?>><?php echo $datnil['nama_akun']; ?></option>
+                      <?php $select = $datnil['id_keuangan_akun'] == set_value('pilihakun') ? 'selected' : '' ?>
+                      <option value="<?php echo $datnil['id_keuangan_akun'] ?>" <?php echo $select ?>><?php echo $datnil['nama_akun']; ?></option>
                     <?php endforeach ?>
                   </select>
                 </div>
@@ -77,7 +77,7 @@
               <div class="col-md-10">
                 <ul class="list-group">
                   <?php foreach ($dataallakun as $datakun) { ?>
-                    <li class="list-group-item" id="dataakun<?php echo $datakun['id_mst_buku_besar'].'_'.$datakun['id_mst_akun'];?>"><?php echo $datakun['uraian']; ?>  <?php if ($action!='view') { ?><a onclick='deleteakun("<?php echo $datakun['id_mst_buku_besar'] ?>","<?php echo $datakun['id_mst_akun'] ?>")'><i class="glyphicon glyphicon-trash pull-right"></i></a><?php } ?></li>
+                    <li class="list-group-item" id="dataakun<?php echo $datakun['id_keuangan_buku_besar'].'_'.$datakun['id_keuangan_akun'];?>"><?php echo $datakun['uraian']; ?>  <?php if ($action!='view') { ?><a onclick='deleteakun("<?php echo $datakun['id_keuangan_buku_besar'] ?>","<?php echo $datakun['id_keuangan_akun'] ?>")'><i class="glyphicon glyphicon-trash pull-right"></i></a><?php } ?></li>
                   <?php }?>
                   <div id="isiakundata"></div>
                 </ul>
@@ -128,7 +128,7 @@
 <script>
 	$(function () {	
     $("#menu_master_data").addClass("active");
-    $("#menu_mst_agama").addClass("active");
+    $("#menu_keuangan_agama").addClass("active");
     $("#close_popup").click(function(){
         close_popup();
     });
@@ -136,15 +136,15 @@
 function tambahkanakun() {
   var data = new FormData();
     pilihakun = $("#pilihakun").val();
-    data.append('id_mst_akun', pilihakun);
-    data.append('id_mst_buku_besar', "<?php echo $kode;?>");
+    data.append('id_keuangan_akun', pilihakun);
+    data.append('id_keuangan_buku_besar', "<?php echo $kode;?>");
 
     $.ajax({
      cache : false,
      contentType : false,
      processData : false,
      type: 'POST',
-     url : '<?php echo base_url()."mst/keuangan_bukubesar/add_akundata/" ?>',
+     url : '<?php echo base_url()."keuangan/keuangan_bukubesar/add_akundata/" ?>',
      data : data,
      success: function (response) {
       a = response.split("|");
@@ -179,7 +179,7 @@ $('#form-ss').submit(function(){
         contentType : false,
         processData : false,
         type : 'POST',
-        url : "<?php echo base_url()?>mst/keuangan_bukubesar/{action}/{kode}",
+        url : "<?php echo base_url()?>keuangan/keuangan_bukubesar/{action}/{kode}",
         data : data,
         success : function(response){
           var res  = response.split("|");
@@ -208,7 +208,7 @@ function deleteakun(id_buku,id_akun) {
   if (confirm("Anda yakin Akan menghapus Data Ini ?")) {
       $.ajax({
        type: 'POST',
-       url : '<?php echo base_url()."mst/keuangan_bukubesar/delete_dataakun/" ?>',
+       url : '<?php echo base_url()."keuangan/keuangan_bukubesar/delete_dataakun/" ?>',
        data : 'id_buku='+id_buku+'&id_akun='+id_akun,
        success: function (response) {
         res = response.split("|");

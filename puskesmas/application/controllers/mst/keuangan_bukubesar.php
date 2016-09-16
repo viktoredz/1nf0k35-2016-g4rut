@@ -97,9 +97,10 @@ class Keuangan_bukubesar extends CI_Controller {
 		
 			die($this->parser->parse("mst/keuangan_bukubesar/form",$data,true));
 		}elseif($id= $this->keuangan_bukubesar_model->insert_entry()){
+
 			$this->edit($id);
 		}else{
-			$this->session->set_flashdata('alert_form', 'Save data failed...');
+			$data['alert_form']='Save data failed...';
 		}
 			die($this->parser->parse("mst/keuangan_bukubesar/form",$data,true));
 	}
@@ -127,9 +128,9 @@ class Keuangan_bukubesar extends CI_Controller {
 		if($this->form_validation->run()== FALSE){
 			die($this->parser->parse("mst/keuangan_bukubesar/form",$data,true));
 		}elseif($this->keuangan_bukubesar_model->update_entry($kode)){
-			$this->session->set_flashdata('alert_form', 'Save data successful...');
+			$data['alert_form']='Save data successful...';
 		}else{
-			$this->session->set_flashdata('alert_form', 'Save data failed...');
+			$data['alert_form']='Save data failed...';
 		}
 		die($this->parser->parse("mst/keuangan_bukubesar/form",$data,true));
 	}

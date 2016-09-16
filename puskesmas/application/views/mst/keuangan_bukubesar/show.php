@@ -114,7 +114,7 @@
                  }
                 },
 				{ text: 'Judul Buku Besar',align: 'center',  datafield: 'judul', columntype: 'textbox', filtertype: 'textbox', width: '56%' },
-				{ text: 'Aktip',align: 'center',  datafield: 'aktif', columntype: 'textbox', filtertype: 'none', width: '20%', cellsrenderer: function (row) {
+				{ text: 'Aktif',align: 'center',  datafield: 'aktif', columntype: 'textbox', filtertype: 'none', width: '20%', cellsrenderer: function (row) {
 					    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
 					    if(dataRecord.aktif==1){
 							return "<div style='width:100%;padding-top:2px;text-align:center'><input type='checkbox' name='cekboxdata' onclick='pilihaktip(\""+dataRecord.id_mst_bukubesar+"\")' checked></div>";
