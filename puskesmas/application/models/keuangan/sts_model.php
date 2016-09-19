@@ -412,7 +412,7 @@ class Sts_model extends CI_Model {
     }
     function idjurnal($id='0'){
     	$kodpus = $this->session->userdata('puskesmas');
-    	$kodedata = $kodpuskes.date("Y").date('m');
+    	$kodedata = $kodpus.date("Y").date('m');
         $q = $this->db->query("select RIGHT(MAX(id_jurnal),4) as kd_max from keu_jurnal where id_jurnal like "."'".$kodedata."%'"."");
         $nourut="";
         if($q->num_rows()>0)

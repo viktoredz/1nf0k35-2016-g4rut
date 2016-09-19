@@ -8,14 +8,6 @@ class Bukubesar_model extends CI_Model {
         parent::__construct();
 		$this->lang	  = $this->config->item('language');
     }
-    
-
-    function get_data($start=0,$limit=999999,$options=array())
-    {
-		$this->db->order_by('id_mst_bukubesar','asc');
-        $query = $this->db->get($this->tabel,$limit,$start);
-        return $query->result();
-    }
 
  	function get_data_row($id){
 		$data = array();
@@ -70,7 +62,7 @@ class Bukubesar_model extends CI_Model {
 	        $category_data[] = array(
 	            'id_mst_akun' 					=> $category->id_mst_akun,
 	            'id_mst_akun_parent' 			=> $category->id_mst_akun_parent,
-	            'nama_akun' 					=> $idparent!=0 ? $pisah.' '.$category->kode.' '.$category->uraian : $category->kode.' '.$category->uraian,
+	            'nama_akun' 					=> '&nbsp;&nbsp;'.($idparent!=0 ? $pisah.' '.$category->kode.' '.$category->uraian : $category->kode.' '.$category->uraian),
 	        );
 
 		$children = $this->getallnilaiakun($category->id_mst_akun,$i);
@@ -94,6 +86,27 @@ class Bukubesar_model extends CI_Model {
             return $enums;
     }
     function getalldatakaun(){
-    	return $this->db->get('mst_keu_bukubesar')->result();
+    	$data=array();
+    	$query = $this->db->get('mst_keu_bukubesar')->result();
+    	foreach ($query as $key) {
+    		$data[]=array(
+    					'id_mst_bukubesar' => $key->id_mst_bukubesar, 
+    					'judul' => '&nbsp;&nbsp;'.$key->judul);
+    	}
+    	return $data;
+    }
+    function get_data($id_judul=0,$start=0,$limit=999999,$options=array()){
+    	$id=explode("__",$id_judul);
+    	$this->db->where("keu_jurnal.id_mst_akun",$id[1]);
+    	$this->db->select("keu_jurnal.*,mst_keu_akun.kode,keu_transaksi.tanggal,keu_transaksi.uraian,keu_transaksi.code_cl_phc,'1500' as saldo");
+		$this->db->join('mst_keu_akun', "mst_keu_akun.id_mst_akun = keu_jurnal.id_mst_akun",'left');
+		$this->db->join('keu_transaksi', "keu_transaksi.id_transaksi = keu_transaksi.id_transaksi",'left');
+		$query =$this->db->get('keu_jurnal',$limit,$start);
+        return $query->result();
+    }
+    function getpisah($id=0){
+    	$this->db->where('id_mst_keu_bukubesar',$id);
+    	return $this->db->get('mst_keu_bukubesar')->row_array();
+
     }
 }
