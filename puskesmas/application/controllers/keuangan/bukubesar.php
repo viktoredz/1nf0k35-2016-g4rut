@@ -42,9 +42,11 @@ class Bukubesar extends CI_Controller {
 		$tampil				= explode("__", $id_judul);
 		$pilihtampil		= $this->bukubesar_model->getpisah($tampil[1]);
 		if ($pilihtampil['pisahkan_berdasar']=='akun') {
+			$data['datagrid']	= $this->bukubesar_model->getdatawhere($id_judul);
 			die($this->parser->parse("keuangan/bukubesar/show_datatambahakun",$data));
 		}else{
-			die($this->parser->parse("keuangan/bukubesar/show_datatambahinstansi",$data));
+			$data['datagrid']	= $this->bukubesar_model->datagridinstansi('instansi');
+			die($this->parser->parse("keuangan/bukubesar/show_datatambah",$data));
 		}
 	}
 	function griddataumum($bulan=0,$tahun=0,$id_judul=0){
@@ -170,5 +172,125 @@ class Bukubesar extends CI_Controller {
 				$this->session->set_userdata('filter_datatahun',$this->input->post('tahun'));
 			}
 		}
+	}
+	function json_tambah($id_judul=0,$id=''){
+		$this->authentication->verify('inventory','show');
+
+		$datawhere = $this->bukubesar_model->getdatawhere($id_judul);
+		$x=0;
+		foreach ($datawhere as $keywhere) {
+			if ($x==0) {
+				$this->db->where('keu_jurnal.id_mst_akun',$keywhere['id_mst_akun']);
+			}else{
+				$this->db->or_where('keu_jurnal.id_mst_akun',$keywhere['id_mst_akun']);
+			}
+			$x++;
+		}
+		if($_POST) {
+			$fil = $this->input->post('filterscount');
+			$ord = $this->input->post('sortdatafield');
+
+			for($i=0;$i<$fil;$i++) {
+				$field = $this->input->post('filterdatafield'.$i);
+				$value = $this->input->post('filtervalue'.$i);
+
+				if($field == 'tanggal') {
+					$value = date("Y-m-d",strtotime($value));
+					$this->db->where($field,$value);
+				}elseif($field == 'keterangan') {
+					$this->db->like('keu_transaksi.uraian',$value);
+				}elseif($field != 'year') {
+					$this->db->like($field,$value);
+				}
+			}
+
+			if(!empty($ord)) {
+				$this->db->order_by($ord, $this->input->post('sortorder'));
+			}
+		}
+		if ($this->session->userdata('filter_puskesmas')!='') {
+			$this->db->where('keu_transaksi.code_cl_phc',$this->session->userdata('filter_puskesmas'));
+		}else{
+			$this->db->where('keu_transaksi.code_cl_phc','P'.$this->session->userdata('puskesmas'));
+		}
+		
+		$rows_all = $this->bukubesar_model->get_datatambah($id);
+
+		$datawhere = $this->bukubesar_model->getdatawhere($id_judul);
+		$x=0;
+		foreach ($datawhere as $keywhere) {
+			if ($x==0) {
+				$this->db->where('keu_jurnal.id_mst_akun',$keywhere['id_mst_akun']);
+			}else{
+				$this->db->or_where('keu_jurnal.id_mst_akun',$keywhere['id_mst_akun']);
+			}
+			$x++;
+		}
+		if($_POST) {
+			$fil = $this->input->post('filterscount');
+			$ord = $this->input->post('sortdatafield');
+
+			for($i=0;$i<$fil;$i++) {
+				$field = $this->input->post('filterdatafield'.$i);
+				$value = $this->input->post('filtervalue'.$i);
+
+				if($field == 'tanggal') {
+					$value = date("Y-m-d",strtotime($value));
+					$this->db->where($field,$value);
+				}elseif($field == 'keterangan') {
+					$this->db->like('keu_transaksi.uraian',$value);
+				}elseif($field != 'year') {
+					$this->db->like($field,$value);
+				}
+			}
+
+			if(!empty($ord)) {
+				$this->db->order_by($ord, $this->input->post('sortorder'));
+			}
+		}
+		if ($this->session->userdata('filter_puskesmas')!='') {
+			$this->db->where('keu_transaksi.code_cl_phc',$this->session->userdata('filter_puskesmas'));
+		}else{
+			$this->db->where('keu_transaksi.code_cl_phc','P'.$this->session->userdata('puskesmas'));
+		}
+		if ($this->session->userdata('filter_datatahun')!='') {
+			$this->db->where('YEAR(keu_transaksi.tanggal)',$this->session->userdata('filter_datatahun'));
+		}else{
+			$this->db->where('YEAR(keu_transaksi.tanggal)',date("Y"));
+		}
+		if ($this->session->userdata('filter_databulan')!='') {
+			$this->db->where('MONTH(keu_transaksi.tanggal)',$this->session->userdata('filter_databulan'));
+		}else{
+			$this->db->where('MONTH(keu_transaksi.tanggal)',date("n"));
+		}
+		$rows = $this->bukubesar_model->get_datatambah($id,$this->input->post('recordstartindex'), $this->input->post('pagesize'));
+		$data = array();
+		$no=$this->input->post('recordstartindex')+1;
+		foreach($rows as $act) {
+			$data[] = array(
+				'no'					=> $no++,
+				'code_cl_phc' 			=> $act->code_cl_phc,
+				'id_jurnal' 			=> $act->id_jurnal,
+				'id_keu_transaksi_inventaris'	=> $act->id_keu_transaksi_inventaris,
+				'id_transaksi'			=> $act->id_transaksi,
+				'uraian'				=> $act->uraian,
+				'tanggal'				=> $act->tanggal,
+				'kode'					=> $act->kode,
+				'keterangan'			=> $act->uraian,
+				'status'				=> $act->status,
+				'debet'					=> $act->debet,
+				'kredit'				=> $act->kredit,
+				'saldo'					=> $act->saldo,
+				'edit'					=> '1',
+			);
+		}
+		
+		$size = sizeof($rows_all);
+		$json = array(
+			'TotalRows' => (int) $size,
+			'Rows' => $data
+		);
+
+		echo json_encode(array($json));
 	}
 }

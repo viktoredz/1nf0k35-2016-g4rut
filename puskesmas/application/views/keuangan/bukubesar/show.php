@@ -11,10 +11,6 @@
       <div class="box box-primary">
         <div class="box-header">
           <h3 class="box-title">{title_form}</h3>
-          <div class="pull-right">
-          	<button type="button" class="btn btn-primary" onclick=""><i class='glyphicon glyphicon-download-alt'></i> &nbsp; Export</button>
-		 	<button type="button" class="btn btn-success" id="btn-refreshdata"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
-          </div>
 	    </div>
 
 	    <div class="box-footer">

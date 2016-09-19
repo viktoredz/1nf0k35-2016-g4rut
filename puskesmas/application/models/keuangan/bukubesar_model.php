@@ -105,8 +105,42 @@ class Bukubesar_model extends CI_Model {
         return $query->result();
     }
     function getpisah($id=0){
-    	$this->db->where('id_mst_keu_bukubesar',$id);
+    	$this->db->where('id_mst_bukubesar',$id);
     	return $this->db->get('mst_keu_bukubesar')->row_array();
 
+    }
+    function datagridinstansi(){
+    	$data = array();
+    	$this->db->where('keu_transaksi.status !=','dihapus');
+    	$this->db->select("keu_transaksi.*,mst_inv_pbf.nama as nama_instansi");
+    	$this->db->join("mst_inv_pbf","keu_transaksi.id_instansi=mst_inv_pbf.code",'left');
+    	$this->db->group_by('id_instansi');
+    	$data = $this->db->get("keu_transaksi")->result_array();
+    	return $data;
+    }
+    function get_datatambah($id='',$start=0,$limit=999999,$options=array()){
+    	if ($id=='') {
+    		$this->db->join('keu_transaksi', "keu_transaksi.id_transaksi = keu_jurnal.id_transaksi and keu_transaksi.id_instansi is null or keu_transaksi.id_instansi="."'".$id."'"."");
+    	}else{
+    		$this->db->join('keu_transaksi', "keu_transaksi.id_transaksi = keu_jurnal.id_transaksi and keu_transaksi.id_instansi="."'".$id."'"."");
+    	}
+    	$this->db->select("keu_jurnal.*,mst_keu_akun.kode,keu_transaksi.tanggal,keu_transaksi.uraian,keu_transaksi.code_cl_phc,'1500' as saldo");
+		
+		$this->db->join('mst_keu_akun', "mst_keu_akun.id_mst_akun = keu_jurnal.id_mst_akun",'left');
+		$query =$this->db->get('keu_jurnal',$limit,$start);
+        return $query->result();
+    }
+    function getdatawhere($id=0){
+    	$id = explode("__", $id);
+    	$this->db->select("mst_keu_bukubesar_akun.*,mst_keu_akun.uraian as nama_akun,mst_keu_akun.kode");
+    	$this->db->where("id_mst_buku_besar",$id[1]);
+    	$this->db->join('mst_keu_akun','mst_keu_akun.id_mst_akun=mst_keu_bukubesar_akun.id_mst_akun','left');
+    	$data = $this->db->get('mst_keu_bukubesar_akun');
+    	return $data->result_array();
+    }
+    function datagridakun($id){
+    	$this->db->where("id_mst_buku_besar",$id);
+    	$data = $this->db->get('xmst_keu_bukubesar_akun');
+    	return $data->result_array();$this->db->get();
     }
 }

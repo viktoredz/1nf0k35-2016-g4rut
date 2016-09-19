@@ -1,4 +1,8 @@
 <div class="box-body">
+	<div class="pull-right" style="padding:0 0 10px 0 ">
+		<button type="button" class="btn btn-primary" id="bt_export{id_judul}" onclick=""><i class='glyphicon glyphicon-download-alt'></i> &nbsp; Export</button>
+		<button type="button" class="btn btn-success" id="btn-refreshdata{id_judul}"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
+	</div>
     <div class="div-grid">
         <div id="jqxgrid{id_judul}"></div>
 	</div>
@@ -48,10 +52,9 @@
 			}
 		});
      
-		$('#btn-refreshdata').click(function () {
+		$("#btn-refreshdata{id_judul}").click(function () {
 			var idjudul = $("#changemodeshow").val();
-			alert("Klik OK untuk data"+$("#changemodeshow option:selected").text().replace(/-/g, ""));
-			$("#jqxgrid"+idjudul).jqxGrid('clearfilters');
+			$("#jqxgrid{id_judul}").jqxGrid('clearfilters');
 		});
 
 		$("#jqxgrid{id_judul}").jqxGrid(
