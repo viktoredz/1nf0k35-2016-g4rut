@@ -1,5 +1,44 @@
+<div class="box-body">
+  <div class="row">
+    <div class="col-md-6" style="padding:0 0 10px 0 ">
+    </div>
+    <div class="col-md-6" style="padding:0 0 10px 0 ">
+      <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-4">
+            <label>Periode : </label>
+            <select class="form-control" id="periodebulantambahinstansi" name="periodebulantambahinstansi"> 
+                      <?php foreach ($bulan as $key => $value) { 
+                        $select = ($key==date('n') ? 'selected' : '');
+                      ?>  
+                        <option value="<?php echo $key?>" <?php echo $select?>><?php echo $value?></option>
+                      <?php } ?>
+                    </select>
+        </div>
+        <div class="col-md-2" style="padding:25px 0 0 0">
+          <select class="form-control" id="periodetahuntambahinstansi" name="periodetahuntambahinstansi">
+                  <?php for($i=date("Y"); $i>=date("Y")-5; $i--){
+                    $select = ($i==date('Y') ? 'selected' : '');
+                  ?>
+                    <option value="<?php echo $i?>" <?php echo $select?>><?php echo $i?></option>
+                  <?php }?>
+                </select> 
+        </div>
+        <div class="col-md-4">
+          <label>Puskesmas : </label>
+          <select name="code_cl_phc" id="puskesmas" class="form-control">
+            <?php foreach ($datapuskesmas as $row ) { ;?>
+              <option value="<?php echo $row->code; ?>" onchange="" ><?php echo $row->value; ?></option>
+            <?php } ;?>
+            </select>
+        </div>  
+      </div>
+    </div>
+  </div>
+</div>
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-  <?php foreach ($datagrid as $keydata) { ?>
+  <?php foreach ($datagridtambah as $keydata) { ?>
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="headingThree<?php echo $keydata['id_instansi']?>">
       <h4 class="panel-title">
@@ -12,7 +51,7 @@
       <div class="panel-body">
         <!--grid-->
         <div class="box-body">
-          <div class="pull-right" style="padding:0 0 10px 0 ">>
+          <div class="pull-right" style="padding:0 0 10px 0 ">
             <button type="button" class="btn btn-primary" id="bt_export<?php echo $keydata['id_instansi']?>" onclick=""><i class='glyphicon glyphicon-download-alt'></i> &nbsp; Export</button>
             <button type="button" class="btn btn-success" id="btn-refreshdata<?php echo $keydata['id_instansi']?>"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
           </div>
@@ -27,7 +66,7 @@
   <?php } ?>
 </div>
 <script type="text/javascript">
-<?php foreach ($datagrid as $keydata) { ?>
+<?php foreach ($datagridtambah as $keydata) { ?>
      var source<?php echo $keydata['id_instansi']?> = {
       datatype: "json",
       type  : "POST",
@@ -106,4 +145,53 @@
     });
 
   <?php } ?>
+  $('#periodebulantambahinstansi').change(function(){
+  var bulan = $(this).val();
+  var idjuduldata =  $("#changemodeshow").val();
+  $.ajax({
+    url : '<?php echo site_url('keuangan/bukubesar/get_bulanfilter') ?>',
+    type : 'POST',
+    data : 'bulan=' + bulan,
+    success : function(data) {
+        <?php foreach ($datagridtambah as $keydatatamb) { ?>
+          $("#jqxgrid<?php echo $keydatatamb['id_instansi']?>").jqxGrid('updateBoundData','cell');
+        <?php } ?>
+
+    }
+  });
+
+  return false;
+});
+
+$('#periodetahuntambahinstansi').change(function(){
+  var idjuduldatas =  $("#changemodeshow").val();
+  var tahun = $(this).val();
+  $.ajax({
+  url : '<?php echo site_url('keuangan/bukubesar/get_tahunfilter') ?>',
+  type : 'POST',
+  data : 'tahun=' + tahun,
+  success : function(data) {
+    <?php foreach ($datagridtambah as $keydatatbh) { ?>
+      $("#jqxgrid<?php echo $keydatatbh['id_instansi']?>").jqxGrid('updateBoundData','cell');
+    <?php } ?>
+  }
+  });
+
+  return false;
+});
+$("#btn-export").click(function(){
+    var judul = $('[name=laporan] :selected').text();
+    var id_judul = $("#laporan").val();
+    var kecamatanbar = $("#kecamatan").val();
+    var kelurahanbar = $("#kelurahan").val();
+    var rw = $("#rw").val();
+
+  var post = "";
+  post = post+'judul='+judul+'&kecamatan='+ kecamatanbar+'&kelurahan=' + kelurahanbar+'&rw=' + rw+'&id_judul=' + id_judul;
+  
+  $.post("<?php echo base_url()?>eform/export_data/pilih_export",post,function(response){
+    //window.location.href=response;
+    alert(response);
+  });
+})
   </script>

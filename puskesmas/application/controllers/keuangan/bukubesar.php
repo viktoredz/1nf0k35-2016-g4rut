@@ -10,17 +10,18 @@ class Bukubesar extends CI_Controller {
 		$this->authentication->verify('keuangan','edit');
 		$data['title_group'] 	= "Keuangan";
 		$data['title_form'] 	= "Bukubesar";
+		$this->session->set_userdata('filter_databulan','');
+		$this->session->set_userdata('filter_datatahun','');
+
 		$data['databukubesar'] 	= $this->bukubesar_model->getalldatakaun();
 		$data['dataallakun'] 	= $this->bukubesar_model->getallnilaiakun();
-		$this->db->where('code','P'.$this->session->userdata('puskesmas'));
-		$data['datapuskesmas']	= $this->db->get('cl_phc')->result();
 		
-		$data['bulan'] =array(1=>"Januari","Februari","Maret","April","Mei","Juni","July","Agustus","September","Oktober","November","Desember");
 		$data['content'] = $this->parser->parse("keuangan/bukubesar/show",$data,true);
-
 		$this->template->show($data,"home");
 	}
 	function pilihgrid($judul=0){
+		$this->session->set_userdata('filter_databulan','');
+		$this->session->set_userdata('filter_datatahun','');
 		$judul = $this->input->post("judul");
 		$bulan = $this->input->post("bulan");
 		$tahun = $this->input->post("tahun");
@@ -39,13 +40,16 @@ class Bukubesar extends CI_Controller {
 		$data['bulan']		= $bulan;
 		$data['tahun']		= $tahun;
 		$data['id_judul']	= $id_judul;
+		$this->db->where('code','P'.$this->session->userdata('puskesmas'));
+		$data['datapuskesmas']	= $this->db->get('cl_phc')->result();
+		$data['bulan'] =array(1=>"Januari","Februari","Maret","April","Mei","Juni","July","Agustus","September","Oktober","November","Desember");
 		$tampil				= explode("__", $id_judul);
 		$pilihtampil		= $this->bukubesar_model->getpisah($tampil[1]);
 		if ($pilihtampil['pisahkan_berdasar']=='akun') {
-			$data['datagrid']	= $this->bukubesar_model->getdatawhere($id_judul);
+			$data['datagridakun']	= $this->bukubesar_model->getdatawhere($id_judul);
 			die($this->parser->parse("keuangan/bukubesar/show_datatambahakun",$data));
 		}else{
-			$data['datagrid']	= $this->bukubesar_model->datagridinstansi('instansi');
+			$data['datagridtambah']	= $this->bukubesar_model->datagridinstansi('instansi');
 			die($this->parser->parse("keuangan/bukubesar/show_datatambah",$data));
 		}
 	}
@@ -54,6 +58,9 @@ class Bukubesar extends CI_Controller {
 		$data['bulan']		= $bulan;
 		$data['tahun']		= $tahun;
 		$data['id_judul']	= $id_judul;
+		$this->db->where('code','P'.$this->session->userdata('puskesmas'));
+		$data['datapuskesmas']	= $this->db->get('cl_phc')->result();
+		$data['bulan'] =array(1=>"Januari","Februari","Maret","April","Mei","Juni","July","Agustus","September","Oktober","November","Desember");
 		die($this->parser->parse("keuangan/bukubesar/show_dataumum",$data));
 	}
 	function json_umum($id=0){
@@ -180,11 +187,14 @@ class Bukubesar extends CI_Controller {
 		$x=0;
 		foreach ($datawhere as $keywhere) {
 			if ($x==0) {
-				$this->db->where('keu_jurnal.id_mst_akun',$keywhere['id_mst_akun']);
+				$keydatawhere = "keu_jurnal.id_mst_akun="."'".$keywhere['id_mst_akun']."'"."";
 			}else{
-				$this->db->or_where('keu_jurnal.id_mst_akun',$keywhere['id_mst_akun']);
+				$keydatawhere = $keydatawhere.' '."or keu_jurnal.id_mst_akun="."'".$keywhere['id_mst_akun']."'"."";
 			}
 			$x++;
+		}
+		if (count($datawhere) > 0) {
+			$this->db->where("($keydatawhere)");
 		}
 		if($_POST) {
 			$fil = $this->input->post('filterscount');
@@ -213,6 +223,16 @@ class Bukubesar extends CI_Controller {
 		}else{
 			$this->db->where('keu_transaksi.code_cl_phc','P'.$this->session->userdata('puskesmas'));
 		}
+		if ($this->session->userdata('filter_datatahun')!='') {
+			$this->db->where('YEAR(keu_transaksi.tanggal)',$this->session->userdata('filter_datatahun'));
+		}else{
+			$this->db->where('YEAR(keu_transaksi.tanggal)',date("Y"));
+		}
+		if ($this->session->userdata('filter_databulan')!='') {
+			$this->db->where('MONTH(keu_transaksi.tanggal)',$this->session->userdata('filter_databulan'));
+		}else{
+			$this->db->where('MONTH(keu_transaksi.tanggal)',date("n"));
+		}
 		
 		$rows_all = $this->bukubesar_model->get_datatambah($id);
 
@@ -220,11 +240,14 @@ class Bukubesar extends CI_Controller {
 		$x=0;
 		foreach ($datawhere as $keywhere) {
 			if ($x==0) {
-				$this->db->where('keu_jurnal.id_mst_akun',$keywhere['id_mst_akun']);
+				$keydatawhere = "keu_jurnal.id_mst_akun="."'".$keywhere['id_mst_akun']."'"."";
 			}else{
-				$this->db->or_where('keu_jurnal.id_mst_akun',$keywhere['id_mst_akun']);
+				$keydatawhere = $keydatawhere.' '."or keu_jurnal.id_mst_akun="."'".$keywhere['id_mst_akun']."'"."";
 			}
 			$x++;
+		}
+		if (count($datawhere) > 0) {
+			$this->db->where("($keydatawhere)");
 		}
 		if($_POST) {
 			$fil = $this->input->post('filterscount');

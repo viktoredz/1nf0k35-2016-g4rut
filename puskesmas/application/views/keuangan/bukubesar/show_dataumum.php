@@ -1,11 +1,50 @@
 <div class="box-body">
-	<div class="pull-right" style="padding:0 0 10px 0 ">
-		<button type="button" class="btn btn-primary" id="bt_export{id_judul}" onclick=""><i class='glyphicon glyphicon-download-alt'></i> &nbsp; Export</button>
-		<button type="button" class="btn btn-success" id="btn-refreshdata{id_judul}"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
+	<div class="box-body">
+	<div class="row">
+		<div class="col-md-6" style="padding:25px 0 10px 0 ">
+			<button type="button" class="btn btn-primary" id="bt_export{id_judul}" onclick=""><i class='glyphicon glyphicon-download-alt'></i> &nbsp; Export</button>
+			<button type="button" class="btn btn-success" id="btn-refreshdata{id_judul}"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
+		</div>
+		<div class="col-md-6" style="padding:0 0 10px 0 ">
+			<div class="row">
+				<div class="col-md-2">
+				</div>
+				<div class="col-md-4">
+						<label>Periode : </label>
+						<select class="form-control" id="periodebulanumum" name="periodebulanumum"> 
+		                  <?php foreach ($bulan as $key => $value) { 
+		                    $select = ($key==date('n') ? 'selected' : '');
+		                  ?>  
+		                    <option value="<?php echo $key?>" <?php echo $select?>><?php echo $value?></option>
+		                  <?php } ?>
+		                </select>
+				</div>
+				<div class="col-md-2" style="padding:25px 0 0 0">
+					<select class="form-control" id="periodetahunumum" name="periodetahunumum">
+		              <?php for($i=date("Y"); $i>=date("Y")-5; $i--){
+		                $select = ($i==date('Y') ? 'selected' : '');
+		              ?>
+		                <option value="<?php echo $i?>" <?php echo $select?>><?php echo $i?></option>
+		              <?php }?>
+		            </select>	
+				</div>
+				<div class="col-md-4">
+					<label>Puskesmas : </label>
+					<select name="code_cl_phc" id="puskesmas" class="form-control">
+						<?php foreach ($datapuskesmas as $row ) { ;?>
+							<option value="<?php echo $row->code; ?>" onchange="" ><?php echo $row->value; ?></option>
+						<?php	} ;?>
+			     	</select>
+				</div>	
+			</div>
+		</div>
 	</div>
-    <div class="div-grid">
-        <div id="jqxgrid{id_judul}"></div>
+	<div class="row">
+	    <div class="div-grid">
+	        <div id="jqxgrid{id_judul}"></div>
+		</div>
 	</div>
+</div>
 </div>
 
 <script type="text/javascript">
@@ -91,4 +130,47 @@
 	function edit(id_jurnal,id_transaksi){
 		document.location.href="<?php echo base_url().'keuangan/bukubesar/edit';?>/" + id_jurnal + "/" + id_transaksi;
 	}
+$('#periodebulanumum').change(function(){
+  var bulan = $(this).val();
+  var idjuduldata =  $("#changemodeshow").val();
+  $.ajax({
+    url : '<?php echo site_url('keuangan/bukubesar/get_bulanfilter') ?>',
+    type : 'POST',
+    data : 'bulan=' + bulan,
+    success : function(data) {
+      $("#jqxgrid"+idjuduldata).jqxGrid('updateBoundData','cell');
+    }
+  });
+
+  return false;
+});
+$('#periodetahunumum').change(function(){
+	var idjuduldatas =  $("#changemodeshow").val();
+	var tahun = $(this).val();
+	$.ajax({
+	url : '<?php echo site_url('keuangan/bukubesar/get_tahunfilter') ?>',
+	type : 'POST',
+	data : 'tahun=' + tahun,
+	success : function(data) {
+	  $("#jqxgrid"+idjuduldatas).jqxGrid('updateBoundData','cell');
+	}
+	});
+
+	return false;
+});
+$("#btn-export").click(function(){
+		var judul = $('[name=laporan] :selected').text();
+		var id_judul = $("#laporan").val();
+		var kecamatanbar = $("#kecamatan").val();
+		var kelurahanbar = $("#kelurahan").val();
+		var rw = $("#rw").val();
+
+	var post = "";
+	post = post+'judul='+judul+'&kecamatan='+ kecamatanbar+'&kelurahan=' + kelurahanbar+'&rw=' + rw+'&id_judul=' + id_judul;
+	
+	$.post("<?php echo base_url()?>eform/export_data/pilih_export",post,function(response){
+		//window.location.href=response;
+		alert(response);
+	});
+});
 </script>
