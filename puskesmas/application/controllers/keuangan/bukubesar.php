@@ -139,7 +139,9 @@ class Bukubesar extends CI_Controller {
 		$rows = $this->bukubesar_model->get_data($id,$this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 		$no=$this->input->post('recordstartindex')+1;
+		$tempsaldo=0;
 		foreach($rows as $act) {
+			$totalsaldo = $tempsaldo;
 			$data[] = array(
 				'no'					=> $no++,
 				'code_cl_phc' 			=> $act->code_cl_phc,
@@ -153,9 +155,10 @@ class Bukubesar extends CI_Controller {
 				'status'				=> $act->status,
 				'debet'					=> $act->debet,
 				'kredit'				=> $act->kredit,
-				'saldo'					=> $act->saldo,
+				'saldo'					=> ($act->status=="kredit" ? $totalsaldo - $act->kredit : $totalsaldo + $act->debet),
 				'edit'					=> '1',
 			);
+			$tempsaldo = ($act->status=="kredit" ? $totalsaldo - $act->kredit : $totalsaldo + $act->debet);
 		}
 		
 		$size = sizeof($rows_all);
@@ -289,7 +292,9 @@ class Bukubesar extends CI_Controller {
 		$rows = $this->bukubesar_model->get_datatambah($id,$this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 		$no=$this->input->post('recordstartindex')+1;
+		$tempsaldo=77000;
 		foreach($rows as $act) {
+		$totalsaldo = $tempsaldo;
 			$data[] = array(
 				'no'					=> $no++,
 				'code_cl_phc' 			=> $act->code_cl_phc,
@@ -303,9 +308,10 @@ class Bukubesar extends CI_Controller {
 				'status'				=> $act->status,
 				'debet'					=> $act->debet,
 				'kredit'				=> $act->kredit,
-				'saldo'					=> $act->saldo,
+				'saldo'					=> ($act->status=="kredit" ? $totalsaldo - $act->kredit : $totalsaldo + $act->debet),
 				'edit'					=> '1',
 			);
+			$tempsaldo = ($act->status=="kredit" ? $totalsaldo - $act->kredit : $totalsaldo + $act->debet);
 		}
 		
 		$size = sizeof($rows_all);

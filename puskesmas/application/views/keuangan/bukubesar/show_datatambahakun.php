@@ -140,7 +140,7 @@
               },
         { text: 'Debet', editable:false ,datafield: 'debet', cellsalign: 'right',columntype: 'textbox', filtertype: 'textbox', width: '15%' },
         { text: 'Kredit', editable:false ,datafield: 'kredit', cellsalign: 'right',columntype: 'textbox', filtertype: 'textbox', width: '15%' },
-        { text: 'Saldo', editable:false ,datafield: 'saldo', cellsalign: 'right',columntype: 'textbox', filtertype: 'textbox', width: '15%' },
+        { text: 'Saldo', editable:false ,datafield: 'saldo',sortable: false, cellsalign: 'right',columntype: 'textbox', filtertype: 'none', width: '15%' },
             ]
     });
 
