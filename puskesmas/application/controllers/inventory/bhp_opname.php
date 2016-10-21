@@ -1294,7 +1294,7 @@ class Bhp_opname extends CI_Controller {
 		$data_tabel = array();
 		$temp='';
 		$jml=0;
-		die(print_r($rows));
+		// die(print_r($rows));
 		foreach ($rows as $key => $val) {
 			$no++;
 			foreach ($val as $act => $value) {
@@ -1354,7 +1354,7 @@ class Bhp_opname extends CI_Controller {
 				
 			}
 		}
-		///die(print_r($data_tabel));
+		
 		
 		$kode_sess=$this->session->userdata('puskesmas');
 		$kd_prov = $this->inv_barang_model->get_nama('value','cl_province','code',substr($kode_sess, 0,2));
@@ -1367,6 +1367,7 @@ class Bhp_opname extends CI_Controller {
 		$tgl1=date("m-m-Y");
 		$tgl2=date("d-m-Y");
 		$data_puskesmas[] = array('jenis_barang' => $jenis_barang,'kd_prov' => $kd_prov,'kd_kab' => $kd_kab,'nama_puskesmas' => $nama_puskesmas,'bulan'=>$tgl,'tahun'=>$tahun,'tgl1'=>$tgl1,'tgl2'=>$tgl2,'tanggal_export'=>$tgl2);
+		// die(print_r($data_puskesmas));
 		$dir = getcwd().'/';
 		$template = $dir.'public/files/template/inventory/lap_bhp_pengeluaran.xlsx';		
 		$TBS->LoadTemplate($template, OPENTBS_ALREADY_UTF8);
