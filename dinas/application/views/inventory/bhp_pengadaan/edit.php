@@ -326,7 +326,7 @@ $(function(){
         window.location.href="<?php echo base_url()?>inventory/bhp_pengadaan/edit/{kode}";
     });
 
-    $("#menu_bahan_habis_pakai").addClass("active");
+    $("#menu_einventory").addClass("active");
     $("#menu_inventory_bhp_pengadaan").addClass("active");
 
     <?php if(!isset($viewreadonly)){?>

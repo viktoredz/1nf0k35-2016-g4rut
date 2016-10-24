@@ -331,8 +331,8 @@
 			return currency + " " + n.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
 		}
         $(document).ready(function () {
-            $("#menu_keuangan").addClass("active");
-            $("#menu_keuangan_sts_general").addClass("active");
+            $("#menu_ekeuangan").addClass("active");
+            $("#menu_ekeuangan_sts_general").addClass("active");
 			
 			//terbilang
 			document.getElementById("terbilangTotal").innerHTML = terbilang(<?php echo intval($data_sts_total); ?>);

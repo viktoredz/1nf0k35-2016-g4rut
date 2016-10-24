@@ -107,6 +107,8 @@
 <script>
 	
 	$(function(){
+		$("#menu_ekeuangan").addClass("active");
+        $("#menu_keuangan_target_penerimaan").addClass("active");
 	   var source = {
 			datatype: "json",
 			type	: "POST",

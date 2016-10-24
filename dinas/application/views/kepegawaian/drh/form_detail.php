@@ -206,7 +206,7 @@
 <script>
   $(function () { 
     $("#menu_kepegawaian_drh").addClass("active");
-    $("#menu_kepegawaian").addClass("active");
+    $("#menu_ekepegawaian").addClass("active");
     ambil_nip();
     function ambil_nip()
     {

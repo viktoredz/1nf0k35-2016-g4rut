@@ -179,7 +179,7 @@ $(function(){
         window.location.href="<?php echo base_url()?>inventory/bhp_permintaan/edit/{kode}";
     });
 
-    $("#menu_bahan_habis_pakai").addClass("active");
+    $("#menu_einventory").addClass("active");
     $("#menu_inventory_bhp_permintaan").addClass("active");
 
     <?php if(!isset($viewreadonly)){?>

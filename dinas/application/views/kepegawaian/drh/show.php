@@ -62,7 +62,7 @@
 <script type="text/javascript">
 	$(function () {	
 		$("#menu_kepegawaian_drh").addClass("active");
-		$("#menu_kepegawaian").addClass("active");
+		$("#menu_ekepegawaian").addClass("active");
 	});
 
 	function detail(id_pegawai){

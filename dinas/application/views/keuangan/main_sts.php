@@ -172,7 +172,7 @@
 			}
 		}
         $(document).ready(function () {
-            $("#menu_keuangan").addClass("active");
+            $("#menu_ekeuangan").addClass("active");
             $("#menu_keuangan_sts_general").addClass("active");
 
 			<?php					

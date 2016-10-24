@@ -164,7 +164,7 @@ $(function(){
         window.location.href="<?php echo base_url()?>inventory/bhp_distribusi";
     });
 
-    $("#menu_bahan_habis_pakai").addClass("active");
+    $("#menu_einventory").addClass("active");
     $("#menu_inventory_bhp_distribusi").addClass("active");
 
     $("#tgl_distribusi").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme , height: '30px'});

@@ -34,7 +34,7 @@
 
 <script type="text/javascript">
 	$(function () {	
-		$("#menu_mst_agama").addClass("active");
+		$("#menu_ekeuangan").addClass("active");
 		$("#menu_master_data").addClass("active");
 	});
 

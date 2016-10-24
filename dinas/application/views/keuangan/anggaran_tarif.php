@@ -166,8 +166,8 @@ if($this->session->flashdata('alert')!=""){ ?>
 	<script type="text/javascript">
         $(document).ready(function () {   
 
-			$("#menu_keuangan").addClass("active");
-			$("#menu_keuangan_master_sts_anggaran_tarif").addClass("active");
+			$("#menu_ekeuangan").addClass("active");
+			$("#menu_ekeuangan_master_sts_anggaran_tarif").addClass("active");
         
             var newRowID = null;
 			

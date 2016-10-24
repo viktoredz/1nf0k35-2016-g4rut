@@ -105,7 +105,7 @@
 
 <script>
 	$(function () {	
-		$("#menu_aset_tetap").addClass("active");
+		$("#menu_einventory").addClass("active");
 		$("#menu_inventory_inv_ruangan").addClass("active");
 		var ceklis				= "<?php echo $this->session->userdata('filter_group');?>";
 		

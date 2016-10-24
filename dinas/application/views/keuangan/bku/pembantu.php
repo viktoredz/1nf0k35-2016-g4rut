@@ -114,6 +114,8 @@
 <script>
 	
 	$(function(){
+		$("#menu_ekeuangan").addClass("active");
+        $("#menu_keuangan_bku_penerimaan").addClass("active");
 	   var source = {
 			datatype: "json",
 			type	: "POST",

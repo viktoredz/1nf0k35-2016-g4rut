@@ -189,7 +189,7 @@ $(function(){
         window.location.href="<?php echo base_url()?>inventory/bhp_pengadaan";
     });
 
-    $("#menu_bahan_habis_pakai").addClass("active");
+    $("#menu_einventory").addClass("active");
     $("#menu_inventory_bhp_pengadaan").addClass("active");
 
     $("#tgl").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme , height: '30px'});

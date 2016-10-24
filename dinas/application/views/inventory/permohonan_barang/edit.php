@@ -120,7 +120,7 @@ $(function(){
     });
 
     $("#menu_inventory_permohonanbarang").addClass("active");
-    $("#menu_aset_tetap").addClass("active");
+    $("#menu_einventory").addClass("active");
 
     $("#tgl").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
 

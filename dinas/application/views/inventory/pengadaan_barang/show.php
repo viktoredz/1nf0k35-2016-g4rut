@@ -54,7 +54,7 @@
 
 <script type="text/javascript">
 	$(function () {	
-	    $("#menu_aset_tetap").addClass("active");
+	    $("#menu_einventory").addClass("active");
 	    $("#menu_inventory_pengadaanbarang").addClass("active");
 	    $("select[name='code_cl_phc']").change(function(){
 			$.post("<?php echo base_url().'inventory/permohonanbarang/filter' ?>", 'code_cl_phc='+$(this).val(),  function(){

@@ -136,7 +136,7 @@
 
 <script type="text/javascript">
   $(document).ready(function () {
-     $("#menu_kepegawaian").addClass("active");
+     $("#menu_ekepegawaian").addClass("active");
       $("#menu_kepegawaian_struktur").addClass("active");
       var newRowID = null;
       $("#doExpand").click(function(){
