@@ -19,7 +19,7 @@
 
       	<div class="box-footer">
 	      <div class="col-md-8">
-		 	<button type="button" class="btn btn-primary" onclick="document.location.href='<?php echo base_url()?>inventory/permohonanbarang/add'"><i class='fa fa-plus-square-o'></i> &nbsp; Tambah</button>
+		 	<!-- <button type="button" class="btn btn-primary" onclick="document.location.href='<?php echo base_url()?>inventory/permohonanbarang/add'"><i class='fa fa-plus-square-o'></i> &nbsp; Tambah</button> -->
 		 	<button type="button" class="btn btn-warning" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
 		 	<button type="button" class="btn btn-success" id="btn-export"><i class='fa fa-file-excel-o'></i> &nbsp; Export</button>
 	     </div>
@@ -132,7 +132,7 @@
 				return obj.data;    
 			},
 			columns: [
-				{ text: 'View', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
+				{ text: 'View', align: 'center', filtertype: 'none', sortable: false, width: '8%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
 				    if(dataRecord.edit==1){
 						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+dataRecord.id_inv_permohonan_barang+"\",\""+dataRecord.code_cl_phc+"\");'></a></div>";
@@ -141,28 +141,28 @@
 					}
                  }
                 },
-				{ text: 'Edit', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.edit==1){
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit(\""+dataRecord.id_inv_permohonan_barang+"\",\""+dataRecord.code_cl_phc+"\");'></a></div>";
-					}else{
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
-					}
-                 }
-                },
-				{ text: 'Del', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.delete==1){
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_del.gif' onclick='del(\""+dataRecord.id_inv_permohonan_barang+"\",\""+dataRecord.code_cl_phc+"\");'></a></div>";
-					}else{
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
-					}
-                 }
-                },
+				// { text: 'Edit', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
+				//     var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
+				//     if(dataRecord.edit==1){
+				// 		return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit(\""+dataRecord.id_inv_permohonan_barang+"\",\""+dataRecord.code_cl_phc+"\");'></a></div>";
+				// 	}else{
+				// 		return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
+				// 	}
+    //              }
+    //             },
+				// { text: 'Del', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
+				//     var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
+				//     if(dataRecord.delete==1){
+				// 		return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_del.gif' onclick='del(\""+dataRecord.id_inv_permohonan_barang+"\",\""+dataRecord.code_cl_phc+"\");'></a></div>";
+				// 	}else{
+				// 		return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
+				// 	}
+    //              }
+    //             },
                 { text: 'No', align: 'center', cellsalign: 'center',  datafield: 'no',editable:false ,sortable: false, filtertype: 'none', width: '4%' },
 				{ text: 'Tgl. Permohonan', align: 'center', cellsalign: 'center', editable:false , datafield: 'tanggal_permohonan', columntype: 'date', filtertype: 'date', cellsformat: 'dd-MM-yyyy', width: '12%' },
-				{ text: 'Lokasi / Ruangan', editable:false ,datafield: 'nama_ruangan', columntype: 'textbox', filtertype: 'textbox', width: '17%' },
-				{ text: 'Jumlah Barang', align: 'center', cellsalign: 'center', editable:false ,datafield: 'jumlah_unit', columntype: 'textbox', filtertype: 'textbox', width: '12%' },
+				{ text: 'Lokasi / Ruangan', editable:false ,datafield: 'nama_ruangan', columntype: 'textbox', filtertype: 'textbox', width: '20%' },
+				{ text: 'Jumlah Barang', align: 'center', cellsalign: 'center', editable:false ,datafield: 'jumlah_unit', columntype: 'textbox', filtertype: 'textbox', width: '13%' },
 				{ text: 'Total Harga (Rp.)', align: 'center', cellsalign: 'center', editable:false ,datafield: 'totalharga', columntype: 'textbox', filtertype: 'none', width: '16%' },
 				{
 	                text: '<b><i class="fa fa-pencil-square-o"></i> Status </b>', align: 'center', cellsalign: 'center', datafield: 'value', width: '12%', columntype: 'dropdownlist',

@@ -21,6 +21,7 @@
         });*/ 
              
         $('#form-ss').submit(function(){
+          if ($('#jumlah').val() > 0) {
             var data = new FormData();
             $('#notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
             $('#notice').show();
@@ -61,7 +62,10 @@
                   }
               }
             });
-
+            return false;
+          }else{
+            alert('Maaf, jumlah barang harus lebih dari no');
+          };
             return false;
         });
 
@@ -106,6 +110,7 @@
             var res = codebarang.split(" | ");
             $("#v_nama_barang").val(res[1]);
             $("#v_kode_barang").val(res[0].replace(/\./g,""));
+            $("#jumlah").val(0);
            
         });
 
@@ -120,6 +125,14 @@
             document.getElementById("subtotal").value = toRp(subtotal);
         });
         $("#jumlah").change(function(){
+
+            var idbarang = $("#v_kode_barang").val().substr(0,2);
+            if ((idbarang=='01')  || (idbarang=='03')|| (idbarang=='04')|| (idbarang=='06')) {
+              if ($("#jumlah").val() > 1) {
+                alert('Maaf Jumlah KIB ini tidak boleh lebih dari satu');
+                $("#jumlah").val(1);
+              }
+            }
             var jumlah = document.getElementById("jumlah").value;
             var harga = document.getElementById("harga").value;
             var subtotal =jumlah*harga;

@@ -47,6 +47,7 @@ function edit_barang(id_inventaris_barang,kodeproc){
         close_popup();
       }); 
         $('#form-ss').submit(function(){
+          if ($('#jumlah').val() > 0) {
             var data = new FormData();
             $('#notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
             $('#notice').show();
@@ -87,7 +88,9 @@ function edit_barang(id_inventaris_barang,kodeproc){
                   }
               }
             });
-
+          }else{
+            alert('Maaf, jumlah barang harus lebih dari no');
+          };
             return false;
         });
 
@@ -133,6 +136,7 @@ function edit_barang(id_inventaris_barang,kodeproc){
             $("#v_nama_barang").val(res[1]);
             $("#v_kode_barang").val(res[0].replace(/\./g,""));
             kodeinventaris(res[0]);
+            $("#jumlah").val(0);
         });
         $("#harga").change(function(){
             var jumlah = document.getElementById("jumlah").value;

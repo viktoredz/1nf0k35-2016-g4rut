@@ -111,7 +111,7 @@
         </table>
       </div>
       <div class="box-footer">
-        <button type="button" id="btn-edit" class="btn btn-primary"><i class='fa fa-pencil-square-o'></i> &nbsp; Ubah Permohonan</button>
+        <!-- <button type="button" id="btn-edit" class="btn btn-primary"><i class='fa fa-pencil-square-o'></i> &nbsp; Ubah Permohonan</button> -->
         <button type="button" id="btn-export" class="btn btn-success"><i class='fa fa-save'></i> &nbsp; Export</button>
         <button type="button" id="btn-kembali" class="btn btn-warning"><i class='fa fa-reply'></i> &nbsp; Kembali</button>
       </div>
