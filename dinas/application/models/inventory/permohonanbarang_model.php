@@ -160,10 +160,10 @@ class Permohonanbarang_model extends CI_Model {
 
     function update_entry($kode,$code_cl_phc)
     {
-    	$data['tanggal_permohonan']	= date("Y-m-d",strtotime($this->input->post('tgl')));
-		$data['keterangan']			= $this->input->post('keterangan');
-		$data['code_cl_phc']		= $this->input->post('codepus');
-		$data['id_mst_inv_ruangan']	= $this->input->post('ruangan');
+    	// $data['tanggal_permohonan']	= date("Y-m-d",strtotime($this->input->post('tgl')));
+		// $data['keterangan']			= $this->input->post('keterangan');
+		// $data['code_cl_phc']		= $this->input->post('codepus');
+		// $data['id_mst_inv_ruangan']	= $this->input->post('ruangan');
         $data['pilihan_status_pengadaan'] = $this->input->post('statuspengadaan');
 
 		$this->db->where('id_inv_permohonan_barang',$kode);

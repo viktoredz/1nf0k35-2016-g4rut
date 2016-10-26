@@ -54,7 +54,20 @@
 	    $("#menu_einventory").addClass("active");
 	    $("#menu_inventory_permohonanbarang").addClass("active");
 	});
-
+			var statusSource =
+            {
+				type	: "POST",
+                datatype: "json",
+                datafields: [
+                     { name: 'label', type: 'string' },
+                     { name: 'value', type: 'string' }
+                 ],
+                 url: "<?php echo site_url('inventory/permohonanbarang/statusjson'); ?>",
+                 cache: false,
+            };
+            var statusAdapter = new $.jqx.dataAdapter(statusSource, {
+                autoBind: true
+            });
 	   var source = {
 			datatype: "json",
 			type	: "POST",
@@ -68,34 +81,16 @@
 			{ name: 'keterangan', type: 'text'},
 			{ name: 'value', type: 'string'},
 			{ name: 'totalharga', type: 'double'},
-			{ name: 'pilihan_status_pengadaan', type: 'number'},
+			{ name: 'pilihan_status_pengadaan', type: 'string'},
 			{ name: 'detail', type: 'number'},
 			{ name: 'edit', type: 'number'},
-			{ name: 'delete', type: 'number'}
+			{ name: 'delete', type: 'number'},
+			{ name: 'statusdata', value: 'pilihan_status_pengadaan', values: { source: statusAdapter.records, value: 'value', name: 'label' } },
         ],
 		url: "<?php echo site_url('inventory/permohonanbarang/json'); ?>",
 		cache: false,
 			updateRow: function (rowID, rowData, commit) {
-             // synchronize with the server - send update command
-             // call commit with parameter true if the synchronization with the server is successful 
-             // and with parameter false if the synchronization failed.					
-			
             commit(true);
-			var arr = $.map(rowData, function(el) { return el });
-			//alert(arr);		//6 status
-
-			//cek tipe inputan 
-			//object -> input
-			//number -> update
-			//if(typeof(arr[2]) === 'object'){
-				//var arr2 = $.map(arr[8], function(el) { return el });
-				//input data
-//alert(arr);
-				$.post( '<?php echo base_url()?>inventory/permohonanbarang/updatestatus', {pilihan_status_pengadaan:arr[6],inv_permohonan_barang:arr[2]},function( data ) {
-						$("#jqxgrid").jqxGrid('updateBoundData');
-						
-				 });
-			//}
          },
 		filter: function(){
 			$("#jqxgrid").jqxGrid('updatebounddata', 'filter');
@@ -132,24 +127,24 @@
 				return obj.data;    
 			},
 			columns: [
-				{ text: 'View', align: 'center', filtertype: 'none', sortable: false, width: '8%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.edit==1){
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+dataRecord.id_inv_permohonan_barang+"\",\""+dataRecord.code_cl_phc+"\");'></a></div>";
-					}else{
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lockdo.gif'></a></div>";
-					}
-                 }
-                },
-				// { text: 'Edit', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
+				// { text: 'View', align: 'center', filtertype: 'none', sortable: false, width: '8%', cellsrenderer: function (row) {
 				//     var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
 				//     if(dataRecord.edit==1){
-				// 		return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit(\""+dataRecord.id_inv_permohonan_barang+"\",\""+dataRecord.code_cl_phc+"\");'></a></div>";
+				// 		return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+dataRecord.id_inv_permohonan_barang+"\",\""+dataRecord.code_cl_phc+"\");'></a></div>";
 				// 	}else{
-				// 		return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
+				// 		return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lockdo.gif'></a></div>";
 				// 	}
     //              }
     //             },
+				{ text: 'Edit', align: 'center', filtertype: 'none', sortable: false, width: '8%', cellsrenderer: function (row) {
+				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
+				    if(dataRecord.edit==1){
+						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit(\""+dataRecord.id_inv_permohonan_barang+"\",\""+dataRecord.code_cl_phc+"\");'></a></div>";
+					}else{
+						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
+					}
+                 }
+                },
 				// { text: 'Del', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
 				//     var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
 				//     if(dataRecord.delete==1){
@@ -164,25 +159,26 @@
 				{ text: 'Lokasi / Ruangan', editable:false ,datafield: 'nama_ruangan', columntype: 'textbox', filtertype: 'textbox', width: '20%' },
 				{ text: 'Jumlah Barang', align: 'center', cellsalign: 'center', editable:false ,datafield: 'jumlah_unit', columntype: 'textbox', filtertype: 'textbox', width: '13%' },
 				{ text: 'Total Harga (Rp.)', align: 'center', cellsalign: 'center', editable:false ,datafield: 'totalharga', columntype: 'textbox', filtertype: 'none', width: '16%' },
+				// {text: '<b><i class="fa fa-pencil-square-o"></i> Status </b>', datafield: 'pilihan_status_pengadaan', displayfield: 'statusdata', columntype: 'dropdownlist',
+    //                     createeditor: function (row, value, editor) {
+    //                         editor.jqxDropDownList({ source: statusAdapter, displayMember: 'label', valueMember: 'value' });
+    //             		},
+    //             },
 				{
-	                text: '<b><i class="fa fa-pencil-square-o"></i> Status </b>', align: 'center', cellsalign: 'center', datafield: 'value', width: '12%', columntype: 'dropdownlist',
-	                createeditor: function (row, column, editor) {
-	                    // assign a new data source to the dropdownlist.
-	                    var list = [<?php foreach ($statusdata as $key) {?>
-						"<?=$key['value']?>",
-						<?php } ?>];
-	                    editor.jqxDropDownList({ autoDropDownHeight: true, source: list });
-	                },
-	                // update the editor's value before saving it.
-	                cellvaluechanging: function (row, column, columntype, oldvalue, newvalue) {
-	                    // return the old value, if the new value is empty.
-	                    if (newvalue == "") return oldvalue;
-	                }
+	                text: 'Status',editable:false , align: 'center', cellsalign: 'center', datafield: 'value', width: '12%'
                 },
 				{ text: 'Keterangan', editable:false ,datafield: 'keterangan', columntype: 'textbox', filtertype: 'textbox', width: '15%' }
             ]
+            
 		});
-
+		$("#jqxgrid").on('cellendedit', function (event) {
+                var column = $("#jqxgrid").jqxGrid('getcolumn', event.args.datafield);
+                if (column.displayfield != column.datafield) {
+                	if (event.args.value.value != 'undifined') {
+                		alert(event.args.value.value+'a');
+                	}
+                }
+            });
 	function detail(id,code_cl_phc){
 		document.location.href="<?php echo base_url().'inventory/permohonanbarang/detail';?>/" + id + "/" + code_cl_phc;
 	}

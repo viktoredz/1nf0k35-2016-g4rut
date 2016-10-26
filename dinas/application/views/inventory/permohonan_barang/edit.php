@@ -44,7 +44,7 @@
         </div>
         <div class="form-group">
           <label>Puskesmas Pemohon</label>
-          <select  name="codepus" id="puskesmas" class="form-control" >
+          <select  name="codepus" id="puskesmas" class="form-control" disabled="disabled" >
               <?php foreach($kodepuskesmas as $pus) : ?>
                 <option value="<?php echo $pus->code ?>" ><?php echo $pus->value ?></option>
               <?php endforeach ?>
@@ -52,7 +52,7 @@
         </div>
         <div class="form-group">
           <label>Ruangan</label> <i>optional</i>
-          <select name="ruangan" id="ruangan"  class="form-control">
+          <select name="ruangan" id="ruangan"  class="form-control" disabled="disabled" >
               <option value="">Pilih Ruangan</option>
           </select>
         </div>
@@ -74,7 +74,7 @@
         </div>
         <div class="form-group">
           <label>Keterangan</label>
-          <textarea class="form-control" name="keterangan" placeholder="Keterangan"><?php 
+          <textarea class="form-control" name="keterangan" placeholder="Keterangan" disabled="disabled" ><?php 
               if(set_value('keterangan')=="" && isset($keterangan)){
                 echo $keterangan;
               }else{
@@ -122,7 +122,7 @@ $(function(){
     $("#menu_inventory_permohonanbarang").addClass("active");
     $("#menu_einventory").addClass("active");
 
-    $("#tgl").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme});
+    $("#tgl").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme,disabled: true});
 
     $.ajax({
       url : '<?php echo site_url('inventory/permohonanbarang/get_ruangan') ?>',

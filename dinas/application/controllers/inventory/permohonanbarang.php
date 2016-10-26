@@ -407,6 +407,7 @@ class Permohonanbarang extends CI_Controller {
 				'code_cl_phc' 			=> $act->code_cl_phc,
 				'id_inv_permohonan_barang' => $act->id_inv_permohonan_barang,
 				'tanggal_permohonan'	=> $act->tanggal_permohonan,
+				'pilihan_status_pengadaan'	=> $act->pilihan_status_pengadaan,
 				'jumlah_unit'			=> $act->jumlah_unit,
 				'nama_ruangan'			=> $act->nama_ruangan,
 				'keterangan'			=> $act->keterangan,
@@ -521,10 +522,10 @@ class Permohonanbarang extends CI_Controller {
 	function edit($kode=0,$code_cl_phc=""){
 		$this->authentication->verify('inventory','edit');
 
-        $this->form_validation->set_rules('tgl', 'Tanggal Permohonan', 'trim|required');
-        $this->form_validation->set_rules('keterangan', 'Keterangan', 'trim|required');
-        $this->form_validation->set_rules('codepus', 'Puskesmas', 'trim|required');
-        $this->form_validation->set_rules('ruangan', 'Ruangan', 'trim');
+        // $this->form_validation->set_rules('tgl', 'Tanggal Permohonan', 'trim|required');
+        // $this->form_validation->set_rules('keterangan', 'Keterangan', 'trim|required');
+        // $this->form_validation->set_rules('codepus', 'Puskesmas', 'trim|required');
+        // $this->form_validation->set_rules('ruangan', 'Ruangan', 'trim');
         $this->form_validation->set_rules('statuspengadaan', 'Status Permohonan', 'trim|required');
 
 		if($this->form_validation->run()== FALSE){
@@ -792,5 +793,17 @@ class Permohonanbarang extends CI_Controller {
             );
         }
         echo json_encode($kota);      //data array yang telah kota deklarasikan dibawa menggunakan json
+    }
+
+    function statusjson(){
+    	$query = $this->permohonanbarang_model->get_data_status();
+    	$data = array();
+    	foreach ($query as $key) {
+    		$data[] = array(
+    			'label'	=> $key['value'],
+    			'value'	=> $key['code']
+    			);
+    	}
+    	echo json_encode($data); 
     }
 }

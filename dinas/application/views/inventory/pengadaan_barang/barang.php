@@ -256,10 +256,10 @@
 
 <div>
 	<div style="width:100%;">
-		<div style="padding:5px" class="pull-right row">
-			<?php if(!isset($viewreadonly)){?><button class="btn btn-success" id='btn_add_barang' type='button'><i class='fa fa-plus-square'></i> Tambah Barang</button><?php } ?><br/>
+		<div style="padding:5px" class="pull-right">
+				<?php if(!isset($viewreadonly) && (isset($pilihan_status_pengadaan) && $pilihan_status_pengadaan!=4)){?><button class="btn btn-success" id='btn_add_barang' type='button'><i class='fa fa-plus-square'></i> Tambah Barang</button><?php } ?><br/>
 		</div>
-		<div id="jqxgrid" class="row">
+		<div id="jqxgrid">
         	<div id="jqxgrid_barang"></div>
         </div>
 	</div>

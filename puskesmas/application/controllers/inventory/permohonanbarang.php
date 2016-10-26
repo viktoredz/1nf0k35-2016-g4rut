@@ -397,8 +397,8 @@ class Permohonanbarang extends CI_Controller {
 				'totalharga'			=> number_format($act->totalharga),
 				'value'					=> $act->value,
 				'detail'	=> 1,
-				'edit'		=> 1,
-				'delete'	=> 1
+				'edit'		=> $act->pilihan_status_pengadaan=='4'? 0:1,
+				'delete'	=> $act->pilihan_status_pengadaan=='4'? 0:1,
 			);
 		}
 
