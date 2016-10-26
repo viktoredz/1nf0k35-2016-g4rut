@@ -149,8 +149,9 @@ class Pengadaanbarang extends CI_Controller {
 		}
 		
 		$data = array();
-
-		$activity = $this->pengadaanbarang_model->getItem('inv_inventaris_barang', array('id_pengadaan'=>$id))->result();
+		
+		$this->db->join('inv_pengadaan', "inv_inventaris_barang.id_pengadaan=inv_pengadaan.id_pengadaan");
+		$activity = $this->pengadaanbarang_model->getItem('inv_inventaris_barang', array('inv_inventaris_barang.id_pengadaan'=>$id))->result();
 		foreach($activity as $act) {
 			$data[] = array(
 				'id_inventaris_barang'   		=> $act->id_inventaris_barang,
@@ -536,7 +537,8 @@ class Pengadaanbarang extends CI_Controller {
 				$this->db->order_by($ord, $this->input->post('sortorder'));
 			}
 		}
-		$activity = $this->pengadaanbarang_model->getItem('inv_inventaris_barang', array('id_pengadaan'=>$id))->result();
+		$this->db->join('inv_pengadaan', "inv_inventaris_barang.id_pengadaan=inv_pengadaan.id_pengadaan");
+		$activity = $this->pengadaanbarang_model->getItem('inv_inventaris_barang', array('inv_inventaris_barang.id_pengadaan'=>$id))->result();
 		foreach($activity as $act) {
 			$juml =($act->register-1)+$act->jumlah;
 			$data[] = array(
@@ -555,8 +557,8 @@ class Pengadaanbarang extends CI_Controller {
 				'waktu_dibuat'					=> $act->waktu_dibuat,
 				'terakhir_diubah'				=> $act->terakhir_diubah,
 				'value'							=> $act->value,
-				'edit'		=> 1,
-				'delete'	=> 1
+				'edit'		=> ($act->pilihan_status_pengadaan=='4' ? 0 : 1),
+				'delete'	=>  ($act->pilihan_status_pengadaan=='4' ? 0 : 1)
 			);
 		}
 

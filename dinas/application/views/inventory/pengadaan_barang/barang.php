@@ -138,8 +138,8 @@
 			$("#jqxgrid_barang").jqxGrid('clearfilters');
 		});
         
- 		$('#refreshdatabutton').click(function () {
-			$("#jqxgrid_barang").jqxGrid('updatebounddata', 'cells');
+ 		$('#btn-refresh-barang').click(function () {
+			$("#jqxgrid_barang").jqxGrid('clearfilters', 'cells');
 		});
 
  		$('#btn_add_barang').click(function () {
@@ -257,7 +257,8 @@
 <div>
 	<div style="width:100%;">
 		<div style="padding:5px" class="pull-right">
-				<?php if(!isset($viewreadonly) && (isset($pilihan_status_pengadaan) && $pilihan_status_pengadaan!=4)){?><button class="btn btn-success" id='btn_add_barang' type='button'><i class='fa fa-plus-square'></i> Tambah Barang</button><?php } ?><br/>
+				<?php if(!isset($viewreadonly) && (isset($pilihan_status_pengadaan) && $pilihan_status_pengadaan!=4)){?><button class="btn btn-success" id='btn_add_barang' type='button'><i class='fa fa-plus-square'></i> Tambah Barang</button><?php } ?>
+				<button type="button" class="btn btn-warning" id="btn-refresh-barang"><i class='fa fa-refresh'></i> &nbsp; Refresh</button><br/>
 		</div>
 		<div id="jqxgrid">
         	<div id="jqxgrid_barang"></div>

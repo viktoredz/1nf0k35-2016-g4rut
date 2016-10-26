@@ -104,16 +104,16 @@
 				{ text: 'Kode Barang', align: 'center',cellsalign: 'center',editable: false, datafield: 'id_mst_inv_barang', columntype: 'textbox', filtertype: 'textbox', width: '10%' },
 				{ text: 'Register ', editable: false,datafield: 'register_sampai', columntype: 'textbox', filtertype: 'none', width: '10%'},
 				{ text: 'Nama Barang ', editable: false,datafield: 'nama_barang', columntype: 'textbox', filtertype: 'textbox', width: '26%'},
-				{ text: 'Jumlah ', align: 'center',cellsalign: 'center',editable: false,datafield: 'jumlah', columntype: 'textbox', filtertype: 'textbox', width: '6%'},
+				{ text: 'Jumlah ', align: 'center',cellsalign: 'center',editable: false,datafield: 'jumlah', columntype: 'textbox', filtertype: 'none', width: '6%'},
 				{ text: 'Harga Satuan (Rp.)', align: 'center',cellsalign: 'right',editable: false, datafield: 'harga', columntype: 'textbox', filtertype: 'textbox', width: '11%'},
-				{ text: 'Sub Total (Rp.)', align: 'center',cellsalign: 'right',editable: false,datafield: 'totalharga', columntype: 'textbox', filtertype: 'textbox', width: '12%'},
+				{ text: 'Sub Total (Rp.)', align: 'center',cellsalign: 'right',editable: false,datafield: 'totalharga', columntype: 'textbox', filtertype: 'none', width: '12%'},
             <?php }else{ ?>
 				{ text: 'Kode Barang', align: 'center',cellsalign: 'center',editable: false, datafield: 'id_mst_inv_barang', columntype: 'textbox', filtertype: 'textbox', width: '10%' },
 				{ text: 'Register ', editable: false,datafield: 'register_sampai', columntype: 'textbox', filtertype: 'none', width: '10%'},
 				{ text: 'Nama Barang ', editable: false,datafield: 'nama_barang', columntype: 'textbox', filtertype: 'textbox', width: '31%'},
-				{ text: 'Jumlah ', align: 'center',cellsalign: 'center',editable: false,datafield: 'jumlah', columntype: 'textbox', filtertype: 'textbox', width: '8%'},
+				{ text: 'Jumlah ', align: 'center',cellsalign: 'center',editable: false,datafield: 'jumlah', columntype: 'textbox', filtertype: 'none', width: '8%'},
 				{ text: 'Harga Satuan (Rp.)', align: 'center',cellsalign: 'right',editable: false, datafield: 'harga', columntype: 'textbox', filtertype: 'textbox', width: '12%'},
-				{ text: 'Sub Total (Rp.)', align: 'center',cellsalign: 'right',editable: false,datafield: 'totalharga', columntype: 'textbox', filtertype: 'textbox', width: '12%'},
+				{ text: 'Sub Total (Rp.)', align: 'center',cellsalign: 'right',editable: false,datafield: 'totalharga', columntype: 'textbox', filtertype: 'none', width: '12%'},
             <?php } ?>
 				{
                         text: '<b><i class="fa fa-pencil-square-o"></i> Status</b>', align: 'center',cellsalign: 'center', datafield: 'value', width: '8%', columntype: 'dropdownlist',
@@ -138,8 +138,8 @@
 			$("#jqxgrid_barang").jqxGrid('clearfilters');
 		});
         
- 		$('#refreshdatabutton').click(function () {
-			$("#jqxgrid_barang").jqxGrid('updatebounddata', 'cells');
+ 		$('#btn-refresh-barang').click(function () {
+			$("#jqxgrid_barang").jqxGrid('clearfilters', 'cells');
 		});
 
  		$('#btn_add_barang').click(function () {
@@ -257,7 +257,9 @@
 <div>
 	<div style="width:100%;">
 		<div style="padding:5px" class="pull-right">
-			<?php if(!isset($viewreadonly)){?><button class="btn btn-success" id='btn_add_barang' type='button'><i class='fa fa-plus-square'></i> Tambah Barang</button><?php } ?>
+			<?php if(!isset($viewreadonly)&& (isset($pilihan_status_pengadaan) && $pilihan_status_pengadaan!=4)){?><button class="btn btn-success" id='btn_add_barang' type='button'><i class='fa fa-plus-square'></i> Tambah Barang</button>
+			<?php } ?>
+			<button type="button" class="btn btn-warning" id="btn-refresh-barang"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
 		</div>
         <div id="jqxgrid_barang"></div>
 	</div>
