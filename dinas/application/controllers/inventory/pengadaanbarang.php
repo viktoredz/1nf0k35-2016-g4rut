@@ -32,6 +32,20 @@ class Pengadaanbarang extends CI_Controller {
 		echo json_encode($data);
 		
 	}
+	function jsonstatus(){
+		$rows = $this->pengadaanbarang_model->get_data_status();
+		$data = array();
+		foreach($rows as $act) {
+
+			$data[] = array(
+				'codestatus' 			=> $act->code,
+				'namastatus' 			=> $act->value,
+			);
+		}
+		echo json_encode($data);
+		
+	}
+	
 	function pengadaan_export(){
 		$this->authentication->verify('inventory','show');
 		
@@ -343,6 +357,7 @@ class Pengadaanbarang extends CI_Controller {
 				'id_pengadaan' 				=> $act->id_pengadaan,
 				'tgl_pengadaan' 			=> $act->tgl_pengadaan,
 				'nomor_kontrak' 			=> $act->nomor_kontrak,
+				'code_cl_phc' 				=> $act->code_cl_phc,
 				'pilihan_status_pengadaan' 	=> $act->pilihan_status_pengadaan,
 				'value' 					=> $act->value,
 				'jumlah_unit'				=> $act->jumlah_unit,
@@ -350,7 +365,7 @@ class Pengadaanbarang extends CI_Controller {
 				'keterangan'				=> $act->keterangan,
 				'detail'					=> 1,
 				'edit'						=> 1,//$unlock,
-				'delete'					=> 1//$unlock
+				'delete'					=> ($act->pilihan_status_pengadaan=='4'? 0 :1)//$unlock
 			);
 		}
 
@@ -536,6 +551,12 @@ class Pengadaanbarang extends CI_Controller {
 	function updatestatus_barang(){
 		$this->authentication->verify('inventory','edit');
 		$this->pengadaanbarang_model->update_status();				
+	}
+	function updatestatus(){
+		$this->authentication->verify('inventory','edit');
+		$this->db->where('id_pengadaan',$this->input->post('id_pengadaan'));
+		$this->db->set('pilihan_status_pengadaan',$this->input->post('pilihan_inv'));
+		$this->db->update('inv_pengadaan');
 	}
 	function dodelpermohonan($pengadaan=0,$kode=0,$kembarproc=0){
 		if($this->pengadaanbarang_model->delete_entryitem($kode,$kembarproc)){

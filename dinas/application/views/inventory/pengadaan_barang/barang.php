@@ -129,21 +129,6 @@
 				{ text: 'Harga Satuan (Rp.)', align: 'center',cellsalign: 'right',editable: false, datafield: 'harga', columntype: 'textbox', filtertype: 'textbox', width: '12%'},
 				{ text: 'Sub Total (Rp.)', align: 'center',cellsalign: 'right',editable: false,datafield: 'totalharga', columntype: 'textbox', filtertype: 'none', width: '12%'},
             <?php } ?>
-				// {
-    //                     text: '<b><i class="fa fa-pencil-square-o"></i> Status</b>', align: 'center',cellsalign: 'center', datafield: 'value', width: '8%', columntype: 'dropdownlist',
-    //                     createeditor: function (row, column, editor) {
-    //                         // assign a new data source to the dropdownlist.
-    //                         var list = [<?php foreach ($kodestatus_inv as $key) {?>
-				// 			"<?=$key->value?>",
-				// 			<?php } ?>];
-    //                         editor.jqxDropDownList({ autoDropDownHeight: true, source: list });
-    //                     },
-    //                     // update the editor's value before saving it.
-    //                     cellvaluechanging: function (row, column, columntype, oldvalue, newvalue) {
-    //                         // return the old value, if the new value is empty.
-    //                         if (newvalue == "") return oldvalue;
-    //                     }
-    //              },
 
                 {text: '<b><i class="fa fa-pencil-square-o"></i> Status</b>', datafield: 'pilihan_status_invetaris', displayfield: 'value', columntype: 'dropdownlist',
                         createeditor: function (row, value, editor) {

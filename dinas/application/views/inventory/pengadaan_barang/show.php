@@ -61,8 +61,23 @@
 				$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 			});
 	    });
+	 });
+    var sourcestatus =
+    {
+         datatype: "json",
+		 type	: "POST",
+         datafields: [
+             { name: 'namastatus', type: 'string' },
+             { name: 'codestatus', type: 'string' }
+         ],
+         url: "<?php echo site_url('inventory/pengadaanbarang/jsonstatus'); ?>",
+		cache: false,
+    };
+    var statusdataAdapter = new $.jqx.dataAdapter(sourcestatus, {
+	    autoBind: true
 	});
-
+	
+	
 	   var source = {
 			datatype: "json",
 			type	: "POST",
@@ -70,6 +85,7 @@
 			{ name: 'id_pengadaan', type: 'string'},
 			{ name: 'tgl_pengadaan', type: 'date'},
 			{ name: 'nomor_kontrak', type: 'string'},
+			{ name: 'code_cl_phc', type: 'string'},
 			{ name: 'pilihan_status_pengadaan', type: 'string'},
 			{ name: 'value', type: 'string'},
 			{ name: 'jumlah_unit', type: 'double'},
@@ -78,6 +94,7 @@
 			{ name: 'keterangan', type: 'text'},
 			{ name: 'detail', type: 'number'},
 			{ name: 'edit', type: 'number'},
+			{ name: 'datastatus', value: 'pilihan_status_pengadaan', values: { source: statusdataAdapter.records, value: 'codestatus', name: 'namastatus' } },
 			{ name: 'delete', type: 'number'}
         ],
 		url: "<?php echo site_url('inventory/pengadaanbarang/json'); ?>",
@@ -149,13 +166,29 @@
                 },
 				{ text: 'No. Kontrak', editable:false ,datafield: 'nomor_kontrak', columntype: 'textbox', filtertype: 'textbox', width: '15%' },
 				{ text: 'Tgl. Pengadaan',editable:false , align: 'center', cellsalign: 'center', datafield: 'tgl_pengadaan', columntype: 'date', filtertype: 'date', cellsformat: 'dd-MM-yyyy', width: '11%' },
-				{ text: 'Status Pengadaan', editable:false ,align: 'center', cellsalign: 'center', datafield: 'value', columntype: 'textbox', filtertype: 'textbox', width: '12%' },
+				// { text: 'Status Pengadaan', editable:false ,align: 'center', cellsalign: 'center', datafield: 'value', columntype: 'textbox', filtertype: 'textbox', width: '12%' },
+				{
+                    text: '<b><i class="fa fa-pencil-square-o"></i> Status Pengadaan</b>', datafield: 'pilihan_status_pengadaan', displayfield: 'value', columntype: 'dropdownlist',
+                    createeditor: function (row, value, editor) {
+                        editor.jqxDropDownList({ source: statusdataAdapter, displayMember: 'namastatus', valueMember: 'codestatus' });
+                    }
+                },
 				{ text: 'Jumlah Unit', editable:false ,align: 'center', cellsalign: 'right', datafield: 'jumlah_unit', columntype: 'textbox', filtertype: 'textbox', width: '10%' },
 				{ text: 'Total Harga (Rp.)', editable:false ,align: 'center', cellsalign: 'right', datafield: 'nilai_pengadaan', columntype: 'textbox', filtertype: 'textbox', width: '15%' },
 				{ text: 'Keterangan', editable:false ,datafield: 'keterangan', columntype: 'textbox', filtertype: 'textbox', width: '25%' }
             ]
 		});
-
+	$("#jqxgrid").on('cellendedit', function (event) {
+        var column = $("#jqxgrid").jqxGrid('getcolumn', event.args.datafield);
+        if (column.displayfield != column.datafield) {
+            if (event.args.value.value !='undifined') {
+        		var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', event.args.rowindex);
+        		$.post( '<?php echo base_url()?>inventory/pengadaanbarang/updatestatus', {pilihan_inv:event.args.value.value,id_pengadaan:dataRecord.id_pengadaan},function(data) {
+					$("#jqxgrid").jqxGrid('updateBoundData');
+				});
+        	}
+        }
+    });
 	function detail(id){
 		document.location.href="<?php echo base_url().'inventory/pengadaanbarang/detail';?>/" + id ;
 	}

@@ -127,16 +127,16 @@
 				return obj.data;    
 			},
 			columns: [
-				// { text: 'View', align: 'center', filtertype: 'none', sortable: false, width: '8%', cellsrenderer: function (row) {
-				//     var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				//     if(dataRecord.edit==1){
-				// 		return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+dataRecord.id_inv_permohonan_barang+"\",\""+dataRecord.code_cl_phc+"\");'></a></div>";
-				// 	}else{
-				// 		return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lockdo.gif'></a></div>";
-				// 	}
-    //              }
-    //             },
-				{ text: 'Edit', align: 'center', filtertype: 'none', sortable: false, width: '8%', cellsrenderer: function (row) {
+				{ text: 'View', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
+				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
+				    if(dataRecord.edit==1){
+						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+dataRecord.id_inv_permohonan_barang+"\",\""+dataRecord.code_cl_phc+"\");'></a></div>";
+					}else{
+						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lockdo.gif'></a></div>";
+					}
+                 }
+                },
+				{ text: 'Edit', align: 'center', filtertype: 'none', sortable: false, width: '4%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
 				    if(dataRecord.edit==1){
 						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit(\""+dataRecord.id_inv_permohonan_barang+"\",\""+dataRecord.code_cl_phc+"\");'></a></div>";

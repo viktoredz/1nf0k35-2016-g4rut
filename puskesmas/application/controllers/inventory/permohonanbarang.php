@@ -407,7 +407,7 @@ class Permohonanbarang extends CI_Controller {
 				'totalharga'			=> number_format($act->totalharga),
 				'value'					=> $act->value,
 				'detail'	=> 1,
-				'edit'		=> $act->pilihan_status_pengadaan=='4'? 0:1,
+				'edit'		=> 1,
 				'delete'	=> $act->pilihan_status_pengadaan=='4'? 0:1,
 			);
 		}
@@ -635,7 +635,7 @@ class Permohonanbarang extends CI_Controller {
 			}
 
 			if(!empty($ord)) {
-        if($ord == 'subtotal') {
+        if($ord == 'subtotal' || $ord == 'no') {
         }else{
           $this->db->order_by($ord, $this->input->post('sortorder'));
         }
