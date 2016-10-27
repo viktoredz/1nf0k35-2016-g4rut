@@ -39,16 +39,16 @@ class Permohonanbarang_model extends CI_Model {
 		$this->db->where('inv_permohonan_barang.code_cl_phc',$code_cl_phc);
 		#$this->db->join('cl_phc','inv_permohonan_barang.code_cl_phc = cl_phc.code');
 		$this->db->join('mst_inv_ruangan','inv_permohonan_barang.id_mst_inv_ruangan = mst_inv_ruangan.id_mst_inv_ruangan');
-		$q = $this->db->get('inv_permohonan_barang',1);		
+		$q = $this->db->get('inv_permohonan_barang',1);
 		return $q->result();
 	}
     function get_data_status()
-    {	
+    {
     	$this->db->where("mst_inv_pilihan.tipe",'status_pengadaan');
- 		$this->db->select('mst_inv_pilihan.*');		
+ 		$this->db->select('mst_inv_pilihan.*');
  		$this->db->order_by('mst_inv_pilihan.code','asc');
-		$query = $this->db->get('mst_inv_pilihan');	
-		return $query->result_array();	
+		$query = $this->db->get('mst_inv_pilihan');
+		return $query->result_array();
     }
     function get_data($start=0,$limit=999999,$options=array())
     {	$puskesmas_ = 'P'.$this->session->userdata('puskesmas');
@@ -70,7 +70,7 @@ class Permohonanbarang_model extends CI_Model {
 			$data = $query->row_array();
 		}
 
-		$query->free_result();    
+		$query->free_result();
 		return $data;
     }
     public function getItem($table,$data)
@@ -90,12 +90,12 @@ class Permohonanbarang_model extends CI_Model {
 			$data = $query->row_array();
 		}
 
-		$query->free_result();    
+		$query->free_result();
 		return $data;
 	}
 	function get_data_barang_edit($code_cl_phc, $permohonanbarang, $permohonanitem){
 		$data = array();
-		
+
 		$this->db->select("*");
 		$this->db->where("id_inv_permohonan_barang_item",$permohonanitem);
 		$this->db->where("code_cl_phc",$code_cl_phc);
@@ -105,7 +105,7 @@ class Permohonanbarang_model extends CI_Model {
 			$data = $query->row_array();
 		}
 
-		$query->free_result();    
+		$query->free_result();
 		return $data;
 	}
 	public function getSelectedData($table,$data)
@@ -148,7 +148,7 @@ class Permohonanbarang_model extends CI_Model {
 
 		$data['waktu_dibuat']		= date('Y-m-d');
 		$data['jumlah_unit']      	= 0;
-		$data['app_users_list_username'] 	= $this->session->userdata('username'); 
+		$data['app_users_list_username'] 	= $this->session->userdata('username');
 		//$data['id_inv_permohonan_barang']	= $this->get_permohonan_id($this->input->post('codepus'));
 		if($this->db->insert($this->tabel, $data)){
 			return $data['id_inv_permohonan_barang'];
@@ -193,9 +193,9 @@ class Permohonanbarang_model extends CI_Model {
         	return  $id;
     }
     function update_status()
-    {	
+    {
     	$status= $this->input->post('pilihan_status_pengadaan');
-    	$data['pilihan_status_pengadaan']	= $this->tampil_id($status);
+    	$data['pilihan_status_pengadaan']	=$status; //$this->tampil_id($status);
     	$id = $this->input->post('inv_permohonan_barang');
 		if($this->db->update($this->tabel, $data,array('id_inv_permohonan_barang'=> $id,'code_cl_phc'=>'P'.$this->session->userdata('puskesmas')))){
 			return true;

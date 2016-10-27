@@ -69,6 +69,14 @@ class Pengadaanbarang_model extends CI_Model {
 		$query = $this->db->get('mst_inv_pilihan');	
 		return $query->result();	
     }
+    function get_data_status_inventaris()
+    {   
+        $this->db->where("mst_inv_pilihan.tipe",'status_inventaris');
+        $this->db->select('mst_inv_pilihan.*');     
+        $this->db->order_by('mst_inv_pilihan.code','asc');
+        $query = $this->db->get('mst_inv_pilihan'); 
+        return $query->result();    
+    }
     function pilih_data_status($status)
     {   
         $this->db->where("mst_inv_pilihan.tipe",$status);
@@ -392,7 +400,7 @@ WHERE inv_inventaris_barang.barang_kembar_proc = (SELECT barang_kembar_proc FROM
 
         $id = $this->db->query("SELECT id_inventaris_barang FROM inv_inventaris_barang WHERE barang_kembar_proc =$kode_proc and id_pengadaan=$id_pengadaan")->result(); 
         foreach ($id as $key) {
-            $data['pilihan_status_invetaris']   = $this->tampilstatus_id($pilihan_inv,'status_inventaris');
+            $data['pilihan_status_invetaris']   = $pilihan_inv;//$this->tampilstatus_id($pilihan_inv,'status_inventaris');
             $this->db->update('inv_inventaris_barang', $data,array('barang_kembar_proc'=> $this->input->post('kode_proc')));
         }
             

@@ -3,10 +3,23 @@
 
 	$(function(){
 		ambil_total();
-		
+        var statSource =
+        {
+             datatype: "json",
+             type	: "POST",
+             datafields: [
+                 { name: 'namastat', type: 'string' },
+                 { name: 'codestat', type: 'string' }
+             ],
+             url: "<?php echo site_url('inventory/pengadaanbarang/jsonstat'); ?>",
+        };
+        var datastatAdapter = new $.jqx.dataAdapter(statSource, {
+            autoBind: true
+        });
 	   var source = {
 			datatype: "json",
 			type	: "POST",
+			
 			datafields: [
 			{ name: 'id_inventaris_barang', type: 'string' },
 			{ name: 'id_mst_inv_barang', type: 'string' },
@@ -34,22 +47,23 @@
 			{ name: 'jumlah', type: 'number' },
 			{ name: 'totalharga', type: 'double' },
 			{ name: 'edit', type: 'number'},
-			{ name: 'delete', type: 'number'}
+			{ name: 'delete', type: 'number'},
+			{ name: 'datastatus', value: 'pilihan_status_invetaris', values: { source: datastatAdapter.records, value: 'codestat', name: 'namastat' } },
         ],
 		url: "<?php echo site_url('inventory/pengadaanbarang/barang/'.$kode); ?>",
 		cache: false,
 		updateRow: function (rowID, rowData, commit) {
             commit(true);
-			var arr = $.map(rowData, function(el) { return el });
-			//alert(arr);
-			//alert(arr[6]); alert(arr[8]);		//6 status
-			var pengadaan= '<?php echo $kode; ?>';
-			//alert(arr[]);
+			// var arr = $.map(rowData, function(el) { return el });
+			// //alert(arr);
+			// //alert(arr[6]); alert(arr[8]);		//6 status
+			// var pengadaan= '<?php echo $kode; ?>';
+			// //alert(arr[]);
 
-				$.post( '<?php echo base_url()?>inventory/pengadaanbarang/updatestatus_barang', {kode_proc:arr[7],pilihan_inv:arr[10],id_pengadaan:pengadaan},function( data ) {
-						$("#jqxgrid_barang").jqxGrid('updateBoundData');
+			// 	$.post( '<?php echo base_url()?>inventory/pengadaanbarang/updatestatus_barang', {kode_proc:arr[7],pilihan_inv:arr[10],id_pengadaan:pengadaan},function( data ) {
+			// 			$("#jqxgrid_barang").jqxGrid('updateBoundData');
 						
-				 });
+			// 	 });
          },
 		filter: function(){
 			$("#jqxgrid_barang").jqxGrid('updatebounddata', 'filter');
@@ -115,25 +129,44 @@
 				{ text: 'Harga Satuan (Rp.)', align: 'center',cellsalign: 'right',editable: false, datafield: 'harga', columntype: 'textbox', filtertype: 'textbox', width: '12%'},
 				{ text: 'Sub Total (Rp.)', align: 'center',cellsalign: 'right',editable: false,datafield: 'totalharga', columntype: 'textbox', filtertype: 'none', width: '12%'},
             <?php } ?>
-				{
-                        text: '<b><i class="fa fa-pencil-square-o"></i> Status</b>', align: 'center',cellsalign: 'center', datafield: 'value', width: '8%', columntype: 'dropdownlist',
-                        createeditor: function (row, column, editor) {
-                            // assign a new data source to the dropdownlist.
-                            var list = [<?php foreach ($kodestatus_inv as $key) {?>
-							"<?=$key->value?>",
-							<?php } ?>];
-                            editor.jqxDropDownList({ autoDropDownHeight: true, source: list });
-                        },
-                        // update the editor's value before saving it.
-                        cellvaluechanging: function (row, column, columntype, oldvalue, newvalue) {
-                            // return the old value, if the new value is empty.
-                            if (newvalue == "") return oldvalue;
+				// {
+    //                     text: '<b><i class="fa fa-pencil-square-o"></i> Status</b>', align: 'center',cellsalign: 'center', datafield: 'value', width: '8%', columntype: 'dropdownlist',
+    //                     createeditor: function (row, column, editor) {
+    //                         // assign a new data source to the dropdownlist.
+    //                         var list = [<?php foreach ($kodestatus_inv as $key) {?>
+				// 			"<?=$key->value?>",
+				// 			<?php } ?>];
+    //                         editor.jqxDropDownList({ autoDropDownHeight: true, source: list });
+    //                     },
+    //                     // update the editor's value before saving it.
+    //                     cellvaluechanging: function (row, column, columntype, oldvalue, newvalue) {
+    //                         // return the old value, if the new value is empty.
+    //                         if (newvalue == "") return oldvalue;
+    //                     }
+    //              },
+
+                {text: '<b><i class="fa fa-pencil-square-o"></i> Status</b>', datafield: 'pilihan_status_invetaris', displayfield: 'value', columntype: 'dropdownlist',
+                        createeditor: function (row, value, editor) {
+                            editor.jqxDropDownList({ source: datastatAdapter, displayMember: 'namastat', valueMember: 'codestat' });
                         }
-                 },
+                },
 				{ text: 'Tanggal Terima',align: 'center',cellsalign: 'center', editable: false,datafield: 'tanggal_diterima', columntype: 'date', filtertype: 'date', cellsformat: 'dd-MM-yyyy', width: '9%'}
            ]
 		});
-        
+        $("#jqxgrid_barang").on('cellendedit', function (event) {
+            var column = $("#jqxgrid_barang").jqxGrid('getcolumn', event.args.datafield);
+            if (column.displayfield != column.datafield) {
+            	if (event.args.value.value !='undifined') {
+            		var pengadaan= "<?php echo $kode; ?>";
+            		var dataRecord = $("#jqxgrid_barang").jqxGrid('getrowdata', event.args.rowindex);
+            		$.post( '<?php echo base_url()?>inventory/pengadaanbarang/updatestatus_barang', {kode_proc:dataRecord.barang_kembar_proc,pilihan_inv:event.args.value.value,id_pengadaan:pengadaan},function( ata) {
+            			
+						$("#jqxgrid_barang").jqxGrid('updateBoundData');
+					});
+            	}
+            	// 
+            }
+        });
 		$('#clearfilteringbutton').click(function () {
 			$("#jqxgrid_barang").jqxGrid('clearfilters');
 		});

@@ -19,7 +19,19 @@ class Pengadaanbarang extends CI_Controller {
 			}
 		}
 	}
+	function jsonstat(){
+		$rows = $this->pengadaanbarang_model->get_data_status_inventaris();
+		$data = array();
+		foreach($rows as $act) {
 
+			$data[] = array(
+				'codestat' 			=> $act->code,
+				'namastat' 			=> $act->value,
+			);
+		}
+		echo json_encode($data);
+		
+	}
 	function pengadaan_export(){
 		$this->authentication->verify('inventory','show');
 		

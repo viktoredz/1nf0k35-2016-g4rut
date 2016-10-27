@@ -18,7 +18,7 @@ class Permohonanbarang extends CI_Controller {
 		$query = $this->db->get('cl_phc')->result();
 		foreach ($query as $q) {
 			$kode[] = array(
-				'kodeper' => $q->cd_kompemilikbarang.'.'.$q->cd_propinsi.'.'.$q->cd_kabkota.'.'.$q->cd_bidang.'.'.$q->cd_unitbidang.'.'.$q->cd_satuankerja, 
+				'kodeper' => $q->cd_kompemilikbarang.'.'.$q->cd_propinsi.'.'.$q->cd_kabkota.'.'.$q->cd_bidang.'.'.$q->cd_unitbidang.'.'.$q->cd_satuankerja,
 			);
 			echo json_encode($kode);
 		}
@@ -42,13 +42,23 @@ class Permohonanbarang extends CI_Controller {
 
 		$this->template->show($data,"home");
 	}
-
+  function statusjson(){
+    	$query = $this->permohonanbarang_model->get_data_status();
+    	$data = array();
+    	foreach ($query as $key) {
+    		$data[] = array(
+    			'label'	=> $key['value'],
+    			'value'	=> $key['code']
+    			);
+    	}
+    	echo json_encode($data);
+  }
 	function permohonan_export(){
-		
-		$TBS = new clsTinyButStrong;		
+
+		$TBS = new clsTinyButStrong;
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
 		//[data_tabel.no;block=tbs:row]	[data_tabel.tgl]	[data_tabel.ruangan]	[data_tabel.jumlah]	[data_tabel.keterangan]	[data_tabel.status]
-		
+
 		$this->authentication->verify('inventory','show');
 
 
@@ -80,7 +90,7 @@ class Permohonanbarang extends CI_Controller {
 			$this->db->where('inv_permohonan_barang.code_cl_phc','P'.$this->session->userdata('puskesmas'));
 		}
 		$rows_all = $this->permohonanbarang_model->get_data();
-		
+
 
 		if($_POST) {
 			$fil = $this->input->post('filterscount');
@@ -112,62 +122,62 @@ class Permohonanbarang extends CI_Controller {
 		$rows = $this->permohonanbarang_model->get_data();
 		$data = array();
 		$no=1;
-		
+
 		$data_tabel = array();
 		foreach($rows as $act) {
-			
+
 			$data_tabel[] = array(
-				'no'		=> $no++,								
-				'tgl'		=> date("d-m-Y",strtotime($act->tanggal_permohonan)),				
+				'no'		=> $no++,
+				'tgl'		=> date("d-m-Y",strtotime($act->tanggal_permohonan)),
 				'ruangan'	=> $act->nama_ruangan,
 				'jumlah'	=> $act->jumlah_unit,
 				'totalharga'=> number_format($act->totalharga),
 				'keterangan'=> $act->keterangan,
-				'status'	=> $act->value				
+				'status'	=> $act->value
 			);
 		}
 
-		
-		
+
+
 		/*
 		$data_tabel[] = array('no'=> '1', 'tgl'=>'10/10/2010' , 'ruangan'=>'Hill'      , 'jumlah'=>'19', 'keterangan'=>'bagus', 'status'=>'bagus');
 		$data_tabel[] = array('no'=> '2', 'tgl'=>'10/10/2010' , 'ruangan'=>'Hill'      , 'jumlah'=>'19', 'keterangan'=>'bagus', 'status'=>'bagus');
 		$data_tabel[] = array('no'=> '3', 'tgl'=>'10/10/2010' , 'ruangan'=>'Hill'      , 'jumlah'=>'19', 'keterangan'=>'bagus', 'status'=>'bagus');
 		$data_tabel[] = array('no'=> '4', 'tgl'=>'10/10/2010' , 'ruangan'=>'Hill'      , 'jumlah'=>'19', 'keterangan'=>'bagus', 'status'=>'bagus');
 		*/
-		$puskes = $this->input->post('puskes'); 
+		$puskes = $this->input->post('puskes');
 		if(empty($puskes) or $puskes == 'Pilih Puskesmas'){
 			$nama = 'Semua Data Puskesmas';
 		}else{
 			$nama = $this->input->post('puskes');
 		}
 		$data_puskesmas[] = array('nama_puskesmas' => $nama);
-		
+
 		$dir = getcwd().'/';
-		$template = $dir.'public/files/template/inventory/permohonan_barang.xlsx';		
+		$template = $dir.'public/files/template/inventory/permohonan_barang.xlsx';
 		$TBS->LoadTemplate($template, OPENTBS_ALREADY_UTF8);
 		//print_r($data_tabel);
 		//die();
 		// Merge data in the first sheet
 		$TBS->MergeBlock('a', $data_tabel);
 		$TBS->MergeBlock('b', $data_puskesmas);
-		
+
 		$code = uniqid();
 		$output_file_name = 'public/files/hasil/hasil_export_'.$code.'.xlsx';
 		$output = $dir.$output_file_name;
 		$TBS->Show(OPENTBS_FILE, $output); // Also merges all [onshow] automatic fields.
-		
+
 		echo base_url().$output_file_name ;
-		
+
 	}
-	
+
 	function permohonan_detail_export(){
 		$code_cl_phc = $this->input->post('code_cl_phc');
 		$id = $this->input->post('kode');
-		$TBS = new clsTinyButStrong;		
+		$TBS = new clsTinyButStrong;
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
 		//[data_tabel.no;block=tbs:row]	[data_tabel.tgl]	[data_tabel.ruangan]	[data_tabel.jumlah]	[data_tabel.keterangan]	[data_tabel.status]
-		
+
 		$this->authentication->verify('inventory','show');
 
 		if($_POST) {
@@ -190,23 +200,23 @@ class Permohonanbarang extends CI_Controller {
 				$this->db->order_by($ord, $this->input->post('sortorder'));
 			}
 		}
-		
+
 		#$rows = $this->permohonanbarang_model->get_data($this->input->post('recordstartindex'), $this->input->post('pagesize'));
-		
+
 		$this->db->where('code_cl_phc',$code_cl_phc);
 		$activity = $this->permohonanbarang_model->getItem('inv_permohonan_barang_item', array('id_inv_permohonan_barang'=>$id))->result();
 		$data = array();
 		$no=1;
-		
+
 		$data_tabel = array();
 		foreach($activity as $act) {
 			$data_tabel[] = array(
-				'no'							=> $no++,				
+				'no'							=> $no++,
 				'nama_barang'   				=> $act->nama_barang,
 				'jumlah'						=> $act->jumlah,
 				'harga'							=> number_format($act->harga,2),
 				'subtotal'						=> number_format($act->harga*$act->jumlah,2),
-				'keterangan'					=> $act->keterangan				
+				'keterangan'					=> $act->keterangan
 			);
 		}
 
@@ -229,34 +239,34 @@ class Permohonanbarang extends CI_Controller {
 		$data_puskesmas['totalharga'] = 'Rp. '.number_format($jumlahtotal['totalharga'],2);
 		$data_puskesmas['totaljumlah'] = $jumlahtotal['totaljumlah'];
 
-		
+
 		$TBS->ResetVarRef(false);
 		$TBS->VarRef =  &$data_puskesmas;
 		$dir = getcwd().'/';
-		$template = $dir.'public/files/template/inventory/permohonan_barang_detail.xlsx';		
+		$template = $dir.'public/files/template/inventory/permohonan_barang_detail.xlsx';
 		$TBS->LoadTemplate($template, OPENTBS_ALREADY_UTF8);
 
-		
+
 		// Merge data in the first sheet
 		$TBS->MergeBlock('a', $data_tabel);
 		#$TBS->MergeBlock('b', $data_puskesmas);
-		
+
 		$code = date('Y-m-d-H-i-s');
 		$output_file_name = 'public/files/hasil/hasil_detail_export_'.$code.'.xlsx';
 		$output = $dir.$output_file_name;
 		$TBS->Show(OPENTBS_FILE, $output); // Also merges all [onshow] automatic fields.
-		
+
 		echo base_url().$output_file_name ;
 
 		/*
 		$output_file_name = dirname(__FILE__).'\..\..\..\public\files\hasil\hasil_detail_export_'.$code.'.xlsx';
 		$TBS->Show(OPENTBS_FILE, $output_file_name); // Also merges all [onshow] automatic fields.
-		
+
 		echo base_url().'public/files/hasil/hasil_detail_export_'.$code.'.xlsx' ;
 		*/
-		
+
 	}
-	
+
 	function autocomplite_barang(){
 		$search = explode("&",$this->input->server('QUERY_STRING'));
 		$search = str_replace("query=","",$search[0]);
@@ -299,9 +309,9 @@ class Permohonanbarang extends CI_Controller {
 			}
 
 			$barang[] = array(
-				'code_tampil' 	=> implode(".", $s), 
-				'code' 			=> $q->code , 
-				'uraian' 		=> $parent." ".$q->uraian, 
+				'code_tampil' 	=> implode(".", $s),
+				'code' 			=> $q->code ,
+				'uraian' 		=> $parent." ".$q->uraian,
 			);
 		}
 		echo json_encode($barang);
@@ -403,7 +413,7 @@ class Permohonanbarang extends CI_Controller {
 		}
 
 
-		
+
 		$size = sizeof($rows_all);
 		$json = array(
 			'TotalRows' => (int) $size,
@@ -419,7 +429,7 @@ class Permohonanbarang extends CI_Controller {
 			}
 		}
 	}
-	
+
 	public function total_permohonan($id){
 		$this->db->where('code_cl_phc',"P".$this->session->userdata('puskesmas'));
 		$this->db->where('id_inv_permohonan_barang',$id);
@@ -427,8 +437,8 @@ class Permohonanbarang extends CI_Controller {
 		$query = $this->db->get('inv_permohonan_barang_item')->result();
 		foreach ($query as $q) {
 			$totalpengadaan[] = array(
-				'totaljumlah' => $q->totaljumlah, 
-				'totalharga' => 'Rp. '.number_format($q->totalharga,2), 
+				'totaljumlah' => $q->totaljumlah,
+				'totalharga' => 'Rp. '.number_format($q->totalharga,2),
 			);
 			echo json_encode($totalpengadaan);
 		}
@@ -489,7 +499,7 @@ class Permohonanbarang extends CI_Controller {
 				$this->db->where('code','P'.$kodepuskesmas);
 			}
 			$data['kodepuskesmas'] = $this->puskesmas_model->get_data();
-		
+
 			$data['content'] = $this->parser->parse("inventory/permohonan_barang/form",$data,true);
 		}elseif($id = $this->permohonanbarang_model->insert_entry()){
 			$this->session->set_flashdata('alert', 'Save data successful...');
@@ -512,7 +522,7 @@ class Permohonanbarang extends CI_Controller {
         $this->form_validation->set_rules('statuspengadaan', 'Status Permohonan', 'trim|required');
 
 		if($this->form_validation->run()== FALSE){
-			$data 	= $this->permohonanbarang_model->get_data_row($code_cl_phc,$kode); 
+			$data 	= $this->permohonanbarang_model->get_data_row($code_cl_phc,$kode);
 
 			$data['title_group'] 	= "Inventory";
 			$data['title_form']		= "Ubah Permohonan Barang";
@@ -546,7 +556,7 @@ class Permohonanbarang extends CI_Controller {
         $this->form_validation->set_rules('ruangan', 'Ruangan', 'trim|required');
 
 		if($this->form_validation->run()== FALSE){
-			$data 	= $this->permohonanbarang_model->get_data_row($code_cl_phc,$kode); 
+			$data 	= $this->permohonanbarang_model->get_data_row($code_cl_phc,$kode);
 
 			$data['title_group'] 	= "Inventory";
 			$data['title_form']		= "Ubah Permohonan Barang";
@@ -570,7 +580,7 @@ class Permohonanbarang extends CI_Controller {
 		$this->template->show($data,"home");
 	}
 
-	
+
 	function dodel($kode=0,$code_cl_phc=""){
 		$this->authentication->verify('inventory','del');
 
@@ -584,7 +594,7 @@ class Permohonanbarang extends CI_Controller {
 	}
 	function updatestatus(){
 		//$this->authentication->verify('inventory','edit');
-		$this->permohonanbarang_model->update_status();				
+		$this->permohonanbarang_model->update_status();
 	}
 	function dodelpermohonan($kode=0,$code_cl_phc="",$kode_item=""){
 		$this->authentication->verify('inventory','del');
@@ -654,7 +664,7 @@ class Permohonanbarang extends CI_Controller {
 	}
 
 	public function add_barang($kode=0,$code_cl_phc="")
-	{	
+	{
 		$data['action']			= "add";
 		$data['kode']			= $kode;
 		$data['code_cl_phc']	= $code_cl_phc;
@@ -716,7 +726,7 @@ class Permohonanbarang extends CI_Controller {
         $this->form_validation->set_rules('pilihan_satuan_barang', 'Pilihan Satuan Barang', 'trim|required');
 
 		if($this->form_validation->run()== FALSE){
-			$data 					= $this->permohonanbarang_model->get_data_barang_edit($code_cl_phc, $kode, $id_inv_permohonan_barang_item); 
+			$data 					= $this->permohonanbarang_model->get_data_barang_edit($code_cl_phc, $kode, $id_inv_permohonan_barang_item);
 			$data['kodebarang']		= $this->permohonanbarang_model->get_databarang();
 			$data['notice']			= validation_errors();
 			$data['action']			= "edit";
@@ -746,9 +756,9 @@ class Permohonanbarang extends CI_Controller {
 				die("Error|Proses data gagal");
 			}
 		}
-		
+
 	}
-	
+
 	function dodel_barang($kode=0,$code_cl_phc="",$id_inv_permohonan_barang_item=0){
 		$this->authentication->verify('inventory','del');
 
@@ -761,11 +771,11 @@ class Permohonanbarang extends CI_Controller {
 		}
 	}
 
-	
+
 	public function get_autonama() {
         $kode = $this->input->post('code_mst_inv_barang',TRUE); //variabel kunci yang di bawa dari input text id kode
         $query = $this->mkota->get_allkota(); //query model
- 
+
         $kota       =  array();
         foreach ($query as $d) {
             $kota[]     = array(
