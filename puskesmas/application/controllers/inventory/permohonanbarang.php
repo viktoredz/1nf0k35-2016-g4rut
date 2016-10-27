@@ -627,31 +627,38 @@ class Permohonanbarang extends CI_Controller {
 					$value = date("Y-m-d",strtotime($value));
 
 					$this->db->where($field,$value);
-				}elseif($field != 'year') {
+				}else if($field == 'keterangan') {
+					$this->db->like('inv_permohonan_barang_item.'.$field,$value);
+				}else if($field != 'year') {
 					$this->db->like($field,$value);
 				}
 			}
 
 			if(!empty($ord)) {
-				$this->db->order_by($ord, $this->input->post('sortorder'));
+        if($ord == 'subtotal') {
+        }else{
+          $this->db->order_by($ord, $this->input->post('sortorder'));
+        }
 			}
 		}
-		$this->db->where('code_cl_phc',$code_cl_phc);
-		$activity = $this->permohonanbarang_model->getItem('inv_permohonan_barang_item', array('id_inv_permohonan_barang'=>$id))->result();
+		$this->db->where('inv_permohonan_barang_item.code_cl_phc',$code_cl_phc);
+    $this->db->select('inv_permohonan_barang_item.*,inv_permohonan_barang.pilihan_status_pengadaan');
+    $this->db->join('inv_permohonan_barang','inv_permohonan_barang.id_inv_permohonan_barang=inv_permohonan_barang_item.id_inv_permohonan_barang');
+		$activity = $this->permohonanbarang_model->getItem('inv_permohonan_barang_item', array('inv_permohonan_barang_item.id_inv_permohonan_barang'=>$id))->result();
 		$no=1;
 		foreach($activity as $act) {
 			$data[] = array(
-				'no'							=> $no++,
-				'id_inv_permohonan_barang_item' => $act->id_inv_permohonan_barang_item,
-				'nama_barang'   				=> $act->nama_barang,
-				'jumlah'						=> $act->jumlah,
-				'keterangan'					=> $act->keterangan,
-				'harga'							=> number_format($act->harga,2),
-				'subtotal'						=> number_format($act->harga*$act->jumlah,2),
-				'id_inv_permohonan_barang'		=> $act->id_inv_permohonan_barang,
-				'code_mst_inv_barang'   		=> substr(chunk_split($act->code_mst_inv_barang, 2, '.'),0,14),
-				'edit'		=> 1,
-				'delete'	=> 1
+				'no'							                => $no++,
+				'id_inv_permohonan_barang_item'   => $act->id_inv_permohonan_barang_item,
+				'nama_barang'   				          => $act->nama_barang,
+				'jumlah'						              => $act->jumlah,
+				'keterangan'					            => $act->keterangan,
+				'harga'							              => number_format($act->harga,2),
+				'subtotal'						            => number_format($act->harga*$act->jumlah,2),
+				'id_inv_permohonan_barang'		    => $act->id_inv_permohonan_barang,
+				'code_mst_inv_barang'   		      => substr(chunk_split($act->code_mst_inv_barang, 2, '.'),0,14),
+				'edit'		                        => $act->pilihan_status_pengadaan=='4'? 0:1,
+				'delete'	                        => $act->pilihan_status_pengadaan=='4'? 0:1,
 			);
 		}
 

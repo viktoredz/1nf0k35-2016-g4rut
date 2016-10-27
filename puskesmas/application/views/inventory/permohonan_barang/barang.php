@@ -31,27 +31,27 @@ var code_cl_phc = '<?php echo $code_cl_phc?>';
 		},
 		root: 'Rows',
         pagesize: 10,
-        beforeprocessing: function(data){		
+        beforeprocessing: function(data){
 			if (data != null){
-				source.totalrecords = data[0].TotalRows;					
+				source.totalrecords = data[0].TotalRows;
 			}
 		}
-		};		
+		};
 		var dataadapter = new $.jqx.dataAdapter(source, {
 			loadError: function(xhr, status, error){
 				alert(error);
 			}
 		});
-     
+
 		$("#jqxgrid_barang").jqxGrid(
-		{		
+		{
 			width: '100%',
 			selectionmode: 'singlerow',
 			source: dataadapter, theme: theme,columnsresize: true,showtoolbar: false, pagesizeoptions: ['10', '25', '50', '100'],
 			showfilterrow: true, filterable: true, sortable: true, autoheight: true, pageable: true, virtualmode: true, editable: false,
 			rendergridrows: function(obj)
 			{
-				return obj.data;    
+				return obj.data;
 			},
 
 			columns: [
@@ -78,17 +78,17 @@ var code_cl_phc = '<?php echo $code_cl_phc?>';
 				{ text: 'Nama Barang', datafield: 'nama_barang', columntype: 'textbox', filtertype: 'textbox', width: '22%' },
 				{ text: 'Jumlah Barang',  align: 'center', cellsalign: 'center', datafield: 'jumlah', columntype: 'textbox', filtertype: 'textbox', width: '9%'},
 				{ text: 'Harga Barang (RP.)',  align: 'center', cellsalign: 'center', datafield: 'harga', columntype: 'textbox', filtertype: 'textbox', width: '14%'},
-				{ text: 'Sub Total (Rp.)',  align: 'center', cellsalign: 'center', datafield: 'subtotal', columntype: 'textbox', filtertype: 'textbox', width: '14%'},
+				{ text: 'Sub Total (Rp.)',  align: 'center', cellsalign: 'center', datafield: 'subtotal', columntype: 'textbox', filtertype: 'none', width: '14%'},
 				{ text: 'Keterangan',datafield: 'keterangan', columntype: 'textbox', filtertype: 'textbox', width: '19%'}
            ]
 		});
-        
+
 		$('#clearfilteringbutton').click(function () {
 			$("#jqxgrid_barang").jqxGrid('clearfilters');
 		});
-        
- 		$('#refreshdatabutton').click(function () {
-			$("#jqxgrid_barang").jqxGrid('updatebounddata', 'cells');
+
+ 		$('#btn-refresh-barang').click(function () {
+			$("#jqxgrid_barang").jqxGrid('clearfilters', 'cells');
 		});
 
  		$('#btn_add_barang').click(function () {
@@ -102,7 +102,7 @@ var code_cl_phc = '<?php echo $code_cl_phc?>';
 		url: "<?php echo base_url().'inventory/permohonanbarang/total_permohonan/'.$kode ?>",
 		dataType: "json",
 		success:function(data)
-		{ 
+		{
 			$.each(data,function(index,elemet){
 				$("#total_jumlah_").html(elemet.totaljumlah);
 				$("#total_harga_").html(elemet.totalharga);
@@ -168,6 +168,7 @@ var code_cl_phc = '<?php echo $code_cl_phc?>';
 	<div style="width:100%;">
 		<div style="padding:5px" class="pull-right">
 			<?php if(isset($pilihan_status_pengadaan)&& $pilihan_status_pengadaan!='4'){?><button class="btn btn-success" id='btn_add_barang' type='button'><i class='fa fa-plus-square'></i> Tambah Barang</button><?php } ?>
+			<button type="button" class="btn btn-warning" id="btn-refresh-barang"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
 		</div>
         <div id="jqxgrid_barang"></div>
 	</div>
