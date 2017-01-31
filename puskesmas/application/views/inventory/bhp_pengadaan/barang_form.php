@@ -9,7 +9,7 @@ if(isset($disable)){if($disable='disable'){?>
 <?php }} ?>
 <script type="text/javascript">
 
-  
+
   function toRp(a,b,c,d,e){
     e=function(f){return f.split('').reverse().join('')};b=e(parseInt(a,10).toString());
     for(c=0,d='';c<b.length;c++){
@@ -17,7 +17,7 @@ if(isset($disable)){if($disable='disable'){?>
     }
     return'Rp.\t'+e(d)+',00'
   }
-  
+
   function tambahmaster(){
     $("#popup_masterbarang #popup_mastercontent").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
     $.get("<?php echo base_url().'inventory/bhp_pengadaan/add_barang_master/'; ?>" , function(data) {
@@ -34,13 +34,13 @@ if(isset($disable)){if($disable='disable'){?>
   }
 
   $(function(){
-    <?php 
+    <?php
     if (isset($obat)) {
       if ($obat=="8") {
     ?>
     var dates = new Date();
     var tahuns = dates.getFullYear()+1;
-    var bulans = dates.getMonth(); 
+    var bulans = dates.getMonth();
     var haris  = dates.getDate();
       $("#tgl_kadaluarsa").jqxDateTimeInput({ width: '150px', height: '25px', formatString: 'dd-MM-yyyy', theme: theme, value: new Date(tahuns,bulans,haris) })
     <?php
@@ -49,7 +49,7 @@ if(isset($disable)){if($disable='disable'){?>
     ?>
       $('#btn-close').click(function(){
         close_popup();
-      }); 
+      });
 
       $('#form-ss').submit(function(){
           var data = new FormData();
@@ -124,14 +124,14 @@ if(isset($disable)){if($disable='disable'){?>
           .appendTo( ul );
       };
       function cekdata(key) {
-        
+
       }
       function deskripsi(data){
         $.ajax({
           url: "<?php echo base_url().'inventory/bhp_pengadaan/deskripsi/' ?>"+data,
           dataType: "json",
           success:function(data)
-          { 
+          {
             $.each(data,function(index,elemet){
               $("#harga").val(elemet.hargabarang);
             });
@@ -187,9 +187,9 @@ if(isset($disable)){if($disable='disable'){?>
                         tgl_pembelian = Date.parse(item.tgl_pembelian);
                       }
                       if( tgl_pembelian>= tgl_opname){
-                        var hargabarang = item.harga_pembelian;  
+                        var hargabarang = item.harga_pembelian;
                       }else{
-                        var hargabarang = item.harga_opname;  
+                        var hargabarang = item.harga_opname;
                       }
                     }else{
                       if (item.harga==null) {
@@ -262,8 +262,8 @@ if(isset($disable)){if($disable='disable'){?>
           <div class="col-md-9">
             <div class="form-group">
               <label>Nama Barang</label>
-              <input id="jqxinput" class="form-control" autocomplete="off" name="jqxinput" type="text" value="<?php 
-                if(set_value('jqxinput')=="" && isset($id_mst_inv_barang_habispakai)){ 
+              <input id="jqxinput" class="form-control" autocomplete="off" name="jqxinput" type="text" value="<?php
+                if(set_value('jqxinput')=="" && isset($id_mst_inv_barang_habispakai)){
                   echo $id_mst_inv_barang_habispakai;
                 }else{
                   echo  set_value('jqxinput');
@@ -275,7 +275,7 @@ if(isset($disable)){if($disable='disable'){?>
             <button type="button" class="btn btn-success" id="btn-refresh" onclick="tambahmaster()"><i class='fa fa-plus-square-o'></i> &nbsp; Tambah</button>
           </div>
           </div>
-              <input id="id_mst_inv_barang" class="form-control" name="id_mst_inv_barang" type="hidden" value="<?php 
+              <input id="id_mst_inv_barang" class="form-control" name="id_mst_inv_barang" type="hidden" value="<?php
                 if(set_value('id_mst_inv_barang')=="" && isset($id_mst_inv_barang_habispakai)){
                   echo $id_mst_inv_barang_habispakai;
                 }else{
@@ -286,7 +286,7 @@ if(isset($disable)){if($disable='disable'){?>
           <div class="row" style="margin: 5px">
             <div class="col-md-4" style="padding: 5px">Jumlah</div>
             <div class="col-md-8">
-              <input type="number" class="form-control" name="jumlah" id="jumlah" placeholder="Jumlah" value="<?php 
+              <input type="number" class="form-control" name="jumlah" id="jumlah" placeholder="Jumlah" value="<?php
                 if(set_value('jumlah')=="" && isset($jumlah)){
                   echo $jumlah;
                 }else{
@@ -299,7 +299,7 @@ if(isset($disable)){if($disable='disable'){?>
           <div class="row" style="margin: 5px">
             <div class="col-md-4" style="padding: 5px">Harga Satuan</div>
             <div class="col-md-8">
-              <input type="number" class="form-control" name="harga" id="harga" placeholder="Harga Satuan" value="<?php 
+              <input type="number" class="form-control" name="harga" id="harga" placeholder="Harga Satuan" value="<?php
                 if(set_value('harga')=="" && isset($harga)){
                   echo $harga;
                 }else{
@@ -308,7 +308,7 @@ if(isset($disable)){if($disable='disable'){?>
                 ?>">
             </div>
           </div>
-          
+
           <div class="row" style="margin: 5px">
             <div class="col-md-4" style="padding: 5px">Sub Total</div>
             <div class="col-md-8">
@@ -321,14 +321,14 @@ if(isset($disable)){if($disable='disable'){?>
                 ?>">
             </div>
           </div>
-          <?php 
+          <?php
             if (isset($obat)) {
               if ($obat=="8") {
           ?>
           <div class="row" style="margin: 5px">
             <div class="col-md-4" style="padding: 5px">Nomor Batch</div>
             <div class="col-md-8">
-              <input type="text" class="form-control" name="batch" id="batch" placeholder="Nomor Batch" value="<?php 
+              <input type="text" class="form-control" name="batch" id="batch" placeholder="Nomor Batch" value="<?php
                 if(set_value('batch')=="" && isset($batch)){
                   echo $batch;
                 }else{
@@ -357,7 +357,7 @@ if(isset($disable)){if($disable='disable'){?>
           <div class="row" style="margin: 5px">
             <div class="col-md-4" style="padding: 5px">Keadaan Rusak</div>
             <div class="col-md-8">
-              <input type="number" class="form-control" name="jml_rusak" id="jml_rusak" placeholder="Jumlah Rusak" value="<?php 
+              <input type="number" class="form-control" name="jml_rusak" id="jml_rusak" placeholder="Jumlah Rusak" value="<?php
                 if(set_value('jml_rusak')=="" && isset($jml_rusak)){
                   echo $jml_rusak;
                 }else{
@@ -377,7 +377,7 @@ if(isset($disable)){if($disable='disable'){?>
             <?php }} ?>
            <!-- <div class="form-group">
               <label>Keterangan</label>
-              <textarea class="form-control" id="keterangan" name="keterangan" placeholder="Keterangan"><?php 
+              <textarea class="form-control" id="keterangan" name="keterangan" placeholder="Keterangan"><?php
                /*   if(set_value('keterangan')=="" && isset($keterangan_pengadaan)){
                     echo $keterangan_pengadaan;
                   }else{
